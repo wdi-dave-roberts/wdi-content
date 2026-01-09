@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Model ERD - White Doe Inn</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .mermaid { background: white; padding: 1rem; border-radius: 0.5rem; }
+    .mermaid svg { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body class="min-h-screen bg-base-200">
+  <div class="navbar bg-base-100 shadow-lg">
+    <div class="flex-1">
+      <a href="/projects/kitchen-remodel/" class="btn btn-ghost text-xl">White Doe Inn</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="/projects/kitchen-remodel/">Gantt Chart</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-2">Project Data Model ERD</h1>
+    <p class="text-base-content/70 mb-8">Entity Relationship Diagram for the project management data model</p>
+
+    <!-- Tabs -->
+    <div class="tabs tabs-boxed mb-6">
+      <a class="tab tab-active" onclick="showTab('entities')">Entities</a>
+      <a class="tab" onclick="showTab('enums')">Enumerations</a>
+      <a class="tab" onclick="showTab('cost-flow')">Cost-Plus Flow</a>
+      <a class="tab" onclick="showTab('co-flow')">Change Order Flow</a>
+    </div>
+
+    <!-- Entities Tab -->
+    <div id="entities" class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Full Entity Diagram</h2>
+        <div class="overflow-x-auto">
+          <pre class="mermaid">
+erDiagram
+    ProjectData ||--o{ Task : contains
+    ProjectData ||--o{ Vendor : contains
+    ProjectData ||--o{ Receipt : contains
+    ProjectData ||--o{ Note : contains
+    ProjectData ||--o{ Milestone : contains
+    ProjectData ||--o{ Payment : contains
+    ProjectData ||--o{ ChangeOrder : contains
+    ProjectData ||--o| Budget : has
+    ProjectData ||--o| Contract : has
+
+    Task ||--o{ Task : "depends on"
+    Task }o--o| Vendor : "assigned to"
+    Task }o--o{ Milestone : "required for"
+
+    Vendor ||--o{ Receipt : "bills"
+    Vendor }o--o| Contract : "party to"
+
+    Receipt }o--o| Task : "for"
+    Receipt }o--o| ChangeOrder : "part of"
+
+    Note }o--o{ Task : "tagged"
+    Note }o--o{ Vendor : "tagged"
+    Note }o--o{ Milestone : "tagged"
+
+    Payment }o--o| Milestone : "triggered by"
+    Payment ||--o{ PaymentLienWaiver : has
+
+    ChangeOrder ||--o{ ChangeOrderApproval : requires
+
+    Task {
+        string id PK
+        string name
+        date start
+        date end
+        number progress
+        TaskStatus status
+        TaskCategory category
+        string assignee FK
+    }
+
+    Vendor {
+        string id PK
+        string name
+        VendorType type
+        VendorTrade trade
+        VendorStatus status
+        PaymentTerms paymentTerms
+    }
+
+    Receipt {
+        string id PK
+        string vendor FK
+        date date
+        number amount
+        ReceiptCategory category
+        PaidBy paidBy
+        number markupPercent
+        boolean ownerSelected
+        ReceiptStatus status
+    }
+
+    Note {
+        string id PK
+        datetime created
+        string content
+        string[] tags FK
+        NoteType type
+    }
+
+    Milestone {
+        string id PK
+        string name
+        date date
+        MilestoneStatus status
+        string[] tasks FK
+    }
+
+    Payment {
+        string id PK
+        string name
+        number amount
+        string milestone FK
+        PaymentStatus status
+    }
+
+    ChangeOrder {
+        string id PK
+        integer number
+        date requestDate
+        number costImpact
+        ChangeOrderStatus status
+    }
+
+    Contract {
+        ContractType type
+        number targetPrice
+        MarkupRules markupRules
+    }
+          </pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enumerations Tab -->
+    <div id="enums" class="card bg-base-100 shadow-xl hidden">
+      <div class="card-body">
+        <h2 class="card-title">Enumerations Reference</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          <!-- Receipt Category -->
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="font-bold">Receipt Category</h3>
+              <p class="text-xs text-base-content/60 mb-2">Per Contract Exhibit D</p>
+              <table class="table table-xs">
+                <thead><tr><th>Category</th><th>Markup</th></tr></thead>
+                <tbody>
+                  <tr><td>subcontractor</td><td class="text-success">20%</td></tr>
+                  <tr><td>materials</td><td class="text-success">20%</td></tr>
+                  <tr><td>labor</td><td class="text-success">20%</td></tr>
+                  <tr><td>professional</td><td class="text-success">20%</td></tr>
+                  <tr><td>permit</td><td class="text-warning">0%</td></tr>
+                  <tr><td>site-support</td><td class="text-warning">0%</td></tr>
+                  <tr><td>pm-fee</td><td class="text-warning">0%</td></tr>
+                  <tr><td>lodging</td><td class="text-warning">0%</td></tr>
+                  <tr><td>owner-furnished</td><td class="text-error">N/A</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Payment Status -->
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="font-bold">Payment Status</h3>
+              <table class="table table-xs">
+                <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td>scheduled</td><td>Future payment</td></tr>
+                  <tr><td>awaiting-request</td><td>Milestone reached</td></tr>
+                  <tr><td>requested</td><td>GC submitted</td></tr>
+                  <tr><td>due</td><td>Approved</td></tr>
+                  <tr><td>received</td><td>Paid</td></tr>
+                  <tr><td>deferred</td><td>Postponed</td></tr>
+                  <tr><td>overdue</td><td>Past due</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Task Status -->
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="font-bold">Task Status</h3>
+              <table class="table table-xs">
+                <tbody>
+                  <tr><td>pending</td></tr>
+                  <tr><td>scheduled</td></tr>
+                  <tr><td>in_progress</td></tr>
+                  <tr><td>completed</td></tr>
+                  <tr><td>blocked</td></tr>
+                  <tr><td>cancelled</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Vendor Type -->
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="font-bold">Vendor Type</h3>
+              <table class="table table-xs">
+                <tbody>
+                  <tr><td>general-contractor</td></tr>
+                  <tr><td>subcontractor</td></tr>
+                  <tr><td>specialty-contractor</td></tr>
+                  <tr><td>supplier</td></tr>
+                  <tr><td>materials</td></tr>
+                  <tr><td>equipment-rental</td></tr>
+                  <tr><td>government</td></tr>
+                  <tr><td>other</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Vendor Trade -->
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="font-bold">Vendor Trade</h3>
+              <table class="table table-xs">
+                <tbody>
+                  <tr><td>general, electrical, plumbing</td></tr>
+                  <tr><td>hvac, flooring, drywall</td></tr>
+                  <tr><td>painting, carpentry, trim</td></tr>
+                  <tr><td>cabinetry, countertops, tile</td></tr>
+                  <tr><td>roofing, demolition, hauling</td></tr>
+                  <tr><td>appliances, fixtures, multiple</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Change Order -->
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="font-bold">Change Order Status</h3>
+              <table class="table table-xs">
+                <tbody>
+                  <tr><td>draft</td></tr>
+                  <tr><td>pending</td></tr>
+                  <tr><td>approved</td></tr>
+                  <tr><td>rejected</td></tr>
+                  <tr><td>void</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cost-Plus Flow Tab -->
+    <div id="cost-flow" class="card bg-base-100 shadow-xl hidden">
+      <div class="card-body">
+        <h2 class="card-title">Cost-Plus Contract Flow</h2>
+        <div class="overflow-x-auto">
+          <pre class="mermaid">
+flowchart TD
+    subgraph Costs["Allowable Costs"]
+        R1[Receipt] --> CAT{Category}
+        CAT -->|subcontractor| M20A["+20% markup"]
+        CAT -->|materials| M20B["+20% markup"]
+        CAT -->|labor| M20C["+20% markup"]
+        CAT -->|professional| M20D["+20% markup"]
+        CAT -->|permit| M0A["0% markup"]
+        CAT -->|site-support| M0B["0% markup"]
+        CAT -->|pm-fee| M0C["0% markup"]
+        CAT -->|lodging| M0D["0% markup"]
+    end
+
+    subgraph Billing["Billing Logic"]
+        R1 --> PB{Paid By?}
+        PB -->|project| PROJ["Counts toward total"]
+        PB -->|owner| OWN["Owner direct - excluded"]
+
+        R1 --> OS{Owner Selected?}
+        OS -->|yes| NOMARK["No markup, counts toward owed"]
+        OS -->|no| STDMARK["Standard markup applies"]
+    end
+
+    subgraph Payments["Payment Schedule"]
+        DEP["Deposit $60K"] --> D1["Draw 1 $25K"]
+        D1 --> |"rough-in complete"| FINAL["Final = Balance"]
+        FINAL --> |"final inspection"| CLOSE["Project Close"]
+    end
+          </pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Order Flow Tab -->
+    <div id="co-flow" class="card bg-base-100 shadow-xl hidden">
+      <div class="card-body">
+        <h2 class="card-title">Change Order Approval Flow</h2>
+        <div class="overflow-x-auto">
+          <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Pending: Submit
+
+    Pending --> OwnerReview: Route to Owner
+    OwnerReview --> GCReview: Owner Approves
+    OwnerReview --> Rejected: Owner Rejects
+
+    GCReview --> SubReview: GC Approves (if sub involved)
+    GCReview --> Approved: GC Approves (no sub)
+    GCReview --> Rejected: GC Rejects
+
+    SubReview --> Approved: Sub Approves
+    SubReview --> Rejected: Sub Rejects
+
+    Approved --> [*]
+    Rejected --> Draft: Revise
+
+    Draft --> Void: Cancel
+    Pending --> Void: Cancel
+    Void --> [*]
+          </pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag Reference -->
+    <div class="card bg-base-100 shadow-xl mt-6">
+      <div class="card-body">
+        <h2 class="card-title">Tag Reference System</h2>
+        <p class="text-base-content/70">The data model uses flexible tag-based references for cross-entity linking.</p>
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Tag Format</th>
+                <th>Example</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>vendor:{id}</code></td><td><code>vendor:weathertek</code></td><td>Reference to a vendor</td></tr>
+              <tr><td><code>task:{id}</code></td><td><code>task:demolition</code></td><td>Reference to a task</td></tr>
+              <tr><td><code>receipt:{id}</code></td><td><code>receipt:inv-001</code></td><td>Reference to a receipt</td></tr>
+              <tr><td><code>milestone:{id}</code></td><td><code>milestone:rough-in-complete</code></td><td>Reference to a milestone</td></tr>
+              <tr><td><code>co:{id}</code></td><td><code>co:co-001</code></td><td>Reference to a change order</td></tr>
+              <tr><td><code>project</code></td><td><code>project</code></td><td>Project-level reference</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose'
+    });
+
+    function showTab(tabId) {
+      // Hide all tabs
+      document.querySelectorAll('[id]').forEach(el => {
+        if (['entities', 'enums', 'cost-flow', 'co-flow'].includes(el.id)) {
+          el.classList.add('hidden');
+        }
+      });
+      // Show selected tab
+      document.getElementById(tabId).classList.remove('hidden');
+      // Update tab styling
+      document.querySelectorAll('.tabs .tab').forEach(tab => {
+        tab.classList.remove('tab-active');
+      });
+      event.target.classList.add('tab-active');
+    }
+  </script>
+</body>
+</html>

@@ -28,7 +28,18 @@
       "type": "array",
       "items": { "$ref": "#/$defs/Milestone" }
     },
-    "budget": { "$ref": "#/$defs/Budget" }
+    "payments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Payment" },
+      "description": "Owner payments to contractor (deposit, draws, final)"
+    },
+    "changeOrders": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ChangeOrder" },
+      "description": "Contract change orders with approval workflow"
+    },
+    "budget": { "$ref": "#/$defs/Budget" },
+    "contract": { "$ref": "#/$defs/Contract" }
   },
   "$defs": {
     "Task": {
@@ -277,18 +288,54 @@
         },
         "category": {
           "type": "string",
-          "enum": ["labor", "materials", "equipment", "permit", "inspection", "design", "other"],
-          "description": "Expense category"
+          "enum": [
+            "subcontractor",
+            "materials",
+            "labor",
+            "professional",
+            "permit",
+            "site-support",
+            "pm-fee",
+            "lodging",
+            "owner-furnished",
+            "other"
+          ],
+          "description": "Expense category per contract Exhibit D"
         },
         "task": {
           "type": "string",
           "pattern": "^task:[a-z0-9-]+$",
           "description": "Tag reference to related task"
         },
+        "changeOrder": {
+          "type": "string",
+          "pattern": "^co:[a-z0-9-]+$",
+          "description": "Tag reference to change order if applicable"
+        },
         "status": {
           "type": "string",
           "enum": ["draft", "pending", "approved", "paid", "disputed", "void"],
           "description": "Payment status"
+        },
+        "paidBy": {
+          "type": "string",
+          "enum": ["project", "owner"],
+          "description": "Who paid: project (GC account) or owner (direct purchase)"
+        },
+        "markupPercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Markup percentage (default by category, 0 for owner-selected)"
+        },
+        "ownerSelected": {
+          "type": "boolean",
+          "description": "Owner selected this item - no markup but counts toward owed"
+        },
+        "allowable": {
+          "type": "boolean",
+          "default": true,
+          "description": "True unless rework or excluded per contract"
         },
         "paymentMethod": {
           "type": "string",
@@ -302,6 +349,28 @@
         "invoiceNumber": {
           "type": "string",
           "description": "Vendor's invoice number"
+        },
+        "lienWaiver": {
+          "type": "object",
+          "properties": {
+            "conditional": {
+              "type": "object",
+              "properties": {
+                "received": { "type": "boolean" },
+                "date": { "type": "string", "format": "date" },
+                "href": { "type": "string" }
+              }
+            },
+            "unconditional": {
+              "type": "object",
+              "properties": {
+                "received": { "type": "boolean" },
+                "date": { "type": "string", "format": "date" },
+                "href": { "type": "string" }
+              }
+            }
+          },
+          "description": "Lien waiver status for this receipt"
         },
         "metadata": {
           "type": "object",
@@ -411,6 +480,249 @@
               "spent": { "type": "number" }
             }
           }
+        }
+      }
+    },
+    "Payment": {
+      "type": "object",
+      "required": ["id", "name", "amount"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique identifier (e.g., 'deposit', 'draw-1', 'final')"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Deposit', 'Draw 1 - Rough-In')"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Payment amount"
+        },
+        "scheduledDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date payment is scheduled"
+        },
+        "receivedDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date payment was received"
+        },
+        "milestone": {
+          "type": "string",
+          "pattern": "^milestone:[a-z0-9-]+$",
+          "description": "Tag reference to milestone that triggers this payment"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["scheduled", "awaiting-request", "requested", "due", "received", "deferred", "overdue"],
+          "description": "Payment status: scheduled (future), awaiting-request (milestone reached, no draw request), requested (GC submitted), due (approved for payment), received (paid), deferred (postponed), overdue (past due)"
+        },
+        "method": {
+          "type": "string",
+          "enum": ["cash", "check", "credit-card", "debit", "wire", "ach", "venmo", "zelle"],
+          "description": "Payment method"
+        },
+        "checkNumber": {
+          "type": "string",
+          "description": "Check number if paid by check"
+        },
+        "href": {
+          "type": "string",
+          "description": "Path to payment receipt/confirmation"
+        },
+        "lienWaivers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "vendor": {
+                "type": "string",
+                "pattern": "^vendor:[a-z0-9-]+$",
+                "description": "Vendor providing lien waiver"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["conditional", "unconditional"]
+              },
+              "received": { "type": "boolean" },
+              "date": { "type": "string", "format": "date" },
+              "href": { "type": "string" }
+            }
+          },
+          "description": "Lien waivers collected for this draw"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes about this payment"
+        }
+      }
+    },
+    "ChangeOrder": {
+      "type": "object",
+      "required": ["id", "number", "requestDate", "description", "costImpact", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique identifier"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Sequential change order number (CO-001, CO-002, etc.)"
+        },
+        "requestDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date change order was requested"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the change"
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "owner-request",
+            "unforeseen-condition",
+            "design-change",
+            "code-compliance",
+            "value-engineering",
+            "scope-clarification",
+            "other"
+          ],
+          "description": "Reason for change order"
+        },
+        "costImpact": {
+          "type": "number",
+          "description": "Cost impact (positive = increase, negative = credit)"
+        },
+        "scheduleImpact": {
+          "type": "integer",
+          "description": "Schedule impact in days (positive = delay)"
+        },
+        "tasks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Task IDs affected by this change order"
+        },
+        "receipts": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Receipt IDs associated with this change order"
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["party", "status"],
+            "properties": {
+              "party": {
+                "type": "string",
+                "enum": ["owner", "gc", "sub"],
+                "description": "Approving party"
+              },
+              "vendor": {
+                "type": "string",
+                "pattern": "^vendor:[a-z0-9-]+$",
+                "description": "Vendor reference for sub approvals"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["pending", "approved", "rejected"],
+                "description": "Approval status"
+              },
+              "date": {
+                "type": "string",
+                "format": "date",
+                "description": "Date of approval/rejection"
+              },
+              "signedBy": {
+                "type": "string",
+                "description": "Name of person who signed"
+              },
+              "href": {
+                "type": "string",
+                "description": "Path to signed approval document"
+              },
+              "notes": {
+                "type": "string",
+                "description": "Comments from approving party"
+              }
+            }
+          },
+          "description": "Multi-party approval chain"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "pending", "approved", "rejected", "void"],
+          "description": "Overall change order status"
+        },
+        "href": {
+          "type": "string",
+          "description": "Path to change order document"
+        }
+      }
+    },
+    "Contract": {
+      "type": "object",
+      "description": "Contract terms and financial structure",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["fixed-price", "cost-plus", "time-materials", "unit-price"],
+          "description": "Contract type"
+        },
+        "targetPrice": {
+          "type": "number",
+          "description": "Target price (cost-plus contracts)"
+        },
+        "contingencyPercent": {
+          "type": "number",
+          "description": "Contingency percentage"
+        },
+        "contingencyAmount": {
+          "type": "number",
+          "description": "Contingency amount"
+        },
+        "markupRules": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "description": "Markup percentage by category (e.g., { 'subcontractor': 20, 'permits': 0 })"
+        },
+        "parties": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "pattern": "^vendor:[a-z0-9-]+$",
+              "description": "Owner vendor reference"
+            },
+            "contractor": {
+              "type": "string",
+              "pattern": "^vendor:[a-z0-9-]+$",
+              "description": "General contractor vendor reference"
+            }
+          }
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "completionDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "href": {
+          "type": "string",
+          "description": "Path to signed contract document"
         }
       }
     }

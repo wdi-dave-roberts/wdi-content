@@ -62,7 +62,20 @@ export type ReceiptType =
   | 'change-order'
   | 'credit'
 
-export type ReceiptCategory = 'labor' | 'materials' | 'equipment' | 'permit' | 'inspection' | 'design' | 'other'
+// Receipt categories aligned with contract Exhibit D
+export type ReceiptCategory =
+  | 'subcontractor'
+  | 'materials'
+  | 'labor'
+  | 'professional'
+  | 'permit'
+  | 'site-support'
+  | 'pm-fee'
+  | 'lodging'
+  | 'owner-furnished'
+  | 'other'
+
+export type PaidBy = 'project' | 'owner'
 export type ReceiptStatus = 'draft' | 'pending' | 'approved' | 'paid' | 'disputed' | 'void'
 export type PaymentMethod = 'cash' | 'check' | 'credit-card' | 'debit' | 'wire' | 'ach' | 'venmo' | 'zelle'
 
@@ -70,6 +83,36 @@ export type NoteType = 'general' | 'issue' | 'decision' | 'question' | 'reminder
 export type NotePriority = 'low' | 'normal' | 'high' | 'urgent'
 
 export type MilestoneStatus = 'upcoming' | 'reached' | 'missed'
+
+// Payment types
+// scheduled: future payment, milestone not reached
+// awaiting-request: milestone reached, GC hasn't submitted draw request
+// requested: GC submitted draw request, awaiting approval
+// due: approved, payment is due
+// received: payment made
+// deferred: postponed by agreement
+// overdue: past due date
+export type PaymentStatus = 'scheduled' | 'awaiting-request' | 'requested' | 'due' | 'received' | 'deferred' | 'overdue'
+
+// Change Order types
+export type ChangeOrderReason =
+  | 'owner-request'
+  | 'unforeseen-condition'
+  | 'design-change'
+  | 'code-compliance'
+  | 'value-engineering'
+  | 'scope-clarification'
+  | 'other'
+
+export type ChangeOrderStatus = 'draft' | 'pending' | 'approved' | 'rejected' | 'void'
+export type ApprovalParty = 'owner' | 'gc' | 'sub'
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected'
+
+// Contract types
+export type ContractType = 'fixed-price' | 'cost-plus' | 'time-materials' | 'unit-price'
+
+// Lien waiver types
+export type LienWaiverType = 'conditional' | 'unconditional'
 
 // Entity interfaces
 
@@ -146,6 +189,17 @@ export interface ReceiptMetadata {
   verifiedAt?: string
 }
 
+export interface LienWaiverStatus {
+  received?: boolean
+  date?: string // YYYY-MM-DD
+  href?: string
+}
+
+export interface ReceiptLienWaiver {
+  conditional?: LienWaiverStatus
+  unconditional?: LienWaiverStatus
+}
+
 export interface Receipt {
   id: string
   vendor: string // vendor:{id}
@@ -159,10 +213,16 @@ export interface Receipt {
   type?: ReceiptType
   category?: ReceiptCategory
   task?: string // task:{id}
+  changeOrder?: string // co:{id}
   status?: ReceiptStatus
+  paidBy?: PaidBy
+  markupPercent?: number // 0-100, default by category
+  ownerSelected?: boolean // Owner selected item - no markup but counts toward owed
+  allowable?: boolean // True unless rework or excluded per contract
   paymentMethod?: PaymentMethod
   checkNumber?: string
   invoiceNumber?: string
+  lienWaiver?: ReceiptLienWaiver
   metadata?: ReceiptMetadata
 }
 
@@ -200,6 +260,71 @@ export interface Budget {
   categories?: Record<string, BudgetCategory>
 }
 
+export interface PaymentLienWaiver {
+  vendor: string // vendor:{id}
+  type: LienWaiverType
+  received?: boolean
+  date?: string
+  href?: string
+}
+
+export interface Payment {
+  id: string
+  name: string // "Deposit", "Draw 1 - Rough-In", etc.
+  amount: number
+  scheduledDate?: string // YYYY-MM-DD
+  receivedDate?: string // YYYY-MM-DD
+  milestone?: string // milestone:{id}
+  status?: PaymentStatus
+  method?: PaymentMethod
+  checkNumber?: string
+  href?: string
+  lienWaivers?: PaymentLienWaiver[]
+  notes?: string
+}
+
+export interface ChangeOrderApproval {
+  party: ApprovalParty
+  vendor?: string // vendor:{id} for sub approvals
+  status: ApprovalStatus
+  date?: string
+  signedBy?: string
+  href?: string
+  notes?: string
+}
+
+export interface ChangeOrder {
+  id: string
+  number: number // Sequential CO-001, CO-002, etc.
+  requestDate: string
+  description: string
+  reason?: ChangeOrderReason
+  costImpact: number // Positive = increase, negative = credit
+  scheduleImpact?: number // Days (positive = delay)
+  tasks?: string[] // Affected task IDs
+  receipts?: string[] // Associated receipt IDs
+  approvals?: ChangeOrderApproval[]
+  status: ChangeOrderStatus
+  href?: string
+}
+
+export interface ContractParties {
+  owner?: string // vendor:{id}
+  contractor?: string // vendor:{id}
+}
+
+export interface Contract {
+  type?: ContractType
+  targetPrice?: number
+  contingencyPercent?: number
+  contingencyAmount?: number
+  markupRules?: Record<string, number> // category -> markup percent
+  parties?: ContractParties
+  startDate?: string
+  completionDate?: string
+  href?: string
+}
+
 // Root project data interface
 
 export interface ProjectData {
@@ -210,7 +335,10 @@ export interface ProjectData {
   receipts: Receipt[]
   notes: Note[]
   milestones?: Milestone[]
+  payments?: Payment[]
+  changeOrders?: ChangeOrder[]
   budget?: Budget
+  contract?: Contract
 }
 
 // Utility types for tag references
@@ -218,4 +346,6 @@ export interface ProjectData {
 export type VendorTag = `vendor:${string}`
 export type TaskTag = `task:${string}`
 export type ReceiptTag = `receipt:${string}`
-export type EntityTag = VendorTag | TaskTag | ReceiptTag | 'project'
+export type MilestoneTag = `milestone:${string}`
+export type ChangeOrderTag = `co:${string}`
+export type EntityTag = VendorTag | TaskTag | ReceiptTag | MilestoneTag | ChangeOrderTag | 'project'
