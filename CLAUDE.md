@@ -18,12 +18,15 @@ Management tools and internal applications for White Doe Inn (Inspired Manteo Mo
 │   └── expense-summary.html   # Expense report viewer
 ├── projects/                  # Document collections with custom presentation
 │   ├── index.html             # Projects listing page
+│   ├── _schema/               # Shared schemas
+│   │   └── project-data.schema.json  # JSON Schema for data.json
 │   ├── _templates/            # Project templates (not served)
 │   │   ├── base/              # Minimal template
 │   │   ├── gantt/             # Gantt chart + timeline
 │   │   └── gallery/           # Document gallery
 │   └── kitchen-remodel/       # Example project
 │       ├── project.json       # Project manifest
+│       ├── data.json          # Project data (tasks, vendors, receipts, notes)
 │       ├── index.html         # Project page
 │       └── reference/         # Documents, receipts
 ├── scripts/
@@ -32,7 +35,8 @@ Management tools and internal applications for White Doe Inn (Inspired Manteo Mo
     ├── main.ts                # Entry point - initializes Alpine.js
     ├── style.css              # Tailwind + DaisyUI configuration
     ├── gantt.ts               # Gantt chart functionality
-    └── types/                 # TypeScript type definitions
+    └── types/
+        └── project-data.d.ts  # TypeScript types for data.json
 ```
 
 ## Commands
@@ -81,6 +85,59 @@ Each project has:
 ### Auto-Discovery
 
 Vite automatically discovers projects by scanning `projects/*/project.json`. No manual configuration needed after creating a project.
+
+## Project Data Schema
+
+Projects store structured data in `data.json` with a tag-based association system.
+
+### Entities
+
+| Entity | Required Fields | Description |
+|--------|-----------------|-------------|
+| `tasks` | id, name, start, end | Gantt tasks with dependencies, assignees, progress |
+| `vendors` | id, name, type | Contractors, suppliers, utilities with contact info |
+| `receipts` | id, vendor, date, amount | Financial records with `href` to source files |
+| `notes` | id, created, content, tags | Journal entries associated via tags |
+| `milestones` | id, name, date | Project milestones |
+| `budget` | - | Budget totals and category tracking |
+
+### Tag References
+
+Tags link entities together using the pattern `{entity}:{id}`:
+- `vendor:danny` - References vendor with id "danny"
+- `task:demolition` - References task with id "demolition"
+- `project` - Project-level tag (no id)
+
+Example note with tags:
+```json
+{
+  "id": "note-001",
+  "content": "Danny confirmed start date",
+  "tags": ["vendor:danny", "task:demolition"]
+}
+```
+
+### Receipts and Files
+
+Receipts store OCR-extracted metadata with `href` pointing to source files:
+```json
+{
+  "id": "flooring-deposit",
+  "vendor": "vendor:precision-flooring",
+  "href": "reference/receipts/flooring/deposit-receipt.pdf",
+  "date": "2026-01-02",
+  "amount": 1500.00,
+  "type": "payment",
+  "status": "paid"
+}
+```
+
+### TypeScript Types
+
+Import types from `src/types/project-data.d.ts`:
+```typescript
+import type { ProjectData, Task, Vendor, Receipt, Note } from './types/project-data'
+```
 
 ## URL Structure
 

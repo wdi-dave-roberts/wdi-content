@@ -1,0 +1,418 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "project-data.schema.json",
+  "title": "Project Data",
+  "description": "Schema for project data including tasks, vendors, receipts, and notes",
+  "type": "object",
+  "required": ["version", "tasks", "vendors", "receipts", "notes"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Task" }
+    },
+    "vendors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Vendor" }
+    },
+    "receipts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Receipt" }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Note" }
+    },
+    "milestones": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Milestone" }
+    },
+    "budget": { "$ref": "#/$defs/Budget" }
+  },
+  "$defs": {
+    "Task": {
+      "type": "object",
+      "required": ["id", "name", "start", "end"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique identifier (slug format)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name"
+        },
+        "start": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date YYYY-MM-DD"
+        },
+        "end": {
+          "type": "string",
+          "format": "date",
+          "description": "End date YYYY-MM-DD"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Completion percentage"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of task IDs that must complete first"
+        },
+        "assignee": {
+          "type": "string",
+          "pattern": "^vendor:[a-z0-9-]+$",
+          "description": "Tag reference to vendor"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "scheduled", "in_progress", "completed", "blocked", "cancelled"],
+          "description": "Current status"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "critical"],
+          "description": "Task priority level"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["demolition", "rough-in", "structural", "mechanical", "electrical", "plumbing", "finish", "fixtures", "cleanup", "inspection"],
+          "description": "Work category"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description"
+        },
+        "estimatedCost": {
+          "type": "number",
+          "description": "Estimated cost for this task"
+        },
+        "actualCost": {
+          "type": "number",
+          "description": "Actual cost incurred"
+        },
+        "location": {
+          "type": "string",
+          "description": "Specific location within project (e.g., 'north wall', 'island')"
+        }
+      }
+    },
+    "Vendor": {
+      "type": "object",
+      "required": ["id", "name", "type"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full vendor/company name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "general-contractor",
+            "subcontractor",
+            "specialty-contractor",
+            "supplier",
+            "materials",
+            "equipment-rental",
+            "utility",
+            "government",
+            "inspector",
+            "designer",
+            "consultant",
+            "other"
+          ],
+          "description": "Type of vendor"
+        },
+        "trade": {
+          "type": "string",
+          "enum": [
+            "general",
+            "electrical",
+            "plumbing",
+            "hvac",
+            "flooring",
+            "drywall",
+            "painting",
+            "carpentry",
+            "trim",
+            "cabinetry",
+            "countertops",
+            "tile",
+            "roofing",
+            "demolition",
+            "hauling",
+            "appliances",
+            "fixtures",
+            "multiple"
+          ],
+          "description": "Primary trade or specialty"
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "description": "Primary contact person" },
+            "phone": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "address": {
+              "type": "object",
+              "properties": {
+                "street": { "type": "string" },
+                "city": { "type": "string" },
+                "state": { "type": "string" },
+                "zip": { "type": "string" }
+              }
+            }
+          }
+        },
+        "license": {
+          "type": "object",
+          "properties": {
+            "number": { "type": "string" },
+            "state": { "type": "string" },
+            "expiration": { "type": "string", "format": "date" }
+          },
+          "description": "Contractor license info"
+        },
+        "insurance": {
+          "type": "object",
+          "properties": {
+            "liability": { "type": "boolean" },
+            "workersComp": { "type": "boolean" },
+            "policyNumber": { "type": "string" },
+            "expiration": { "type": "string", "format": "date" }
+          }
+        },
+        "rating": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Performance rating 1-5"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "inactive", "preferred", "blacklisted"],
+          "description": "Vendor status"
+        },
+        "paymentTerms": {
+          "type": "string",
+          "enum": ["cod", "net-15", "net-30", "draws", "milestone"],
+          "description": "Payment terms"
+        },
+        "folder": {
+          "type": "string",
+          "description": "Folder name in reference/receipts/"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "Receipt": {
+      "type": "object",
+      "required": ["id", "vendor", "date", "amount"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier"
+        },
+        "vendor": {
+          "type": "string",
+          "pattern": "^vendor:[a-z0-9-]+$",
+          "description": "Tag reference to vendor"
+        },
+        "href": {
+          "type": "string",
+          "description": "Path to file relative to project root"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Receipt/invoice date"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Payment due date"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Total amount"
+        },
+        "tax": {
+          "type": "number",
+          "description": "Tax amount"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of charge"
+        },
+        "lineItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": { "type": "string" },
+              "quantity": { "type": "number" },
+              "unitPrice": { "type": "number" },
+              "total": { "type": "number" }
+            }
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": ["estimate", "quote", "invoice", "receipt", "payment", "draw", "change-order", "credit"],
+          "description": "Document type"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["labor", "materials", "equipment", "permit", "inspection", "design", "other"],
+          "description": "Expense category"
+        },
+        "task": {
+          "type": "string",
+          "pattern": "^task:[a-z0-9-]+$",
+          "description": "Tag reference to related task"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "pending", "approved", "paid", "disputed", "void"],
+          "description": "Payment status"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["cash", "check", "credit-card", "debit", "wire", "ach", "venmo", "zelle"],
+          "description": "How payment was made"
+        },
+        "checkNumber": {
+          "type": "string",
+          "description": "Check number if paid by check"
+        },
+        "invoiceNumber": {
+          "type": "string",
+          "description": "Vendor's invoice number"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "ocrConfidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "extractedAt": { "type": "string", "format": "date-time" },
+            "extractedBy": { "type": "string" },
+            "verified": { "type": "boolean" },
+            "verifiedBy": { "type": "string" },
+            "verifiedAt": { "type": "string", "format": "date-time" }
+          },
+          "description": "OCR and verification metadata"
+        }
+      }
+    },
+    "Note": {
+      "type": "object",
+      "required": ["id", "created", "content", "tags"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last modified timestamp"
+        },
+        "author": {
+          "type": "string",
+          "description": "Who wrote the note"
+        },
+        "content": {
+          "type": "string",
+          "description": "Note text (supports markdown)"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of entity references"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["general", "issue", "decision", "question", "reminder", "change-request"],
+          "description": "Note type"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "urgent"]
+        },
+        "pinned": {
+          "type": "boolean",
+          "description": "Pin to top of lists"
+        },
+        "resolved": {
+          "type": "boolean",
+          "description": "Whether issue/question is resolved"
+        },
+        "attachments": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paths to attached files"
+        }
+      }
+    },
+    "Milestone": {
+      "type": "object",
+      "required": ["id", "name", "date"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "description": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["upcoming", "reached", "missed"]
+        },
+        "tasks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Task IDs that must complete for this milestone"
+        }
+      }
+    },
+    "Budget": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number",
+          "description": "Total project budget"
+        },
+        "contingency": {
+          "type": "number",
+          "description": "Contingency amount"
+        },
+        "categories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "budgeted": { "type": "number" },
+              "spent": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

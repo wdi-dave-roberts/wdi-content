@@ -1,0 +1,651 @@
+{
+  "$schema": "../_schema/project-data.schema.json",
+  "version": "1.0",
+  "tasks": [
+    {
+      "id": "flooring-prep",
+      "name": "Flooring Prep & Subfloor",
+      "start": "2026-01-02",
+      "end": "2026-01-03",
+      "progress": 100,
+      "assignee": "vendor:precision-flooring",
+      "status": "completed",
+      "priority": "high",
+      "category": "rough-in",
+      "description": "Level subfloor, install underlayment, prep for LVP installation",
+      "estimatedCost": 800,
+      "location": "entire kitchen"
+    },
+    {
+      "id": "flooring-install",
+      "name": "LVP Flooring Installation",
+      "start": "2026-01-06",
+      "end": "2026-01-08",
+      "progress": 100,
+      "dependencies": ["flooring-prep"],
+      "assignee": "vendor:precision-flooring",
+      "status": "completed",
+      "priority": "high",
+      "category": "finish",
+      "description": "Install luxury vinyl plank flooring throughout kitchen",
+      "estimatedCost": 3200,
+      "location": "entire kitchen"
+    },
+    {
+      "id": "drywall-repair",
+      "name": "Drywall Repair & Finishing",
+      "start": "2026-01-09",
+      "end": "2026-01-13",
+      "progress": 100,
+      "dependencies": ["flooring-install"],
+      "assignee": "vendor:coastal-drywall",
+      "status": "completed",
+      "priority": "normal",
+      "category": "finish",
+      "description": "Patch holes from demo, tape, mud, and sand to level 4 finish",
+      "estimatedCost": 1800,
+      "location": "all walls and ceiling"
+    },
+    {
+      "id": "paint-prime",
+      "name": "Primer & Paint - Walls",
+      "start": "2026-01-14",
+      "end": "2026-01-16",
+      "progress": 80,
+      "dependencies": ["drywall-repair"],
+      "assignee": "vendor:island-painters",
+      "status": "in_progress",
+      "priority": "normal",
+      "category": "finish",
+      "description": "Prime all surfaces, 2 coats Benjamin Moore Simply White on walls",
+      "estimatedCost": 2400,
+      "location": "all walls"
+    },
+    {
+      "id": "paint-ceiling",
+      "name": "Ceiling Paint",
+      "start": "2026-01-14",
+      "end": "2026-01-15",
+      "progress": 100,
+      "dependencies": ["drywall-repair"],
+      "assignee": "vendor:island-painters",
+      "status": "completed",
+      "priority": "normal",
+      "category": "finish",
+      "description": "Flat white ceiling paint, 2 coats",
+      "estimatedCost": 600
+    },
+    {
+      "id": "electrical-rough",
+      "name": "Electrical Rough-In Updates",
+      "start": "2026-01-09",
+      "end": "2026-01-10",
+      "progress": 100,
+      "dependencies": ["flooring-install"],
+      "assignee": "vendor:dare-electric",
+      "status": "completed",
+      "priority": "high",
+      "category": "electrical",
+      "description": "Add circuits for island, update panel, run low voltage for undercab lights",
+      "estimatedCost": 2800
+    },
+    {
+      "id": "cabinet-install",
+      "name": "Cabinet Installation",
+      "start": "2026-01-17",
+      "end": "2026-01-21",
+      "progress": 40,
+      "dependencies": ["paint-prime", "electrical-rough"],
+      "assignee": "vendor:obx-cabinets",
+      "status": "in_progress",
+      "priority": "critical",
+      "category": "fixtures",
+      "description": "Install base and wall cabinets, island cabinet base",
+      "estimatedCost": 12000,
+      "location": "perimeter and island"
+    },
+    {
+      "id": "countertop-template",
+      "name": "Countertop Templating",
+      "start": "2026-01-22",
+      "end": "2026-01-22",
+      "progress": 0,
+      "dependencies": ["cabinet-install"],
+      "assignee": "vendor:granite-gallery",
+      "status": "scheduled",
+      "priority": "high",
+      "category": "fixtures",
+      "description": "Laser template for quartz countertops",
+      "estimatedCost": 0
+    },
+    {
+      "id": "trim-door-casing",
+      "name": "Door & Window Casing",
+      "start": "2026-01-23",
+      "end": "2026-01-24",
+      "progress": 0,
+      "dependencies": ["cabinet-install"],
+      "assignee": "vendor:manteo-trim",
+      "status": "scheduled",
+      "priority": "normal",
+      "category": "finish",
+      "description": "Install craftsman-style door and window casings",
+      "estimatedCost": 1200
+    },
+    {
+      "id": "trim-baseboard",
+      "name": "Baseboard & Shoe Molding",
+      "start": "2026-01-27",
+      "end": "2026-01-28",
+      "progress": 0,
+      "dependencies": ["trim-door-casing"],
+      "assignee": "vendor:manteo-trim",
+      "status": "pending",
+      "priority": "normal",
+      "category": "finish",
+      "description": "5.25\" baseboard with quarter-round shoe molding",
+      "estimatedCost": 900
+    },
+    {
+      "id": "trim-crown",
+      "name": "Crown Molding",
+      "start": "2026-01-28",
+      "end": "2026-01-29",
+      "progress": 0,
+      "dependencies": ["trim-door-casing"],
+      "assignee": "vendor:manteo-trim",
+      "status": "pending",
+      "priority": "low",
+      "category": "finish",
+      "description": "3.5\" crown molding to match rest of house",
+      "estimatedCost": 1100
+    },
+    {
+      "id": "countertop-install",
+      "name": "Countertop Installation",
+      "start": "2026-01-29",
+      "end": "2026-01-30",
+      "progress": 0,
+      "dependencies": ["countertop-template", "trim-baseboard"],
+      "assignee": "vendor:granite-gallery",
+      "status": "pending",
+      "priority": "critical",
+      "category": "fixtures",
+      "description": "Install Cambria quartz countertops with undermount sink cutout",
+      "estimatedCost": 6500,
+      "location": "perimeter and island"
+    },
+    {
+      "id": "plumbing-finish",
+      "name": "Plumbing Trim & Fixtures",
+      "start": "2026-01-30",
+      "end": "2026-01-31",
+      "progress": 0,
+      "dependencies": ["countertop-install"],
+      "assignee": "vendor:obx-plumbing",
+      "status": "pending",
+      "priority": "high",
+      "category": "plumbing",
+      "description": "Install sink, faucet, disposal, dishwasher connection",
+      "estimatedCost": 1800
+    },
+    {
+      "id": "electrical-trim",
+      "name": "Electrical Trim & Fixtures",
+      "start": "2026-01-30",
+      "end": "2026-02-02",
+      "progress": 0,
+      "dependencies": ["countertop-install", "trim-crown"],
+      "assignee": "vendor:dare-electric",
+      "status": "pending",
+      "priority": "high",
+      "category": "electrical",
+      "description": "Install outlets, switches, undercab lighting, pendant lights",
+      "estimatedCost": 2200
+    },
+    {
+      "id": "backsplash",
+      "name": "Tile Backsplash",
+      "start": "2026-02-02",
+      "end": "2026-02-03",
+      "progress": 0,
+      "dependencies": ["countertop-install", "electrical-trim"],
+      "assignee": "vendor:coastal-tile",
+      "status": "pending",
+      "priority": "normal",
+      "category": "finish",
+      "description": "Subway tile backsplash with contrasting grout",
+      "estimatedCost": 1600
+    },
+    {
+      "id": "appliance-install",
+      "name": "Appliance Installation",
+      "start": "2026-02-03",
+      "end": "2026-02-04",
+      "progress": 0,
+      "dependencies": ["plumbing-finish", "electrical-trim"],
+      "assignee": "vendor:best-buy-install",
+      "status": "pending",
+      "priority": "high",
+      "category": "fixtures",
+      "description": "Install range, refrigerator, dishwasher, microwave",
+      "estimatedCost": 500
+    },
+    {
+      "id": "touch-up-punch",
+      "name": "Touch-up & Punch List",
+      "start": "2026-02-04",
+      "end": "2026-02-05",
+      "progress": 0,
+      "dependencies": ["backsplash", "appliance-install"],
+      "assignee": "vendor:island-painters",
+      "status": "pending",
+      "priority": "normal",
+      "category": "cleanup",
+      "description": "Paint touch-ups, caulking, final adjustments",
+      "estimatedCost": 400
+    },
+    {
+      "id": "final-clean",
+      "name": "Final Cleaning",
+      "start": "2026-02-05",
+      "end": "2026-02-05",
+      "progress": 0,
+      "dependencies": ["touch-up-punch"],
+      "assignee": "vendor:sparkle-clean",
+      "status": "pending",
+      "priority": "normal",
+      "category": "cleanup",
+      "description": "Post-construction deep cleaning",
+      "estimatedCost": 350
+    }
+  ],
+  "vendors": [
+    {
+      "id": "precision-flooring",
+      "name": "Precision Flooring OBX",
+      "type": "specialty-contractor",
+      "trade": "flooring",
+      "contact": {
+        "name": "Mike Torres",
+        "phone": "252-555-0101",
+        "email": "mike@precisionflooring.com",
+        "address": {
+          "city": "Kill Devil Hills",
+          "state": "NC",
+          "zip": "27948"
+        }
+      },
+      "license": {
+        "number": "FL-12345",
+        "state": "NC",
+        "expiration": "2026-06-30"
+      },
+      "insurance": {
+        "liability": true,
+        "workersComp": true
+      },
+      "rating": 5,
+      "status": "preferred",
+      "paymentTerms": "net-30"
+    },
+    {
+      "id": "coastal-drywall",
+      "name": "Coastal Drywall Services",
+      "type": "subcontractor",
+      "trade": "drywall",
+      "contact": {
+        "name": "James Walker",
+        "phone": "252-555-0102",
+        "email": "james@coastaldrywall.com"
+      },
+      "rating": 4,
+      "status": "active",
+      "paymentTerms": "draws"
+    },
+    {
+      "id": "island-painters",
+      "name": "Island Painters Inc",
+      "type": "specialty-contractor",
+      "trade": "painting",
+      "contact": {
+        "name": "Sarah Chen",
+        "phone": "252-555-0103",
+        "email": "sarah@islandpainters.com"
+      },
+      "license": {
+        "number": "PT-67890",
+        "state": "NC"
+      },
+      "insurance": {
+        "liability": true,
+        "workersComp": true
+      },
+      "rating": 5,
+      "status": "preferred",
+      "paymentTerms": "net-15"
+    },
+    {
+      "id": "dare-electric",
+      "name": "Dare County Electric",
+      "type": "subcontractor",
+      "trade": "electrical",
+      "contact": {
+        "name": "Robert Johnson",
+        "phone": "252-555-0104",
+        "email": "robert@dareelectric.com"
+      },
+      "license": {
+        "number": "EC-11111",
+        "state": "NC",
+        "expiration": "2027-01-15"
+      },
+      "insurance": {
+        "liability": true,
+        "workersComp": true
+      },
+      "rating": 4,
+      "status": "active",
+      "paymentTerms": "net-30"
+    },
+    {
+      "id": "obx-cabinets",
+      "name": "OBX Custom Cabinets",
+      "type": "specialty-contractor",
+      "trade": "cabinetry",
+      "contact": {
+        "name": "William Davis",
+        "phone": "252-555-0105",
+        "email": "bill@obxcabinets.com"
+      },
+      "rating": 5,
+      "status": "preferred",
+      "paymentTerms": "milestone",
+      "website": "https://obxcustomcabinets.com"
+    },
+    {
+      "id": "granite-gallery",
+      "name": "The Granite Gallery",
+      "type": "supplier",
+      "trade": "countertops",
+      "contact": {
+        "name": "Lisa Martinez",
+        "phone": "252-555-0106",
+        "email": "lisa@granitegallery.com",
+        "address": {
+          "street": "456 Stone Way",
+          "city": "Virginia Beach",
+          "state": "VA",
+          "zip": "23451"
+        }
+      },
+      "rating": 4,
+      "status": "active",
+      "paymentTerms": "draws"
+    },
+    {
+      "id": "manteo-trim",
+      "name": "Manteo Trim & Millwork",
+      "type": "specialty-contractor",
+      "trade": "trim",
+      "contact": {
+        "name": "Carlos Hernandez",
+        "phone": "252-555-0107",
+        "email": "carlos@manteotrim.com"
+      },
+      "rating": 5,
+      "status": "preferred",
+      "paymentTerms": "net-15"
+    },
+    {
+      "id": "obx-plumbing",
+      "name": "OBX Plumbing Pros",
+      "type": "subcontractor",
+      "trade": "plumbing",
+      "contact": {
+        "name": "Thomas Anderson",
+        "phone": "252-555-0108",
+        "email": "tom@obxplumbing.com"
+      },
+      "license": {
+        "number": "PL-22222",
+        "state": "NC",
+        "expiration": "2026-08-31"
+      },
+      "insurance": {
+        "liability": true,
+        "workersComp": true
+      },
+      "rating": 4,
+      "status": "active",
+      "paymentTerms": "net-30"
+    },
+    {
+      "id": "coastal-tile",
+      "name": "Coastal Tile & Stone",
+      "type": "specialty-contractor",
+      "trade": "tile",
+      "contact": {
+        "name": "Maria Rodriguez",
+        "phone": "252-555-0109",
+        "email": "maria@coastaltile.com"
+      },
+      "rating": 4,
+      "status": "active",
+      "paymentTerms": "draws"
+    },
+    {
+      "id": "best-buy-install",
+      "name": "Best Buy Installation Services",
+      "type": "other",
+      "trade": "appliances",
+      "contact": {
+        "phone": "800-555-0110"
+      },
+      "rating": 3,
+      "status": "active",
+      "paymentTerms": "cod"
+    },
+    {
+      "id": "sparkle-clean",
+      "name": "Sparkle Clean OBX",
+      "type": "other",
+      "trade": "general",
+      "contact": {
+        "name": "Jennifer White",
+        "phone": "252-555-0111",
+        "email": "jen@sparkleclean.com"
+      },
+      "rating": 5,
+      "status": "preferred",
+      "paymentTerms": "cod"
+    },
+    {
+      "id": "manteo-permits",
+      "name": "Town of Manteo Building Dept",
+      "type": "government",
+      "trade": "general",
+      "contact": {
+        "phone": "252-473-2133",
+        "address": {
+          "street": "305 Budleigh Street",
+          "city": "Manteo",
+          "state": "NC",
+          "zip": "27954"
+        }
+      },
+      "status": "active",
+      "paymentTerms": "cod"
+    }
+  ],
+  "receipts": [
+    {
+      "id": "flooring-deposit",
+      "vendor": "vendor:precision-flooring",
+      "date": "2025-12-20",
+      "amount": 1600.00,
+      "description": "50% deposit for LVP flooring materials and installation",
+      "type": "payment",
+      "category": "materials",
+      "task": "task:flooring-install",
+      "status": "paid",
+      "paymentMethod": "check",
+      "checkNumber": "1001"
+    },
+    {
+      "id": "flooring-final",
+      "vendor": "vendor:precision-flooring",
+      "date": "2026-01-08",
+      "amount": 2400.00,
+      "description": "Final payment - flooring prep and installation complete",
+      "type": "invoice",
+      "category": "labor",
+      "task": "task:flooring-install",
+      "status": "paid",
+      "paymentMethod": "check",
+      "checkNumber": "1005",
+      "invoiceNumber": "PF-2026-0108"
+    },
+    {
+      "id": "drywall-draw1",
+      "vendor": "vendor:coastal-drywall",
+      "date": "2026-01-11",
+      "amount": 900.00,
+      "description": "First draw - drywall repair 50% complete",
+      "type": "draw",
+      "category": "labor",
+      "task": "task:drywall-repair",
+      "status": "paid",
+      "paymentMethod": "zelle"
+    },
+    {
+      "id": "permit-building",
+      "vendor": "vendor:manteo-permits",
+      "date": "2025-12-15",
+      "amount": 275.00,
+      "description": "Building permit - kitchen renovation",
+      "type": "receipt",
+      "category": "permit",
+      "status": "paid",
+      "paymentMethod": "credit-card",
+      "invoiceNumber": "BP-2025-1234"
+    },
+    {
+      "id": "cabinet-deposit",
+      "vendor": "vendor:obx-cabinets",
+      "date": "2025-11-15",
+      "amount": 6000.00,
+      "description": "50% deposit for custom cabinet order",
+      "type": "payment",
+      "category": "materials",
+      "task": "task:cabinet-install",
+      "status": "paid",
+      "paymentMethod": "wire"
+    }
+  ],
+  "notes": [
+    {
+      "id": "note-001",
+      "created": "2025-12-15T10:00:00Z",
+      "author": "David",
+      "content": "Project kickoff! Permit approved, materials ordered. Target completion: Feb 5, 2026.",
+      "tags": ["project"],
+      "type": "general",
+      "pinned": true
+    },
+    {
+      "id": "note-002",
+      "created": "2026-01-08T16:30:00Z",
+      "author": "David",
+      "content": "Flooring looks amazing! Mike's team did excellent work. Small issue with transition piece at doorway - they'll fix tomorrow.",
+      "tags": ["vendor:precision-flooring", "task:flooring-install"],
+      "type": "general"
+    },
+    {
+      "id": "note-003",
+      "created": "2026-01-14T09:00:00Z",
+      "author": "David",
+      "content": "Paint color confirmed: Benjamin Moore Simply White (OC-117) for walls, ceiling flat white. Sarah starting today.",
+      "tags": ["vendor:island-painters", "task:paint-prime"],
+      "type": "decision"
+    },
+    {
+      "id": "note-004",
+      "created": "2026-01-17T11:00:00Z",
+      "author": "David",
+      "content": "Cabinet delivery delayed by 1 day due to weather. Bill confirmed they'll make up time - still on track for Jan 21 completion.",
+      "tags": ["vendor:obx-cabinets", "task:cabinet-install"],
+      "type": "issue",
+      "resolved": true
+    },
+    {
+      "id": "note-005",
+      "created": "2026-01-10T14:00:00Z",
+      "author": "David",
+      "content": "Need to confirm pendant light selection before electrical trim. Lisa at Granite Gallery recommended checking Ferguson.",
+      "tags": ["task:electrical-trim"],
+      "type": "reminder",
+      "priority": "high"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "ms-flooring-complete",
+      "name": "Flooring Complete",
+      "date": "2026-01-08",
+      "description": "All flooring installed and inspected",
+      "status": "reached",
+      "tasks": ["flooring-prep", "flooring-install"]
+    },
+    {
+      "id": "ms-rough-complete",
+      "name": "Rough Work Complete",
+      "date": "2026-01-13",
+      "description": "Drywall and electrical rough-in done",
+      "status": "reached",
+      "tasks": ["drywall-repair", "electrical-rough"]
+    },
+    {
+      "id": "ms-cabinets-in",
+      "name": "Cabinets Installed",
+      "date": "2026-01-21",
+      "description": "All cabinets installed and leveled",
+      "status": "upcoming",
+      "tasks": ["cabinet-install"]
+    },
+    {
+      "id": "ms-substantial",
+      "name": "Substantial Completion",
+      "date": "2026-02-03",
+      "description": "Kitchen functional, minor punch items remaining",
+      "status": "upcoming",
+      "tasks": ["countertop-install", "plumbing-finish", "appliance-install"]
+    },
+    {
+      "id": "ms-final",
+      "name": "Project Complete",
+      "date": "2026-02-05",
+      "description": "All work complete, final walkthrough done",
+      "status": "upcoming",
+      "tasks": ["final-clean"]
+    }
+  ],
+  "budget": {
+    "total": 45000,
+    "contingency": 4500,
+    "categories": {
+      "flooring": { "budgeted": 4000, "spent": 4000 },
+      "drywall": { "budgeted": 2000, "spent": 900 },
+      "painting": { "budgeted": 3000, "spent": 0 },
+      "electrical": { "budgeted": 5000, "spent": 0 },
+      "cabinets": { "budgeted": 12000, "spent": 6000 },
+      "countertops": { "budgeted": 6500, "spent": 0 },
+      "plumbing": { "budgeted": 2000, "spent": 0 },
+      "trim": { "budgeted": 3500, "spent": 0 },
+      "tile": { "budgeted": 1800, "spent": 0 },
+      "appliances": { "budgeted": 500, "spent": 0 },
+      "permits": { "budgeted": 500, "spent": 275 },
+      "cleanup": { "budgeted": 400, "spent": 0 }
+    }
+  }
+}
