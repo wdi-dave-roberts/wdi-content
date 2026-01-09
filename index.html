@@ -1,33 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>White Doe Inn</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            max-width: 600px;
-            margin: 60px auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        h1 { margin-bottom: 30px; }
-        ul { list-style: none; padding: 0; }
-        li { margin: 15px 0; }
-        a {
-            color: #0066cc;
-            text-decoration: none;
-            font-size: 1.1em;
-        }
-        a:hover { text-decoration: underline; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>White Doe Inn</title>
 </head>
-<body>
-    <h1>White Doe Inn</h1>
-    <ul>
-        <li><a href="expense-form.html">Expense Form</a></li>
-        <li><a href="expense-summary.html">Expenses Reimbursement Summary</a></li>
-    </ul>
+<body class="min-h-screen bg-base-200">
+  <!-- Navbar - DaisyUI component -->
+  <div class="navbar bg-base-100 shadow-lg">
+    <div class="flex-1">
+      <a href="/" class="btn btn-ghost text-xl">White Doe Inn</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="/expense-form.html">Expense Form</a></li>
+        <li><a href="/expense-summary.html">Expense Summary</a></li>
+        <li><a href="/projects/kitchen-remodel/">Kitchen Remodel</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="container mx-auto px-4 py-8">
+    <!-- Hero section -->
+    <div class="hero bg-base-100 rounded-box shadow-xl mb-8">
+      <div class="hero-content text-center py-12">
+        <div class="max-w-md">
+          <h1 class="text-4xl font-bold">Welcome</h1>
+          <p class="py-6 text-base-content/70">
+            Management tools for White Doe Inn. Track expenses, manage projects, and more.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alpine.js toggle demo -->
+    <div class="card bg-base-100 shadow-xl mb-8" x-data="{ open: false }">
+      <div class="card-body">
+        <h2 class="card-title">Alpine.js Demo</h2>
+        <p class="text-base-content/70">Click the button to toggle visibility:</p>
+        <div class="card-actions">
+          <button
+            class="btn btn-primary"
+            @click="open = !open"
+            x-text="open ? 'Hide Message' : 'Show Message'"
+          >Show Message</button>
+        </div>
+        <div
+          x-show="open"
+          x-transition
+          class="alert alert-info mt-4"
+        >
+          <span>Alpine.js is working! This message toggles on click.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick links grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <a href="/expense-form.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+        <div class="card-body">
+          <h2 class="card-title">Expense Form</h2>
+          <p class="text-base-content/70">Submit new expense reports for reimbursement.</p>
+        </div>
+      </a>
+
+      <a href="/expense-summary.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+        <div class="card-body">
+          <h2 class="card-title">Expense Summary</h2>
+          <p class="text-base-content/70">View and manage submitted expense reports.</p>
+        </div>
+      </a>
+
+      <a href="/projects/kitchen-remodel/" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+        <div class="card-body">
+          <h2 class="card-title">Kitchen Remodel</h2>
+          <p class="text-base-content/70">Gantt chart for tracking renovation progress.</p>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <!-- Vite module script -->
+  <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

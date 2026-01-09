@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White Doe Inn — Post-Closing Expense Review</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
+        
+        :root {
+            --primary-blue: #1e3a5f;
+            --accent-blue: #2d5a87;
+            --light-blue: #e8f0f7;
+            --deposit-green: #2e7d4a;
+            --deposit-bg: #e8f5ec;
+            --text-dark: #1a1a1a;
+            --text-medium: #4a4a4a;
+            --border-light: #d0d0d0;
+            --page-bg: #fafafa;
+            --negative-red: #991b1b;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Source Sans Pro', -apple-system, sans-serif;
+            font-size: 17px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--page-bg);
+            padding: 2rem;
+        }
+        
+        .document {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem 3.5rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-light);
+        }
+        
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--light-blue);
+        }
+        
+        h2.part-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            margin: 2rem -1.25rem 1rem -1.25rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        p { margin-bottom: 1rem; }
+        
+        .recon-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .recon-table th {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            font-weight: 700;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--primary-blue);
+            white-space: nowrap;
+        }
+        
+        .recon-table th.amount { text-align: right; }
+        
+        .recon-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+        
+        .recon-table td.amount {
+            text-align: right;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .recon-table .item-name { font-weight: 600; color: var(--text-dark); }
+        
+        .recon-table .item-detail {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            margin-top: 0.25rem;
+        }
+        
+        .recon-table .total-row {
+            background: var(--light-blue);
+            font-weight: 700;
+        }
+        
+        .recon-table .total-row td {
+            border-top: 2px solid var(--primary-blue);
+            border-bottom: 2px solid var(--primary-blue);
+            padding: 1rem;
+        }
+        
+        .recon-table .subtotal-denied {
+            background: #fee2e2;
+        }
+        
+        .section-total {
+            background: linear-gradient(135deg, var(--light-blue) 0%, #f0f7ff 100%);
+            border: 2px solid var(--primary-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-total-label { font-size: 1.1rem; font-weight: 700; color: var(--primary-blue); }
+        .section-total-amount { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); }
+        
+        .explanation-card {
+            background: #f9fafb;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+        }
+        
+        .explanation-card .card-title {
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .key-point {
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .key-point-title { font-weight: 700; color: #b45309; margin-bottom: 0.5rem; }
+        .key-point p { margin-bottom: 0; }
+        
+        .bucket-section { margin: 2rem 0; }
+        
+        .bucket-header {
+            font-size: 1.05rem;
+            font-weight: 700;
+            padding: 0.75rem 1rem;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 0;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--border-light);
+            border-bottom: 2px solid var(--primary-blue);
+        }
+        
+        .bucket-section p { margin: 0.75rem 0 1rem 0; font-size: 0.95rem; }
+        
+        .item-status {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .item-status.status-approved { background: var(--deposit-bg); color: var(--deposit-green); }
+        .item-status.status-partial { background: #fef3c7; color: #b45309; }
+        .item-status.status-denied-resubmit { background: #fef3c7; color: #b45309; }
+        .item-status.status-denied { background: #fee2e2; color: #991b1b; }
+        
+        .calculation-summary {
+            background: #f9fafb;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin-top: 1.5rem;
+        }
+        
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .calc-row:last-child { border-bottom: none; }
+        
+        .calc-row.calc-total {
+            border-top: 2px solid var(--primary-blue);
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+        
+        .calc-amount { font-weight: 600; }
+        
+        .drill-deeper { margin-top: 0.5rem; }
+        
+        .drill-deeper-toggle {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: background 0.2s;
+        }
+        
+        .drill-deeper-toggle:hover { background: var(--light-blue); }
+        .drill-deeper-toggle .icon { font-size: 0.7rem; transition: transform 0.2s; }
+        .drill-deeper-toggle.open .icon { transform: rotate(90deg); }
+        
+        .drill-deeper-content {
+            display: none;
+            margin-top: 0.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .drill-deeper-content.open { display: block; }
+        .drill-deeper-content .detail-label { font-weight: 600; color: var(--text-medium); min-width: 120px; }
+        .drill-deeper-content .detail-row { display: flex; padding: 0.3rem 0; border-bottom: 1px solid #e5e7eb; }
+        .drill-deeper-content .detail-row:last-child { border-bottom: none; }
+        
+        .footer-note {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.9rem;
+            color: var(--text-medium);
+        }
+
+        @media print {
+            body { padding: 0; background: white; }
+            .document { box-shadow: none; border: none; padding: 1rem; }
+            h2.part-header { margin-left: 0; margin-right: 0; }
+            .drill-deeper-toggle { display: none; }
+            .drill-deeper-content { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <h1>Post-Closing Expense Review</h1>
+        <p class="subtitle">Prepared for Former Owner — January 2025</p>
+
+        <h2 class="part-header">Expense Review</h2>
+        
+        <p>Following the June 6, 2024 closing, you submitted a list of expenses for reimbursement. Each item has been reviewed and classified accordingly. Determinations are documented below.</p>
+        
+        <div class="key-point">
+            <div class="key-point-title">Documentation Requirements</div>
+            <p>Payment of approved amounts is contingent upon valid invoices or receipts. Credit card statements are insufficient. Each expense requires documentation showing the service rendered, the service period, and when it was incurred. Items marked "Denied — Resubmit" may be resubmitted with proper documentation using the attached form. Items marked "Denied" are permanently ineligible.</p>
+        </div>
+        
+        <div class="bucket-section">
+            <h4 class="bucket-header">Requested Reimbursements</h4>
+            <p>All reimbursement requests submitted to date, with determination status.</p>
+            
+            <table class="recon-table">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Date</th>
+                        <th class="amount">Claimed</th>
+                        <th class="amount">Approved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- APPROVED ITEMS -->
+                    <tr>
+                        <td>
+                            <div class="item-name">Expedia Commissions (August)</div>
+                            <div class="item-detail">Commissions for stays after closing.</div>
+                            <div class="item-status status-approved">Approved</div>
+                            <div class="drill-deeper">
+                                <button class="drill-deeper-toggle" onclick="toggleDrillDeeper(this)">
+                                    <span class="icon">▶</span> View invoice details
+                                </button>
+                                <div class="drill-deeper-content">
+                                    <div class="detail-row"><span class="detail-label">Invoice #:</span> 2440210517</div>
+                                    <div class="detail-row"><span class="detail-label">Invoice Date:</span> 05-AUG-2024</div>
+                                    <div class="detail-row"><span class="detail-label">Period:</span> 01-JUL-2024 to 31-JUL-2024</div>
+                                    <table style="width:100%; margin-top:0.5rem; font-size:0.85rem;">
+                                        <tr style="background:var(--light-blue);"><th style="padding:0.3rem;">Guest</th><th style="padding:0.3rem;">Check-In</th><th style="padding:0.3rem;">Nights</th><th style="padding:0.3rem; text-align:right;">Commission</th></tr>
+                                        <tr><td style="padding:0.3rem;">PROVENCHER</td><td style="padding:0.3rem;">06-JUL-2024</td><td style="padding:0.3rem;">7</td><td style="padding:0.3rem; text-align:right;">$342.26</td></tr>
+                                        <tr><td style="padding:0.3rem;">STOLBERG, PER</td><td style="padding:0.3rem;">12-JUL-2024</td><td style="padding:0.3rem;">3</td><td style="padding:0.3rem; text-align:right;">$206.53</td></tr>
+                                        <tr style="font-weight:600;"><td colspan="3" style="padding:0.3rem;">Total</td><td style="padding:0.3rem; text-align:right;">$548.79</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                        <td>08/05/24</td>
+                        <td class="amount">$548.79</td>
+                        <td class="amount">$548.79</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Expedia Commissions (July)</div>
+                            <div class="item-detail">Four reservations: two before closing (former owner's), two after (new owner's).</div>
+                            <div class="item-status status-partial">Approved, Partial</div>
+                            <div class="drill-deeper">
+                                <button class="drill-deeper-toggle" onclick="toggleDrillDeeper(this)">
+                                    <span class="icon">▶</span> View invoice details
+                                </button>
+                                <div class="drill-deeper-content">
+                                    <div class="detail-row"><span class="detail-label">Invoice #:</span> 2440167771</div>
+                                    <div class="detail-row"><span class="detail-label">Period:</span> 01-JUN-2024 to 30-JUN-2024</div>
+                                    <table style="width:100%; margin-top:0.5rem; font-size:0.85rem;">
+                                        <tr style="background:var(--light-blue);"><th style="padding:0.3rem;">Guest</th><th style="padding:0.3rem;">Check-In</th><th style="padding:0.3rem;">Nights</th><th style="padding:0.3rem; text-align:right;">Commission</th><th style="padding:0.3rem;">Whose?</th></tr>
+                                        <tr style="color:var(--text-medium);"><td style="padding:0.3rem;">DOLEH, MOHAM</td><td style="padding:0.3rem;">29-MAY-2024</td><td style="padding:0.3rem;">5</td><td style="padding:0.3rem; text-align:right;">$219.05</td><td style="padding:0.3rem;">Former</td></tr>
+                                        <tr style="color:var(--text-medium);"><td style="padding:0.3rem;">BROOKS, CARL</td><td style="padding:0.3rem;">04-JUN-2024</td><td style="padding:0.3rem;">2</td><td style="padding:0.3rem; text-align:right;">$115.64</td><td style="padding:0.3rem;">Former</td></tr>
+                                        <tr><td style="padding:0.3rem;">SCHWARZBER</td><td style="padding:0.3rem;">19-JUN-2024</td><td style="padding:0.3rem;">6</td><td style="padding:0.3rem; text-align:right;">$262.86</td><td style="padding:0.3rem;"><strong>New</strong></td></tr>
+                                        <tr><td style="padding:0.3rem;">HAWKINS, ROBE</td><td style="padding:0.3rem;">21-JUN-2024</td><td style="padding:0.3rem;">2</td><td style="padding:0.3rem; text-align:right;">$118.34</td><td style="padding:0.3rem;"><strong>New</strong></td></tr>
+                                    </table>
+                                    <div class="detail-row" style="margin-top:0.5rem;"><span class="detail-label">New owner's portion:</span> $262.86 + $118.34 = <strong>$381.20</strong></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>07/05/24</td>
+                        <td class="amount">$715.89</td>
+                        <td class="amount">$381.20</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Google Ads (Account Refresh)</div>
+                            <div class="item-detail">Account refresh on 06/10/24.</div>
+                            <div class="item-status status-approved">Approved</div>
+                        </td>
+                        <td>06/10/24</td>
+                        <td class="amount">$309.00</td>
+                        <td class="amount">$309.67</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Google Ads (PPC)</div>
+                            <div class="item-detail">Pay-per-click charges. New owner's portion from 06/06/24 forward.</div>
+                            <div class="item-status status-partial">Approved, Partial</div>
+                        </td>
+                        <td>06/03/24</td>
+                        <td class="amount">$204.06</td>
+                        <td class="amount">$180.84</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Mailchimp</div>
+                            <div class="item-detail">Email marketing service, July 2024.</div>
+                            <div class="item-status status-approved">Approved</div>
+                        </td>
+                        <td>07/08/24</td>
+                        <td class="amount">$92.00</td>
+                        <td class="amount">$92.00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">ThinkReservations (Google Hotel Ads)</div>
+                            <div class="item-detail">Prorated 06/06-06/30. Whistle service ($10) not disclosed; denied.</div>
+                            <div class="item-status status-partial">Approved, Partial</div>
+                        </td>
+                        <td>06/01/24</td>
+                        <td class="amount">$39.00</td>
+                        <td class="amount">$24.17</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Flickr</div>
+                            <div class="item-detail">Image hosting service, July 2024.</div>
+                            <div class="item-status status-approved">Approved</div>
+                        </td>
+                        <td>07/01/24</td>
+                        <td class="amount">$9.49</td>
+                        <td class="amount">$9.49</td>
+                    </tr>
+                    
+                    <!-- DENIED - RESUBMIT ITEMS -->
+                    <tr>
+                        <td>
+                            <div class="item-name">Lumen Internet</div>
+                            <div class="item-detail">Internet service for the property.</div>
+                            <div class="item-status status-denied-resubmit">Denied — Resubmit with Documentation</div>
+                        </td>
+                        <td>07/05/24</td>
+                        <td class="amount">$413.54</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Superior Propane</div>
+                            <div class="item-detail">Propane delivery. Requires delivery receipt.</div>
+                            <div class="item-status status-denied-resubmit">Denied — Resubmit with Documentation</div>
+                        </td>
+                        <td>06/13/24</td>
+                        <td class="amount">$324.59</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Tidewater Coffee</div>
+                            <div class="item-detail">Coffee supplies. Requires invoice showing order date.</div>
+                            <div class="item-status status-denied-resubmit">Denied — Resubmit with Documentation</div>
+                        </td>
+                        <td>06/11/24</td>
+                        <td class="amount">$100.50</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    
+                    <!-- DENIED - PERMANENT ITEMS -->
+                    <tr>
+                        <td>
+                            <div class="item-name">Spectrum Cable</div>
+                            <div class="item-detail">May 2024 service period.</div>
+                            <div class="item-status status-denied">Denied — Before Closing</div>
+                        </td>
+                        <td>06/17/24</td>
+                        <td class="amount">$329.60</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">NC Dare Tourism / Simpleview</div>
+                            <div class="item-detail">Not disclosed before closing; never adopted.</div>
+                            <div class="item-status status-denied">Denied — Not Disclosed</div>
+                        </td>
+                        <td>06/21/24</td>
+                        <td class="amount">$330.00</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">ThinkReservations (GHA Pay-Per-Click)</div>
+                            <div class="item-detail">May 2024 clicks.</div>
+                            <div class="item-status status-denied">Denied — Before Closing</div>
+                        </td>
+                        <td>06/10/24</td>
+                        <td class="amount">$204.67</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Network Solutions (Domain + Protection)</div>
+                            <div class="item-detail">Domain "weddingofficiantobx.com" not disclosed; never adopted.</div>
+                            <div class="item-status status-denied">Denied — Not Disclosed</div>
+                        </td>
+                        <td>06/10/24</td>
+                        <td class="amount">$54.98</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Expedia Commission (June)</div>
+                            <div class="item-detail">Commission on May 24, 2024 stay.</div>
+                            <div class="item-status status-denied">Denied — Before Closing</div>
+                        </td>
+                        <td>06/20/24</td>
+                        <td class="amount">$43.81</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Network Solutions (Private Registration)</div>
+                            <div class="item-detail">Domain "weddingofficiantobx.com" not disclosed; never adopted.</div>
+                            <div class="item-status status-denied">Denied — Not Disclosed</div>
+                        </td>
+                        <td>06/07/24</td>
+                        <td class="amount">$15.99</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    
+                    <!-- SUMMARY ROWS -->
+                    <tr class="total-row">
+                        <td colspan="2"><strong>Approved</strong></td>
+                        <td class="amount"></td>
+                        <td class="amount">$1,546.16</td>
+                    </tr>
+                    <tr class="subtotal-denied">
+                        <td colspan="2"><strong>Denied — May Resubmit with Documentation</strong></td>
+                        <td class="amount">$838.63</td>
+                        <td class="amount">—</td>
+                    </tr>
+                    <tr class="subtotal-denied">
+                        <td colspan="2"><strong>Denied — Permanently Ineligible</strong></td>
+                        <td class="amount">$979.05</td>
+                        <td class="amount">—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="bucket-section">
+            <h4 class="bucket-header">Expense Paid by New Owner, Owed by Former Owner</h4>
+            <p>This expense was paid by the new ownership but was incurred under prior ownership.</p>
+            
+            <table class="recon-table">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Date</th>
+                        <th class="amount">Amount</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="item-name">ThinkReservations (OTA Fees)</div>
+                            <div class="item-detail">Channel Manager commissions for two May 2024 stays: Jonas Escriche Ekstrom via Expedia (05/05-05/06, $8.76) and Susan Whitlock via Booking.com (05/16-05/18, $26.64). Both stays were before closing.</div>
+                        </td>
+                        <td>06/13/24</td>
+                        <td class="amount">$35.40</td>
+                        <td>May 2024 stays (before closing).</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2"><strong>Subtotal: Owed by Former Owner</strong></td>
+                        <td class="amount">$35.40</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="explanation-card" style="background: #fefce8; border-color: #ca8a04; margin-top: 1rem;">
+                <p style="margin: 0; font-size: 0.9rem;">This item was identified during a preliminary review of post-closing transactions. A more comprehensive reconciliation of all transition-period records is in progress. Updates will be provided as that work continues.</p>
+            </div>
+        </div>
+        
+        <div class="section-total">
+            <div class="section-total-label">Net Balance: Expense Adjustments</div>
+            <div class="section-total-amount">$1,510.76 owed to former owner</div>
+        </div>
+        
+        <div class="calculation-summary">
+            <div class="calc-row">
+                <span>Approved Expenses</span>
+                <span class="calc-amount">$1,546.16</span>
+            </div>
+            <div class="calc-row">
+                <span>Less: Owed by Former Owner</span>
+                <span class="calc-amount">($35.40)</span>
+            </div>
+            <div class="calc-row calc-total">
+                <span>Net Balance</span>
+                <span class="calc-amount">$1,510.76</span>
+            </div>
+        </div>
+        
+        <div class="calculation-summary" style="margin-top: 1rem; background: #fafafa;">
+            <div class="calc-row" style="border-bottom: none;">
+                <span style="color: var(--text-medium);">Denied — May Resubmit with Documentation</span>
+                <span class="calc-amount" style="color: var(--text-medium);">$838.63</span>
+            </div>
+            <div class="calc-row" style="border-bottom: none;">
+                <span style="color: var(--text-medium);">Denied — Permanently Ineligible</span>
+                <span class="calc-amount" style="color: var(--text-medium);">$979.05</span>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <p><strong>Property:</strong> White Doe Inn, 319 Sir Walter Raleigh Street, Manteo, NC 27954<br>
+            <strong>Closing Date:</strong> June 6, 2024<br>
+            <strong>Document Date:</strong> January 2025</p>
+            
+            <p style="margin-top: 1.5rem;"><strong>Deadline for All Expense Claims:</strong> January 31, 2026. Expenses not submitted with complete documentation by this date will be ineligible for reimbursement and considered waived.</p>
+            
+            <p style="margin-top: 1rem;">To submit new expenses or resubmit denied items, use the attached Expense Reimbursement Request Form (WDI-EXP-2024).</p>
+            
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #666;">Inspired Manteo Moments, Inc. d/b/a White Doe Inn</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleDrillDeeper(button) {
+            const content = button.nextElementSibling;
+            button.classList.toggle('open');
+            content.classList.toggle('open');
+        }
+    </script>
+  <!-- Vite module script (enables Tailwind/Alpine when needed) -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

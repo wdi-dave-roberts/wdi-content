@@ -1,0 +1,9 @@
+/* Tailwind CSS v4 - using CSS-first configuration */
+@import "tailwindcss";
+
+/* Import DaisyUI - component library for Tailwind */
+@plugin "daisyui" {
+  themes: light --default, dark;
+}
+
+/* Custom styles can be added below */
