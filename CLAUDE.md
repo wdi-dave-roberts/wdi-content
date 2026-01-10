@@ -167,7 +167,7 @@ This project uses the compound-engineering plugin for structured development wor
 |---------|-------------|
 | `/feature` | Full feature workflow: research → plan → work → review → compound |
 | `/commit` | Smart commit with tests, simplicity review, and changelog |
-| `/new-project` | Create a new project from template |
+| `/new-project` | Create a new project from template (supports `--yes`, `--template`, `--dry-run`) |
 
 ### /feature Workflow
 
@@ -206,3 +206,39 @@ Smart commit with quality gates:
 
 - `compound-engineering` - Research, review, and workflow agents
 - `frontend-design` - Production-grade UI generation
+
+## Patterns & Learnings
+
+Conventions discovered through development:
+
+### Command Organization
+
+| Location | Purpose |
+|----------|---------|
+| `.claude/commands/` | Native commands with full workflow specs |
+| `.claude/skills/` | Thin wrappers or simple delegations |
+
+Commands should include: Flags table, workflow steps with pausepoints, examples, error handling, and notes.
+
+### Gantt Project Imports
+
+Gantt projects must import from the **global** `/src/gantt.ts`, not a project-local path:
+
+```javascript
+// Correct - uses global gantt module
+import { initGantt, setViewMode } from '/src/gantt.ts'
+initGantt('#gantt', '/projects/{slug}/data.json')
+
+// Wrong - Vite can't resolve project-local imports
+import { initGantt } from './src/gantt.ts'  // Build error
+```
+
+### Command Spec Best Practices
+
+From code review feedback:
+
+- **Reference, don't duplicate**: Point to `_templates/` instead of copying HTML into specs
+- **Document flags**: Even if none, include empty Flags section for consistency
+- **Add pausepoints**: Show confirmation prompts between workflow steps
+- **Include error handling**: Table of errors, causes, and resolutions
+- **Expand examples**: Show full interactive flow, not just command invocation
