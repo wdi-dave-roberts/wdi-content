@@ -1,1 +1,0 @@
-/Users/davidroberts/vscode-projects/claude-workflows/commands/commit.md
