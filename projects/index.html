@@ -54,33 +54,18 @@
     import Alpine from 'alpinejs'
     import '/src/style.css'
 
-    // Project list component - loads projects from project.json files
+    // Project list component - loads projects from generated manifest
     Alpine.data('projectList', () => ({
       projects: [],
       async init() {
-        // In dev mode, we'll hardcode known projects
-        // In production, this could be generated at build time
         try {
-          // Fetch the list of projects from a generated manifest
-          // For now, we'll use a simple approach
-          const knownProjects = [
-            'kitchen-remodel',
-            // Add more project slugs here as they're created
-          ]
-
-          for (const slug of knownProjects) {
-            try {
-              const response = await fetch(`/projects/${slug}/project.json`)
-              if (response.ok) {
-                const project = await response.json()
-                this.projects.push(project)
-              }
-            } catch (e) {
-              // Project doesn't exist or failed to load
-            }
+          const response = await fetch('/projects/_manifest.json')
+          if (response.ok) {
+            const manifest = await response.json()
+            this.projects = manifest.projects || []
           }
         } catch (e) {
-          console.error('Failed to load projects:', e)
+          console.error('Failed to load projects manifest:', e)
         }
       }
     }))

@@ -5,17 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>White Doe Inn</title>
 </head>
-<body class="min-h-screen bg-base-200">
-  <!-- Navbar - DaisyUI component -->
+<body class="min-h-screen bg-base-200" x-data="homePage()">
+  <!-- Navbar -->
   <div class="navbar bg-base-100 shadow-lg">
     <div class="flex-1">
       <a href="/" class="btn btn-ghost text-xl">White Doe Inn</a>
     </div>
     <div class="flex-none">
       <ul class="menu menu-horizontal px-1">
-        <li><a href="/expense-form.html">Expense Form</a></li>
-        <li><a href="/expense-summary.html">Expense Summary</a></li>
-        <li><a href="/projects/kitchen-remodel/">Kitchen Remodel</a></li>
+        <li><a href="/projects/">All Projects</a></li>
       </ul>
     </div>
   </div>
@@ -25,62 +23,86 @@
     <div class="hero bg-base-100 rounded-box shadow-xl mb-8">
       <div class="hero-content text-center py-12">
         <div class="max-w-md">
-          <h1 class="text-4xl font-bold">Welcome</h1>
+          <h1 class="text-4xl font-bold">White Doe Inn</h1>
           <p class="py-6 text-base-content/70">
-            Management tools for White Doe Inn. Track expenses, manage projects, and more.
+            Management tools and project tracking for Inspired Manteo Moments, Inc.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Alpine.js toggle demo -->
-    <div class="card bg-base-100 shadow-xl mb-8" x-data="{ open: false }">
-      <div class="card-body">
-        <h2 class="card-title">Alpine.js Demo</h2>
-        <p class="text-base-content/70">Click the button to toggle visibility:</p>
-        <div class="card-actions">
-          <button
-            class="btn btn-primary"
-            @click="open = !open"
-            x-text="open ? 'Hide Message' : 'Show Message'"
-          >Show Message</button>
-        </div>
-        <div
-          x-show="open"
-          x-transition
-          class="alert alert-info mt-4"
-        >
-          <span>Alpine.js is working! This message toggles on click.</span>
-        </div>
+    <!-- Projects Section -->
+    <section class="mb-8">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Projects</h2>
+        <a href="/projects/" class="btn btn-ghost btn-sm">View All</a>
       </div>
-    </div>
 
-    <!-- Quick links grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <a href="/expense-form.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-        <div class="card-body">
-          <h2 class="card-title">Expense Form</h2>
-          <p class="text-base-content/70">Submit new expense reports for reimbursement.</p>
-        </div>
-      </a>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <template x-for="project in projects" :key="project.slug">
+          <a :href="`/projects/${project.slug}/`" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+            <div class="card-body">
+              <h3 class="card-title" x-text="project.name"></h3>
+              <p class="text-base-content/70" x-text="project.description || 'No description'"></p>
+              <div class="card-actions justify-between items-center mt-2">
+                <div class="badge badge-outline" x-text="project.template"></div>
+                <span class="text-xs text-base-content/50" x-text="project.created"></span>
+              </div>
+            </div>
+          </a>
+        </template>
+      </div>
 
-      <a href="/expense-summary.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-        <div class="card-body">
-          <h2 class="card-title">Expense Summary</h2>
-          <p class="text-base-content/70">View and manage submitted expense reports.</p>
-        </div>
-      </a>
+      <!-- Empty state for projects -->
+      <div x-show="projects.length === 0" class="text-center py-8 text-base-content/50">
+        No projects yet.
+      </div>
+    </section>
 
-      <a href="/projects/kitchen-remodel/" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-        <div class="card-body">
-          <h2 class="card-title">Kitchen Remodel</h2>
-          <p class="text-base-content/70">Gantt chart for tracking renovation progress.</p>
-        </div>
-      </a>
-    </div>
+    <!-- Tools Section -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Tools</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <template x-for="tool in tools" :key="tool.name">
+          <a :href="tool.path" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+            <div class="card-body">
+              <h3 class="card-title" x-text="tool.title"></h3>
+              <p class="text-base-content/70" x-text="tool.description"></p>
+            </div>
+          </a>
+        </template>
+      </div>
+    </section>
   </main>
 
   <!-- Vite module script -->
-  <script type="module" src="/src/main.ts"></script>
+  <script type="module">
+    import Alpine from 'alpinejs'
+    import '/src/style.css'
+
+    // Home page component - loads projects and tools from manifests
+    Alpine.data('homePage', () => ({
+      projects: [],
+      tools: [
+        { name: 'expense-form', path: '/expense-form.html', title: 'Expense Form', description: 'Submit expense reports for reimbursement.' },
+        { name: 'expense-summary', path: '/expense-summary.html', title: 'Expense Summary', description: 'View and manage submitted expense reports.' },
+      ],
+      async init() {
+        try {
+          const response = await fetch('/projects/_manifest.json')
+          if (response.ok) {
+            const manifest = await response.json()
+            this.projects = manifest.projects || []
+          }
+        } catch (e) {
+          console.error('Failed to load projects manifest:', e)
+        }
+      }
+    }))
+
+    window.Alpine = Alpine
+    Alpine.start()
+  </script>
 </body>
 </html>
