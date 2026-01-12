@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "enabledPlugins": {
+    "compound-engineering@every-marketplace": true,
+    "wdi-workflows@wdi-workflows-local": true
+  }
+}

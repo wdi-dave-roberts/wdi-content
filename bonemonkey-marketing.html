@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Ralph | Production-Ready Features at the Speed of Imagination</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Outfit:wght@300;400;600;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bone-white: #f5f0e6;
+            --bone-shadow: #d4c9b5;
+            --ralph-yellow: #ffd93d;
+            --ralph-orange: #ff8c42;
+            --ralph-blue: #4a90d9;
+            --speed-red: #ff4757;
+            --speed-orange: #ffa502;
+            --outline: #1a1a2e;
+            --bg-deep: #0a0a12;
+            --bg-space: #16213e;
+            --bg-elevated: #1a1f2e;
+            --bg-card: #232a38;
+            --star-glow: #00d4aa;
+            --text-primary: #e8eaed;
+            --text-secondary: #9aa0a6;
+            --text-muted: #5f6368;
+            --border-subtle: rgba(255,255,255,0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center top, var(--bg-space) 0%, var(--bg-deep) 60%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Animated stars */
+        .stars-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 100px 0;
+        }
+
+        .hero-text {
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid var(--star-glow);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--star-glow);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--star-glow);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(135deg, var(--ralph-yellow), var(--ralph-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ralph-yellow), var(--ralph-orange));
+            color: var(--outline);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 140, 66, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-subtle);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--star-glow);
+            color: var(--star-glow);
+        }
+
+        /* Hero Illustration */
+        .hero-illustration {
+            position: relative;
+            z-index: 1;
+        }
+
+        .illustration-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: heroFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.02); }
+        }
+
+        .hero-monkey {
+            width: 350px;
+            height: auto;
+            filter: drop-shadow(0 0 40px rgba(196, 30, 58, 0.8))
+                    drop-shadow(0 0 80px rgba(255, 136, 0, 0.4));
+            transition: transform 0.3s ease;
+        }
+
+        .hero-monkey:hover {
+            transform: scale(1.05);
+        }
+
+        /* ========== CATCHPHRASE BANNER ========== */
+        .catchphrase-banner {
+            background: linear-gradient(135deg, var(--ralph-yellow), var(--ralph-orange));
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .catchphrase-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(0,0,0,0.05) 20px,
+                rgba(0,0,0,0.05) 40px
+            );
+        }
+
+        .catchphrase {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 42px;
+            color: var(--outline);
+            text-shadow: 3px 3px 0 rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .catchphrase-sub {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            color: var(--outline);
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        /* ========== PIPELINE SECTION ========== */
+        .pipeline {
+            padding: 120px 0;
+            background: var(--bg-space);
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--star-glow);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--star-glow);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+
+        .pipeline-visual {
+            background: var(--bg-elevated);
+            border-radius: 24px;
+            padding: 60px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .pipeline-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 24px 0;
+            position: relative;
+        }
+
+        .pipeline-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 72px;
+            width: 2px;
+            height: calc(100% - 48px);
+            background: linear-gradient(180deg, var(--star-glow), var(--ralph-blue));
+        }
+
+        .step-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-card);
+            border: 2px solid var(--star-glow);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .step-arrow {
+            font-size: 24px;
+            color: var(--star-glow);
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        /* ========== FEATURES SECTION ========== */
+        .features {
+            padding: 120px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: var(--bg-elevated);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--star-glow);
+            box-shadow: 0 20px 60px rgba(0, 212, 170, 0.1);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.2), rgba(74, 144, 217, 0.2));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+        }
+
+        .feature-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ========== REVOLUTION SECTION ========== */
+        .revolution {
+            padding: 120px 0;
+            background: linear-gradient(180deg, var(--bg-deep), var(--bg-space));
+            text-align: center;
+        }
+
+        .revolution-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .revolution-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 32px;
+            line-height: 1.2;
+        }
+
+        .revolution-title .glow {
+            color: var(--star-glow);
+            text-shadow: 0 0 40px var(--star-glow);
+        }
+
+        .revolution-text {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            line-height: 1.8;
+        }
+
+        .revolution-equation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
+        .equation-part {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .equation-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .equation-label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .equation-op {
+            font-family: 'Outfit', sans-serif;
+            font-size: 40px;
+            font-weight: 300;
+            color: var(--text-muted);
+        }
+
+        .equation-result {
+            background: linear-gradient(135deg, var(--star-glow), var(--ralph-blue));
+            border-radius: 20px;
+            padding: 20px 40px;
+        }
+
+        .result-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        /* ========== CTA SECTION ========== */
+        .cta {
+            padding: 100px 0;
+            background: var(--bg-elevated);
+            text-align: center;
+        }
+
+        .cta-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cta-subtitle {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .cta-code {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px 32px;
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            color: var(--star-glow);
+            margin-bottom: 32px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            background: linear-gradient(135deg, var(--ralph-yellow), var(--ralph-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .footer-tagline {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 900px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text {
+                order: 2;
+            }
+
+            .hero-illustration {
+                order: 1;
+            }
+
+            .hero-title {
+                font-size: 42px;
+            }
+
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-cta {
+                justify-content: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .catchphrase {
+                font-size: 28px;
+            }
+
+            .revolution-equation {
+                gap: 16px;
+            }
+        }
+
+        /* ========== PRINT ========== */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            * {
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="stars-bg" id="stars"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-badge">Now Shipping</div>
+                    <h1 class="hero-title">
+                        Production-Ready Features at the<br>
+                        <span class="highlight">Speed of Imagination</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        You've heard the pitch a thousand times. "We'll ship faster." But what if velocity wasn't constrained by how fast humans can code—only by how fast you can <em>imagine</em>?
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#pipeline" class="btn btn-primary">See How It Works</a>
+                        <a href="bonemonkey-logo.html" class="btn btn-secondary">View Full Logo</a>
+                    </div>
+                </div>
+                <div class="hero-illustration">
+                    <div class="illustration-wrapper">
+                        <a href="bonemonkey-logo.html">
+                            <img src="bonemonkey.jpg" alt="BoneMonkey" class="hero-monkey">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATCHPHRASE BANNER -->
+    <div class="catchphrase-banner">
+        <div class="catchphrase">"Sorry folks, I'm all outta bubble gum!"</div>
+        <div class="catchphrase-sub">—But we're fresh outta features!</div>
+    </div>
+
+    <!-- PIPELINE -->
+    <section class="pipeline" id="pipeline">
+        <div class="container">
+            <div class="section-label">The Pipeline</div>
+            <h2 class="section-title">From Vision to Production</h2>
+
+            <div class="pipeline-visual">
+                <div class="pipeline-steps">
+                    <div class="pipeline-step">
+                        <div class="step-icon">💭</div>
+                        <div class="step-content">
+                            <div class="step-title">Your Vision</div>
+                            <div class="step-desc">Describe what you want to build. No technical jargon required.</div>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-icon">📋</div>
+                        <div class="step-content">
+                            <div class="step-title">Feature Breakdown</div>
+                            <div class="step-desc">Automatically decomposed into logical milestones and tasks.</div>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-icon">🔗</div>
+                        <div class="step-content">
+                            <div class="step-title">Dependency Graph Mapping</div>
+                            <div class="step-desc">Intelligent ordering ensures nothing breaks. Ralph knows the graph.</div>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-icon">⚡</div>
+                        <div class="step-content">
+                            <div class="step-title">Ralph's 24/7 Developer Army</div>
+                            <div class="step-desc">While your team sleeps, Ralph's army delivers. No bottlenecks. No waiting.</div>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-icon">🚀</div>
+                        <div class="step-content">
+                            <div class="step-title">Production-Ready Code</div>
+                            <div class="step-desc">Bulletproof, tested, documented features. Just results.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="container">
+            <div class="section-label">Why Enhanced Ralph</div>
+            <h2 class="section-title">Changes Everything</h2>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <div class="feature-title">Milestone-Based Architecture</div>
+                    <div class="feature-desc">
+                        Organize features into logical milestones with full dependency visibility.
+                        See the big picture while executing the details.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">Intelligent Dependency Mapping</div>
+                    <div class="feature-desc">
+                        Never ship a feature that breaks another. Ralph knows the graph and executes
+                        in the perfect order every time.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌙</div>
+                    <div class="feature-title">24/7 Development Velocity</div>
+                    <div class="feature-desc">
+                        While your team sleeps, Ralph's army delivers. Quality-gated, tested code
+                        ready when you wake up.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <div class="feature-title">Imagination-Constrained</div>
+                    <div class="feature-desc">
+                        The only limit is how fast you can dream it up. Not code-constrained.
+                        Not resource-constrained. Just imagination.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVOLUTION -->
+    <section class="revolution">
+        <div class="container">
+            <div class="revolution-content">
+                <h2 class="revolution-title">
+                    We're not just on the<br>
+                    <span class="glow">holodeck</span> anymore.<br>
+                    We're piloting it.
+                </h2>
+                <p class="revolution-text">
+                    In 2024, the only thing holding you back is your imagination.
+                    Feed your requirements into Enhanced Ralph. Watch as our army of
+                    high-end developers transforms your dependency graph into bulletproof,
+                    production-ready features.
+                </p>
+
+                <div class="revolution-equation">
+                    <div class="equation-part">
+                        <div class="equation-icon">👤</div>
+                        <div class="equation-label">Your Vision</div>
+                    </div>
+                    <div class="equation-op">+</div>
+                    <div class="equation-part">
+                        <div class="equation-icon">🦴</div>
+                        <div class="equation-label">Enhanced Ralph</div>
+                    </div>
+                    <div class="equation-op">=</div>
+                    <div class="equation-result">
+                        <div class="result-text">Production-Ready Features</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <h2 class="cta-title">Ready to Ship at the Speed of Imagination?</h2>
+            <p class="cta-subtitle">Get started with Enhanced Ralph today</p>
+            <div class="cta-code">/wdi-workflows:enhanced-ralph --milestone YOUR-MILESTONE</div>
+            <div>
+                <a href="bonemonkey-infographic.html" class="btn btn-primary">View Full Capabilities</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">Enhanced Ralph</div>
+            <div class="footer-tagline">A BoneMonkey Production • wdi-workflows plugin</div>
+        </div>
+    </footer>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star-particle';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (2 + Math.random() * 2) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>

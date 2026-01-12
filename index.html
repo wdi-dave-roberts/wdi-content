@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>White Doe Inn</title>
+  <script type="module" crossorigin src="/wdi-content/assets/main-CrpVobLs.js"></script>
+  <link rel="modulepreload" crossorigin href="/wdi-content/assets/style-ZMe_c9AX.js">
+  <link rel="stylesheet" crossorigin href="/wdi-content/assets/style-H2UgkaRT.css">
+</head>
+<body class="min-h-screen bg-base-200" x-data="homePage()">
+  <!-- Navbar -->
+  <div class="navbar bg-base-100 shadow-lg">
+    <div class="flex-1">
+      <a href="/" class="btn btn-ghost text-xl">White Doe Inn</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="/projects/">All Projects</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="container mx-auto px-4 py-8">
+    <!-- Hero section -->
+    <div class="hero bg-base-100 rounded-box shadow-xl mb-8">
+      <div class="hero-content text-center py-12">
+        <div class="max-w-md">
+          <h1 class="text-4xl font-bold">White Doe Inn</h1>
+          <p class="py-6 text-base-content/70">
+            Management tools and project tracking for Inspired Manteo Moments, Inc.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Section -->
+    <section class="mb-8">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Projects</h2>
+        <a href="/projects/" class="btn btn-ghost btn-sm">View All</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <template x-for="project in projects" :key="project.slug">
+          <a :href="`/projects/${project.slug}/`" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+            <div class="card-body">
+              <h3 class="card-title" x-text="project.name"></h3>
+              <p class="text-base-content/70" x-text="project.description || 'No description'"></p>
+              <div class="card-actions justify-between items-center mt-2">
+                <div class="badge badge-outline" x-text="project.template"></div>
+                <span class="text-xs text-base-content/50" x-text="project.created"></span>
+              </div>
+            </div>
+          </a>
+        </template>
+      </div>
+
+      <!-- Empty state for projects -->
+      <div x-show="projects.length === 0" class="text-center py-8 text-base-content/50">
+        No projects yet.
+      </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Tools</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <template x-for="tool in tools" :key="tool.name">
+          <a :href="tool.path" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+            <div class="card-body">
+              <h3 class="card-title" x-text="tool.title"></h3>
+              <p class="text-base-content/70" x-text="tool.description"></p>
+            </div>
+          </a>
+        </template>
+      </div>
+    </section>
+  </main>
+
+  <!-- Vite module script -->
+</body>
+</html>

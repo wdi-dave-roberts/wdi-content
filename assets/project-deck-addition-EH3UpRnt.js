@@ -1,0 +1,1 @@
+import{m as t}from"./style-ZMe_c9AX.js";import{s as e,i as d}from"./gantt-BGPsXA2F.js";window.setViewMode=e;window.Alpine=t;t.start();document.addEventListener("DOMContentLoaded",()=>{d("#gantt","/projects/deck-addition/data.json")});

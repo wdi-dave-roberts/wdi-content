@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects - White Doe Inn</title>
+  <script type="module" crossorigin src="/wdi-content/assets/projectsIndex-CVOstnZP.js"></script>
+  <link rel="modulepreload" crossorigin href="/wdi-content/assets/style-ZMe_c9AX.js">
+  <link rel="stylesheet" crossorigin href="/wdi-content/assets/style-H2UgkaRT.css">
+</head>
+<body class="min-h-screen bg-base-200">
+  <!-- Navbar -->
+  <div class="navbar bg-base-100 shadow-lg">
+    <div class="flex-1">
+      <a href="/" class="btn btn-ghost text-xl">White Doe Inn</a>
+      <span class="text-base-content/50 mx-2">/</span>
+      <span class="font-semibold">Projects</span>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="/">Home</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="container mx-auto px-4 py-8" x-data="projectList()">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold">Projects</h1>
+      <p class="text-base-content/70">Document collections and project tracking</p>
+    </div>
+
+    <!-- Projects grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <template x-for="project in projects" :key="project.slug">
+        <a :href="`/projects/${project.slug}/`" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+          <div class="card-body">
+            <h2 class="card-title" x-text="project.name"></h2>
+            <p class="text-base-content/70" x-text="project.description || 'No description'"></p>
+            <div class="card-actions justify-between items-center mt-2">
+              <div class="badge badge-outline" x-text="project.template"></div>
+              <span class="text-xs text-base-content/50" x-text="project.created"></span>
+            </div>
+          </div>
+        </a>
+      </template>
+    </div>
+
+    <!-- Empty state -->
+    <div x-show="projects.length === 0" class="text-center py-12">
+      <p class="text-base-content/50">No projects yet.</p>
+      <p class="text-sm text-base-content/50 mt-2">Run <code class="bg-base-300 px-2 py-1 rounded">npm run create-project</code> to create one.</p>
+    </div>
+  </main>
+
+  <!-- Vite module script -->
+</body>
+</html>
