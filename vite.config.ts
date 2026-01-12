@@ -128,6 +128,7 @@ function discoverPublicFiles(): Record<string, string> {
 
 // Vite configuration for multi-page static site
 export default defineConfig({
+  base: '/wdi-content/',
   plugins: [tailwindcss(), manifestPlugin()],
 
   resolve: {
