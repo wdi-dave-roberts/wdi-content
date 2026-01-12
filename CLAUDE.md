@@ -159,14 +159,37 @@ import type { ProjectData, Task, Vendor, Receipt, Note } from './types/project-d
 
 ## Claude Code Workflows
 
-This project uses the compound-engineering plugin for structured development workflows.
+This project uses the wdi-workflows and compound-engineering plugins for structured development.
 
-### Commands
+### Workflow Commands
 
 | Command | Description |
 |---------|-------------|
-| `/feature` | Full feature workflow: research → plan → work → review → compound |
-| `/commit` | Smart commit with tests, simplicity review, and changelog |
+| `/wdi-workflows:feature` | Full feature workflow (research → plan → work → review → compound) |
+| `/wdi-workflows:enhanced-ralph` | Quality-gated feature execution with research agents and type-specific reviews |
+| `/wdi-workflows:milestone` | Create and execute milestone-based feature groupings |
+| `/wdi-workflows:setup` | Set up and verify plugin dependencies |
+
+### Skills (Auto-Invoked)
+
+| Trigger | Description |
+|---------|-------------|
+| "commit these changes" | Smart commit with tests, simplicity review, and changelog |
+
+### Standards Commands
+
+| Command | Description |
+|---------|-------------|
+| `/wdi-workflows:new-repo` | Create a new repository following naming and structure standards |
+| `/wdi-workflows:new-subproject` | Add a new subproject to a mono-repo following standards |
+| `/wdi-workflows:check-standards` | Validate current repository against development standards |
+| `/wdi-workflows:update-standard` | Impact analysis and guided updates when changing standards |
+| `/wdi-workflows:new-command` | Create a new command and update all dependent files |
+
+### Project-Specific Commands
+
+| Command | Description |
+|---------|-------------|
 | `/new-project` | Create a new project from template (supports `--yes`, `--template`, `--dry-run`) |
 
 ### /feature Workflow
@@ -185,9 +208,9 @@ Orchestrates the complete feature development cycle:
 /feature --plan-only New dashboard     # Stop after planning
 ```
 
-### /commit Workflow
+### Commit Skill
 
-Smart commit with quality gates:
+Smart commit with quality gates (say "commit these changes"):
 
 1. Stage changes (interactive or all)
 2. Run tests (pytest, npm test based on file types)
@@ -196,16 +219,14 @@ Smart commit with quality gates:
 5. Update changelog (`docs/changelog.md`)
 6. Push
 
-```bash
-/commit                    # Interactive mode
-/commit --yes              # Auto-accept defaults
-/commit --yes --summary    # With fun changelog summary
-```
+Supports flags: `--yes`, `--skip-tests`, `--skip-review`, `--summary`
 
 ### Plugins Required
 
+- `wdi-workflows` - Standards, commit workflow, feature orchestration
 - `compound-engineering` - Research, review, and workflow agents
-- `frontend-design` - Production-grade UI generation
+
+To reinstall/update: `./install.sh` or `./install.sh update`
 
 ## Patterns & Learnings
 
