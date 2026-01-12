@@ -1,7 +1,7 @@
 {
-  "extraKnownMarketplaces": [
-    "https://raw.githubusercontent.com/whitedoeinn/claude-workflows/main/marketplace.json"
-  ],
+  "extraKnownMarketplaces": {
+    "claude-workflows": "https://raw.githubusercontent.com/whitedoeinn/claude-workflows/main/marketplace.json"
+  },
   "enabledPlugins": {
     "compound-engineering": true,
     "frontend-design@claude-plugins-official": true,
