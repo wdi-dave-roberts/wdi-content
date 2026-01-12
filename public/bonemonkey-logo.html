@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoneMonkey | Dave of all Trades</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --monkey-red: #c41e3a;
+            --monkey-gold: #d4a84b;
+            --fire-yellow: #ffdd00;
+            --fire-orange: #ff8800;
+            --fire-red: #ff2200;
+            --electric: #00ffaa;
+            --bg-black: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-black);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Intense radial energy burst background */
+        .energy-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200vmax;
+            height: 200vmax;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg 5deg,
+                rgba(196, 30, 58, 0.05) 5deg 10deg
+            );
+            animation: rotate 30s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Pulsing energy rings */
+        .energy-ring {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            border: 2px solid var(--monkey-red);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            animation: pulse-ring 2s ease-out infinite;
+            z-index: 0;
+        }
+
+        .energy-ring:nth-child(1) { animation-delay: 0s; }
+        .energy-ring:nth-child(2) { animation-delay: 0.5s; }
+        .energy-ring:nth-child(3) { animation-delay: 1s; }
+        .energy-ring:nth-child(4) { animation-delay: 1.5s; }
+
+        @keyframes pulse-ring {
+            0% {
+                width: 200px;
+                height: 200px;
+                opacity: 0.8;
+                border-width: 4px;
+            }
+            100% {
+                width: 1200px;
+                height: 1200px;
+                opacity: 0;
+                border-width: 1px;
+            }
+        }
+
+        /* Main container */
+        .logo-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* DAVE OF ALL TRADES title */
+        .title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 14px;
+            color: var(--monkey-gold);
+            text-transform: uppercase;
+            opacity: 0.9;
+            text-shadow: 0 0 20px rgba(212, 168, 75, 0.5);
+        }
+
+        /* BONEMONKEY main title */
+        .main-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 140px;
+            letter-spacing: -4px;
+            text-transform: uppercase;
+            background: linear-gradient(180deg,
+                #fff 0%,
+                var(--monkey-gold) 40%,
+                #8b6914 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(196, 30, 58, 0.6));
+            animation: title-pulse 2s ease-in-out infinite;
+            line-height: 0.9;
+        }
+
+        @keyframes title-pulse {
+            0%, 100% { filter: drop-shadow(0 0 30px rgba(196, 30, 58, 0.6)); }
+            50% { filter: drop-shadow(0 0 60px rgba(196, 30, 58, 0.9)); }
+        }
+
+        /* BoneMonkey image container */
+        .bonemonkey {
+            position: relative;
+            margin: 30px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        .bonemonkey img {
+            width: 350px;
+            height: auto;
+            filter: drop-shadow(0 0 40px rgba(196, 30, 58, 0.8))
+                    drop-shadow(0 0 80px rgba(255, 136, 0, 0.4));
+        }
+
+        /* Fire effect behind */
+        .fire-container {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 200px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .fire {
+            position: absolute;
+            bottom: 0;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            filter: blur(8px);
+            animation: fire-dance 0.15s ease-in-out infinite alternate;
+        }
+
+        .fire.main {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 250px;
+            background: linear-gradient(0deg,
+                transparent 0%,
+                var(--fire-red) 20%,
+                var(--fire-orange) 50%,
+                var(--fire-yellow) 80%,
+                transparent 100%
+            );
+            opacity: 0.7;
+        }
+
+        .fire.left {
+            left: 20px;
+            width: 100px;
+            height: 150px;
+            background: linear-gradient(0deg,
+                transparent 0%,
+                var(--monkey-red) 40%,
+                var(--fire-orange) 100%
+            );
+            opacity: 0.5;
+            animation-delay: 0.05s;
+        }
+
+        .fire.right {
+            right: 20px;
+            width: 100px;
+            height: 150px;
+            background: linear-gradient(0deg,
+                transparent 0%,
+                var(--monkey-red) 40%,
+                var(--fire-orange) 100%
+            );
+            opacity: 0.5;
+            animation-delay: 0.1s;
+        }
+
+        @keyframes fire-dance {
+            0% { transform: translateX(-50%) scaleY(1) scaleX(1); }
+            100% { transform: translateX(-50%) scaleY(1.08) scaleX(0.95); }
+        }
+
+        .fire.left, .fire.right {
+            animation-name: fire-dance-side;
+        }
+
+        @keyframes fire-dance-side {
+            0% { transform: scaleY(1) scaleX(1); }
+            100% { transform: scaleY(1.1) scaleX(0.92); }
+        }
+
+        /* LET'S GOOOOO burst */
+        .lets-go {
+            font-family: 'Anton', sans-serif;
+            font-size: 72px;
+            color: var(--fire-yellow);
+            text-shadow:
+                0 0 10px var(--fire-orange),
+                0 0 20px var(--fire-orange),
+                0 0 40px var(--fire-red),
+                4px 4px 0 var(--monkey-red);
+            letter-spacing: 6px;
+            animation: shake 0.1s ease-in-out infinite;
+            margin-top: 10px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(-2px) rotate(-0.5deg); }
+            50% { transform: translateX(2px) rotate(0.5deg); }
+        }
+
+        /* Catchphrase */
+        .catchphrase {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .catchphrase-text {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 32px;
+            color: #fff;
+            text-shadow:
+                0 0 20px rgba(196, 30, 58, 0.6),
+                2px 2px 0 var(--monkey-red);
+            line-height: 1.4;
+        }
+
+        .catchphrase-sub {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: var(--electric);
+            letter-spacing: 6px;
+            margin-top: 12px;
+            text-shadow: 0 0 20px var(--electric);
+        }
+
+        /* Electric sparks */
+        .spark {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--fire-yellow);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--fire-orange), 0 0 20px var(--fire-yellow);
+            animation: spark 1s ease-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes spark {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        .spark:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .spark:nth-child(2) { top: 25%; right: 15%; animation-delay: 0.2s; }
+        .spark:nth-child(3) { top: 45%; left: 8%; animation-delay: 0.4s; }
+        .spark:nth-child(4) { top: 35%; right: 10%; animation-delay: 0.6s; }
+        .spark:nth-child(5) { top: 55%; left: 12%; animation-delay: 0.3s; }
+        .spark:nth-child(6) { top: 50%; right: 12%; animation-delay: 0.5s; }
+        .spark:nth-child(7) { top: 70%; left: 15%; animation-delay: 0.7s; }
+        .spark:nth-child(8) { top: 65%; right: 8%; animation-delay: 0.1s; }
+    </style>
+</head>
+<body>
+    <!-- Background energy -->
+    <div class="energy-bg"></div>
+    <div class="energy-ring"></div>
+    <div class="energy-ring"></div>
+    <div class="energy-ring"></div>
+    <div class="energy-ring"></div>
+
+    <!-- Sparks -->
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+    <div class="spark"></div>
+
+    <div class="logo-container">
+        <!-- Title -->
+        <div class="title">Dave of all Trades</div>
+        <div class="main-title">BONEMONKEY</div>
+
+        <!-- The BoneMonkey -->
+        <div class="bonemonkey">
+            <!-- Fire behind -->
+            <div class="fire-container">
+                <div class="fire left"></div>
+                <div class="fire main"></div>
+                <div class="fire right"></div>
+            </div>
+
+            <img src="bonemonkey.jpg" alt="BoneMonkey">
+        </div>
+
+        <!-- LET'S GOOOOO -->
+        <div class="lets-go">LET'S GOOOOO!</div>
+
+        <!-- Catchphrase -->
+        <div class="catchphrase">
+            <div class="catchphrase-text">"Sorry folks, I'm all outta bubble gum!"</div>
+            <div class="catchphrase-sub">But we're just getting started</div>
+        </div>
+    </div>
+</body>
+</html>

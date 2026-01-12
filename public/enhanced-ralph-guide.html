@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Ralph | Quality-Gated Feature Execution</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-elevated: #1a1a24;
+      --bg-card: rgba(26, 26, 36, 0.6);
+      --text-primary: #f0f0f5;
+      --text-secondary: #8888a0;
+      --text-muted: #555566;
+      --accent-cyan: #00d4ff;
+      --accent-cyan-dim: rgba(0, 212, 255, 0.15);
+      --accent-amber: #ffb800;
+      --accent-amber-dim: rgba(255, 184, 0, 0.15);
+      --accent-violet: #a855f7;
+      --accent-violet-dim: rgba(168, 85, 247, 0.15);
+      --accent-emerald: #10b981;
+      --accent-emerald-dim: rgba(16, 185, 129, 0.15);
+      --accent-rose: #f43f5e;
+      --accent-rose-dim: rgba(244, 63, 94, 0.15);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-accent: rgba(0, 212, 255, 0.3);
+      --glow-cyan: 0 0 60px rgba(0, 212, 255, 0.3);
+      --glow-amber: 0 0 60px rgba(255, 184, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Grid background */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 40px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-cyan-dim);
+      border: 1px solid var(--border-accent);
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      margin-bottom: 32px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease-out 0.1s both;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-tagline strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Command Preview */
+    .command-preview {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 32px 48px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      position: relative;
+      animation: fadeInUp 0.8s ease-out 0.3s both;
+      box-shadow: var(--glow-cyan);
+    }
+
+    .command-preview::before {
+      content: 'TERMINAL';
+      position: absolute;
+      top: -10px;
+      left: 24px;
+      background: var(--bg-secondary);
+      padding: 0 12px;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .command-preview code {
+      color: var(--accent-cyan);
+    }
+
+    .command-preview .flag {
+      color: var(--accent-amber);
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text-muted);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* Section styling */
+    section {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .section-desc {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 64px;
+    }
+
+    /* Workflow Diagram */
+    .workflow-section {
+      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+    }
+
+    .workflow-diagram {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 48px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      overflow-x: auto;
+      backdrop-filter: blur(20px);
+    }
+
+    .workflow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      min-width: 120px;
+      opacity: 0;
+      animation: stepReveal 0.6s ease-out forwards;
+    }
+
+    .workflow-step:nth-child(1) { animation-delay: 0.1s; }
+    .workflow-step:nth-child(3) { animation-delay: 0.2s; }
+    .workflow-step:nth-child(5) { animation-delay: 0.3s; }
+    .workflow-step:nth-child(7) { animation-delay: 0.4s; }
+    .workflow-step:nth-child(9) { animation-delay: 0.5s; }
+    .workflow-step:nth-child(11) { animation-delay: 0.6s; }
+    .workflow-step:nth-child(13) { animation-delay: 0.7s; }
+
+    @keyframes stepReveal {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .step-icon:hover {
+      transform: translateY(-4px) scale(1.05);
+    }
+
+    .step-icon.cyan {
+      background: var(--accent-cyan-dim);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+    .step-icon.cyan:hover { box-shadow: var(--glow-cyan); }
+
+    .step-icon.amber {
+      background: var(--accent-amber-dim);
+      border: 1px solid rgba(255, 184, 0, 0.3);
+    }
+    .step-icon.amber:hover { box-shadow: var(--glow-amber); }
+
+    .step-icon.violet {
+      background: var(--accent-violet-dim);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .step-icon.violet:hover { box-shadow: 0 0 60px rgba(168, 85, 247, 0.3); }
+
+    .step-icon.emerald {
+      background: var(--accent-emerald-dim);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .step-icon.emerald:hover { box-shadow: 0 0 60px rgba(16, 185, 129, 0.3); }
+
+    .step-icon.rose {
+      background: var(--accent-rose-dim);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+    .step-icon.rose:hover { box-shadow: 0 0 60px rgba(244, 63, 94, 0.3); }
+
+    .step-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .step-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .workflow-arrow {
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-accent);
+    }
+
+    .stat-number {
+      font-size: 4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-card:nth-child(1) .stat-number { color: var(--accent-cyan); }
+    .stat-card:nth-child(2) .stat-number { color: var(--accent-amber); }
+    .stat-card:nth-child(3) .stat-number { color: var(--accent-violet); }
+    .stat-card:nth-child(4) .stat-number { color: var(--accent-emerald); }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Feature Cards */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-accent);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+
+    .feature-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent-cyan), transparent); }
+    .feature-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent-violet), transparent); }
+    .feature-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent-amber), transparent); }
+    .feature-card:nth-child(4)::before { background: linear-gradient(90deg, var(--accent-emerald), transparent); }
+    .feature-card:nth-child(5)::before { background: linear-gradient(90deg, var(--accent-rose), transparent); }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .feature-desc {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .feature-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      background: var(--bg-elevated);
+      border-radius: 6px;
+      color: var(--text-secondary);
+    }
+
+    /* Code Block */
+    .code-section {
+      background: var(--bg-secondary);
+    }
+
+    .code-block {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 24px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .code-dot.red { background: #ff5f57; }
+    .code-dot.yellow { background: #febc2e; }
+    .code-dot.green { background: #28c840; }
+
+    .code-title {
+      margin-left: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .code-content {
+      padding: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      line-height: 2;
+    }
+
+    .code-line {
+      display: flex;
+      gap: 16px;
+    }
+
+    .code-line-number {
+      color: var(--text-muted);
+      user-select: none;
+      min-width: 24px;
+      text-align: right;
+    }
+
+    .code-comment {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .code-command {
+      color: var(--accent-cyan);
+    }
+
+    .code-flag {
+      color: var(--accent-amber);
+    }
+
+    .code-arg {
+      color: var(--accent-emerald);
+    }
+
+    /* Hidden Gems Section */
+    .gems-section {
+      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    }
+
+    .gems-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .gem-card {
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .gem-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .gem-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gem-card:hover::after {
+      opacity: 1;
+    }
+
+    .gem-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-amber-dim);
+      border: 1px solid rgba(255, 184, 0, 0.3);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent-amber);
+      margin-bottom: 20px;
+    }
+
+    .gem-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .gem-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Task Types Visual */
+    .task-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 48px;
+    }
+
+    .task-type {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px 24px;
+      transition: all 0.3s ease;
+    }
+
+    .task-type:hover {
+      border-color: var(--border-accent);
+      transform: scale(1.02);
+    }
+
+    .task-type-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .task-type-icon.ui { background: var(--accent-cyan-dim); }
+    .task-type-icon.database { background: var(--accent-violet-dim); }
+    .task-type-icon.api { background: var(--accent-emerald-dim); }
+    .task-type-icon.security { background: var(--accent-rose-dim); }
+    .task-type-icon.data { background: var(--accent-amber-dim); }
+    .task-type-icon.test { background: rgba(99, 102, 241, 0.15); }
+    .task-type-icon.config { background: rgba(156, 163, 175, 0.15); }
+    .task-type-icon.external { background: rgba(236, 72, 153, 0.15); }
+
+    .task-type-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Footer */
+    footer {
+      padding: 80px 0;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo span {
+      color: var(--accent-cyan);
+    }
+
+    .footer-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-text a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .gems-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 24px;
+      }
+      .hero {
+        padding: 80px 24px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .workflow-diagram {
+        padding: 24px;
+        gap: 8px;
+      }
+      .step-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.4rem;
+      }
+      .command-preview {
+        padding: 24px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Callout box */
+    .callout {
+      background: linear-gradient(135deg, var(--accent-cyan-dim) 0%, var(--accent-violet-dim) 100%);
+      border: 1px solid var(--border-accent);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 48px 0;
+      position: relative;
+    }
+
+    .callout::before {
+      content: '!';
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      width: 24px;
+      height: 24px;
+      background: var(--accent-cyan);
+      color: var(--bg-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--accent-cyan);
+    }
+
+    .callout-text {
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span>CLAUDE CODE WORKFLOW</span>
+    </div>
+    <h1>Quality-Gated<br><span>Feature Execution</span></h1>
+    <p class="hero-tagline">
+      From idea to production in one command. <strong>Claude Code</strong> orchestrates research,
+      implementation, and review&mdash;automatically applying the right quality gates for every task type.
+    </p>
+    <div class="command-preview">
+      <code>/wdi-workflows:enhanced-ralph</code> <span class="flag">--milestone</span> MILE-002
+    </div>
+    <div class="scroll-indicator">
+      <span>EXPLORE</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Workflow Diagram -->
+  <section class="workflow-section">
+    <div class="container">
+      <div class="section-label">The Pipeline</div>
+      <h2 class="section-title">Seven Phases. Zero Manual Handoffs.</h2>
+      <p class="section-desc">
+        Each phase flows into the next, with Claude orchestrating the entire journey from
+        requirements gathering to knowledge capture.
+      </p>
+
+      <div class="workflow-diagram">
+        <div class="workflow-step">
+          <div class="step-icon cyan">&#128172;</div>
+          <span class="step-label">Interview</span>
+          <span class="step-number">01</span>
+        </div>
+        <span class="workflow-arrow">&rarr;</span>
+        <div class="workflow-step">
+          <div class="step-icon amber">&#9989;</div>
+          <span class="step-label">Pre-flight</span>
+          <span class="step-number">02</span>
+        </div>
+        <span class="workflow-arrow">&rarr;</span>
+        <div class="workflow-step">
+          <div class="step-icon violet">&#128269;</div>
+          <span class="step-label">Research</span>
+          <span class="step-number">03</span>
+        </div>
+        <span class="workflow-arrow">&rarr;</span>
+        <div class="workflow-step">
+          <div class="step-icon emerald">&#128221;</div>
+          <span class="step-label">Plan</span>
+          <span class="step-number">04</span>
+        </div>
+        <span class="workflow-arrow">&rarr;</span>
+        <div class="workflow-step">
+          <div class="step-icon cyan">&#128187;</div>
+          <span class="step-label">Work</span>
+          <span class="step-number">05</span>
+        </div>
+        <span class="workflow-arrow">&rarr;</span>
+        <div class="workflow-step">
+          <div class="step-icon rose">&#128270;</div>
+          <span class="step-label">Review</span>
+          <span class="step-number">06</span>
+        </div>
+        <span class="workflow-arrow">&rarr;</span>
+        <div class="workflow-step">
+          <div class="step-icon amber">&#128218;</div>
+          <span class="step-label">Compound</span>
+          <span class="step-number">07</span>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">10</div>
+          <div class="stat-label">Test Scenarios</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">8</div>
+          <div class="stat-label">Task Types Detected</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Research Agents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Quality Gate Agents</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Task Types -->
+  <section>
+    <div class="container">
+      <div class="section-label">Intelligent Detection</div>
+      <h2 class="section-title">8 Task Types, Auto-Detected</h2>
+      <p class="section-desc">
+        Every task is analyzed and tagged. Keywords like "component", "migration", or "endpoint"
+        trigger type-specific quality gates and research agents.
+      </p>
+
+      <div class="task-types">
+        <div class="task-type">
+          <div class="task-type-icon ui">&#127912;</div>
+          <span class="task-type-label">ui</span>
+        </div>
+        <div class="task-type">
+          <div class="task-type-icon database">&#128451;</div>
+          <span class="task-type-label">database</span>
+        </div>
+        <div class="task-type">
+          <div class="task-type-icon api">&#128279;</div>
+          <span class="task-type-label">api</span>
+        </div>
+        <div class="task-type">
+          <div class="task-type-icon security">&#128274;</div>
+          <span class="task-type-label">security</span>
+        </div>
+        <div class="task-type">
+          <div class="task-type-icon data">&#128202;</div>
+          <span class="task-type-label">data</span>
+        </div>
+        <div class="task-type">
+          <div class="task-type-icon test">&#129514;</div>
+          <span class="task-type-label">test</span>
+        </div>
+        <div class="task-type">
+          <div class="task-type-icon config">&#9881;</div>
+          <span class="task-type-label">config</span>
+        </div>
+        <div class="task-type">
+          <div class="task-type-icon external">&#127760;</div>
+          <span class="task-type-label">external</span>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">Why This Matters</div>
+        <div class="callout-text">
+          A <code>security</code> task automatically invokes the <strong>security-sentinel</strong> agent.
+          A <code>ui</code> task triggers <strong>frontend-design</strong> + <strong>playwright-test</strong> +
+          <strong>design-implementation-reviewer</strong>. Different code deserves different scrutiny.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section>
+    <div class="container">
+      <div class="section-label">Capabilities</div>
+      <h2 class="section-title">Power Features</h2>
+      <p class="section-desc">
+        These aren't just features&mdash;they're force multipliers for your development workflow.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#127919;</div>
+          <h3 class="feature-title">Parallel Research Agents</h3>
+          <p class="feature-desc">
+            Four specialized agents run simultaneously: <strong>repo-research-analyst</strong> scans your codebase,
+            <strong>framework-docs-researcher</strong> fetches external docs, <strong>best-practices-researcher</strong>
+            finds patterns, and <strong>git-history-analyzer</strong> traces evolution.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">4 agents</span>
+            <span class="feature-tag">parallel execution</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#128737;</div>
+          <h3 class="feature-title">Quality Gates Per Task Type</h3>
+          <p class="feature-desc">
+            Each task type maps to specific reviewers. Database changes get <strong>data-integrity-guardian</strong>.
+            Security code faces <strong>security-sentinel</strong>. TypeScript files trigger <strong>kieran-typescript-reviewer</strong>.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">6 review agents</span>
+            <span class="feature-tag">type-aware</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#128200;</div>
+          <h3 class="feature-title">Dependency Resolution</h3>
+          <p class="feature-desc">
+            Features declare what they block and what blocks them. Enhanced-ralph builds a dependency graph
+            and executes in <strong>topological order</strong>&mdash;even if the milestone lists them wrong.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">Kahn's algorithm</span>
+            <span class="feature-tag">cycle detection</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#127942;</div>
+          <h3 class="feature-title">Milestone Mode</h3>
+          <p class="feature-desc">
+            Execute an entire milestone with one command. Features run in order, statuses update automatically,
+            and the milestone marks complete when done. Resume from failure with <code>--continue</code>.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">--milestone</span>
+            <span class="feature-tag">batch execution</span>
+          </div>
+        </div>
+
+        <div class="feature-card" style="grid-column: span 2;">
+          <div class="feature-icon">&#9889;</div>
+          <h3 class="feature-title">Execution Modes</h3>
+          <p class="feature-desc">
+            Fine-tune the workflow with flags: <code>--strict</code> fails on any quality issue (perfect for auth code),
+            <code>--fast</code> skips optional reviews but keeps security gates, <code>--skip-gates</code> runs raw
+            for simple features, and <code>--verbose</code> shows everything.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">--strict</span>
+            <span class="feature-tag">--fast</span>
+            <span class="feature-tag">--skip-gates</span>
+            <span class="feature-tag">--continue</span>
+            <span class="feature-tag">--verbose</span>
+            <span class="feature-tag">--force</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Examples -->
+  <section class="code-section">
+    <div class="container">
+      <div class="section-label">Usage</div>
+      <h2 class="section-title">Elegant Invocation</h2>
+      <p class="section-desc">
+        Simple commands that orchestrate complex workflows. Copy, paste, execute.
+      </p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot red"></span>
+          <span class="code-dot yellow"></span>
+          <span class="code-dot green"></span>
+          <span class="code-title">terminal</span>
+        </div>
+        <div class="code-content">
+          <div class="code-line">
+            <span class="code-line-number">1</span>
+            <span class="code-comment"># Execute a single feature with all quality gates</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">2</span>
+            <span class="code-command">/wdi-workflows:enhanced-ralph</span> <span class="code-arg">auth-system</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">3</span>
+            <span></span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">4</span>
+            <span class="code-comment"># Strict mode for critical features (fails on any issue)</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">5</span>
+            <span class="code-command">/wdi-workflows:enhanced-ralph</span> <span class="code-arg">payment-processing</span> <span class="code-flag">--strict</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">6</span>
+            <span></span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">7</span>
+            <span class="code-comment"># Execute all features in a milestone</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">8</span>
+            <span class="code-command">/wdi-workflows:enhanced-ralph</span> <span class="code-flag">--milestone</span> <span class="code-arg">MILE-002-config-context</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">9</span>
+            <span></span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">10</span>
+            <span class="code-comment"># Resume after a failure</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">11</span>
+            <span class="code-command">/wdi-workflows:enhanced-ralph</span> <span class="code-flag">--milestone</span> <span class="code-arg">MILE-002</span> <span class="code-flag">--continue</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">12</span>
+            <span></span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">13</span>
+            <span class="code-comment"># Create a new milestone</span>
+          </div>
+          <div class="code-line">
+            <span class="code-line-number">14</span>
+            <span class="code-command">/wdi-workflows:milestone</span> <span class="code-arg">my-milestone</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hidden Gems -->
+  <section class="gems-section">
+    <div class="container">
+      <div class="section-label">Hidden Gems</div>
+      <h2 class="section-title">The Power You Might Miss</h2>
+      <p class="section-desc">
+        These capabilities aren't obvious at first glance&mdash;but they're what separates
+        a tool from a teammate.
+      </p>
+
+      <div class="gems-grid">
+        <div class="gem-card">
+          <div class="gem-badge">&#10024; OVERLOOKED</div>
+          <h3 class="gem-title">Cross-Milestone Dependency Detection</h3>
+          <p class="gem-desc">
+            When Feature B in Milestone 2 depends on Feature A in Milestone 1, enhanced-ralph
+            detects this even if the milestones don't declare a dependency. It warns you before
+            you waste time building on incomplete foundations.
+          </p>
+        </div>
+
+        <div class="gem-card">
+          <div class="gem-badge">&#10024; OVERLOOKED</div>
+          <h3 class="gem-title">Resume from Failure</h3>
+          <p class="gem-desc">
+            Milestone execution failed on feature 3 of 5? Run with <code>--continue</code> and
+            enhanced-ralph picks up exactly where it left off. No re-running completed features.
+            No lost progress. Just forward motion.
+          </p>
+        </div>
+
+        <div class="gem-card">
+          <div class="gem-badge">&#10024; OVERLOOKED</div>
+          <h3 class="gem-title">Implicit Dependency Inference</h3>
+          <p class="gem-desc">
+            Even without explicit "Blocked by" declarations, enhanced-ralph analyzes feature
+            descriptions and code patterns to suggest potential dependencies. It asks before
+            assuming&mdash;but it notices what humans might miss.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo">enhanced<span>-ralph</span></div>
+      <p class="footer-text">
+        Part of <a href="#">wdi-workflows</a> &middot; Powered by <a href="#">Claude Code</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe all sections and cards
+    document.querySelectorAll('section, .feature-card, .stat-card, .gem-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    // Hero elements should be visible immediately
+    document.querySelector('.hero').style.opacity = '1';
+    document.querySelector('.hero').style.transform = 'translateY(0)';
+  </script>
+</body>
+</html>

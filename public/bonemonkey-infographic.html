@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Ralph | Production-Ready Features at the Speed of Imagination</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d10;
+            --bg-primary: #0f1419;
+            --bg-elevated: #1a1f26;
+            --bg-card: #232a33;
+            --text-primary: #e8eaed;
+            --text-secondary: #9aa0a6;
+            --text-muted: #5f6368;
+            --accent-cyan: #00d4aa;
+            --accent-cyan-glow: rgba(0, 212, 170, 0.3);
+            --accent-amber: #f5a623;
+            --accent-amber-glow: rgba(245, 166, 35, 0.3);
+            --accent-coral: #ff6b6b;
+            --accent-blue: #4dabf7;
+            --grid-line: rgba(0, 212, 170, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Blueprint Grid Background */
+        .blueprint-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+            background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+            opacity: 0.6;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 2.5vw, 24px);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 60px;
+            animation: slideUp 0.8s ease-out 0.4s both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Army Visualization */
+        .army-visual {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45%;
+            max-width: 500px;
+            aspect-ratio: 1;
+            animation: fadeIn 1.2s ease-out 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .node-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .center-node {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 0 60px var(--accent-cyan-glow);
+            z-index: 10;
+        }
+
+        .orbit-node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .orbit-node::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            opacity: 0;
+            animation: ripple 2s ease-out infinite;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.3; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .orbit-node:nth-child(2) { top: 10%; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+        .orbit-node:nth-child(3) { top: 25%; right: 10%; animation-delay: 0.3s; }
+        .orbit-node:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); animation-delay: 0.6s; }
+        .orbit-node:nth-child(5) { bottom: 25%; right: 10%; animation-delay: 0.9s; }
+        .orbit-node:nth-child(6) { bottom: 10%; left: 50%; transform: translateX(-50%); animation-delay: 1.2s; }
+        .orbit-node:nth-child(7) { bottom: 25%; left: 10%; animation-delay: 1.5s; }
+        .orbit-node:nth-child(8) { top: 50%; left: 0; transform: translateY(-50%); animation-delay: 1.8s; }
+        .orbit-node:nth-child(9) { top: 25%; left: 10%; animation-delay: 2.1s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .orbit-node:nth-child(2) { animation: float 3s ease-in-out infinite; }
+        .orbit-node:nth-child(3) { animation: float 3.2s ease-in-out infinite 0.2s; }
+        .orbit-node:nth-child(4) { animation: float 2.8s ease-in-out infinite 0.4s; }
+        .orbit-node:nth-child(5) { animation: float 3.4s ease-in-out infinite 0.6s; }
+        .orbit-node:nth-child(6) { animation: float 3s ease-in-out infinite 0.8s; }
+        .orbit-node:nth-child(7) { animation: float 3.1s ease-in-out infinite 1s; }
+        .orbit-node:nth-child(8) { animation: float 2.9s ease-in-out infinite 1.2s; }
+        .orbit-node:nth-child(9) { animation: float 3.3s ease-in-out infinite 1.4s; }
+
+        /* Connection Lines SVG */
+        .connection-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .connection-lines line {
+            stroke: var(--accent-cyan);
+            stroke-width: 1;
+            opacity: 0.3;
+            stroke-dasharray: 5, 5;
+            animation: dash 20s linear infinite;
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+
+        /* ========== TRANSFORMATION SECTION ========== */
+        .transformation {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--accent-cyan);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+
+        .transform-grid {
+            display: grid;
+            grid-template-columns: 1fr 80px 1fr;
+            gap: 40px;
+            align-items: stretch;
+        }
+
+        .transform-card {
+            background: var(--bg-elevated);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .transform-card.before {
+            border: 1px solid var(--accent-coral);
+        }
+
+        .transform-card.before::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-coral), transparent);
+        }
+
+        .transform-card.after {
+            border: 1px solid var(--accent-cyan);
+        }
+
+        .transform-card.after::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .before .card-icon {
+            background: rgba(255, 107, 107, 0.15);
+        }
+
+        .after .card-icon {
+            background: rgba(0, 212, 170, 0.15);
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .before .card-subtitle {
+            color: var(--accent-coral);
+        }
+
+        .after .card-subtitle {
+            color: var(--accent-cyan);
+        }
+
+        .transform-list {
+            list-style: none;
+        }
+
+        .transform-list li {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .transform-list li:last-child {
+            border-bottom: none;
+        }
+
+        .transform-list .icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .transform-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--accent-cyan);
+            position: relative;
+        }
+
+        .transform-arrow::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        /* ========== STATS SECTION ========== */
+        .stats {
+            padding: 120px 0;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-elevated);
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-amber), transparent);
+        }
+
+        .stat-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 72px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-amber), var(--accent-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ========== WORKFLOW SECTION ========== */
+        .workflow {
+            padding: 120px 0;
+        }
+
+        .workflow-track {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 60px 0;
+        }
+
+        .workflow-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg,
+                var(--accent-cyan),
+                var(--accent-blue),
+                var(--accent-cyan),
+                var(--accent-amber),
+                var(--accent-cyan),
+                var(--accent-blue),
+                var(--accent-cyan)
+            );
+            transform: translateY(-50%);
+        }
+
+        .workflow-step {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .step-node {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-deep);
+            border: 3px solid var(--accent-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--accent-cyan-glow);
+        }
+
+        .workflow-step:hover .step-node {
+            background: var(--accent-cyan);
+            transform: scale(1.1);
+        }
+
+        .step-label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            max-width: 100px;
+        }
+
+        /* ========== CALLOUTS SECTION ========== */
+        .callouts {
+            padding: 80px 0;
+            background: var(--bg-primary);
+        }
+
+        .callouts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .callout-card {
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            padding: 32px;
+            border-left: 4px solid var(--accent-cyan);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .callout-card:hover {
+            transform: translateX(8px);
+        }
+
+        .callout-card:nth-child(2) { border-left-color: var(--accent-amber); }
+        .callout-card:nth-child(3) { border-left-color: var(--accent-blue); }
+        .callout-card:nth-child(4) { border-left-color: var(--accent-coral); }
+
+        .callout-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .callout-icon {
+            font-size: 24px;
+        }
+
+        .callout-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .callout-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .callout-list li {
+            background: var(--bg-card);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ========== MULTIPLIER SECTION ========== */
+        .multiplier {
+            padding: 120px 0;
+            text-align: center;
+        }
+
+        .multiplier-equation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .equation-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .equation-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-elevated);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border: 2px solid var(--border-subtle);
+        }
+
+        .equation-label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+        }
+
+        .equation-operator {
+            font-family: 'Outfit', sans-serif;
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--text-muted);
+        }
+
+        .equation-result {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 24px;
+            padding: 24px 48px;
+        }
+
+        .result-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .result-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .multiplier-features {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .feature-text {
+            text-align: left;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ========== IMPACT SECTION ========== */
+        .impact {
+            padding: 120px 0;
+            background: var(--bg-primary);
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .impact-card {
+            background: linear-gradient(135deg, var(--bg-elevated), var(--bg-card));
+            border-radius: 24px;
+            padding: 48px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top center, var(--accent-cyan-glow), transparent 60%);
+            opacity: 0.3;
+        }
+
+        .impact-icon {
+            font-size: 56px;
+            margin-bottom: 24px;
+        }
+
+        .impact-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .impact-desc {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ========== TIMELINE SECTION ========== */
+        .timeline {
+            padding: 120px 0;
+        }
+
+        .timeline-track {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue), var(--accent-amber), var(--accent-coral));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 48px;
+            padding-left: 40px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -40px;
+            top: 8px;
+            width: 18px;
+            height: 18px;
+            background: var(--bg-deep);
+            border: 3px solid var(--accent-cyan);
+            border-radius: 50%;
+        }
+
+        .timeline-item:nth-child(2)::before { border-color: var(--accent-blue); }
+        .timeline-item:nth-child(3)::before { border-color: var(--accent-amber); }
+        .timeline-item:nth-child(4)::before { border-color: var(--accent-coral); }
+
+        .timeline-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+        }
+
+        .timeline-item:nth-child(2) .timeline-date { color: var(--accent-blue); }
+        .timeline-item:nth-child(3) .timeline-date { color: var(--accent-amber); }
+        .timeline-item:nth-child(4) .timeline-date { color: var(--accent-coral); }
+
+        .timeline-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .footer-tagline {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1200px) {
+            .army-visual {
+                display: none;
+            }
+            .hero {
+                text-align: center;
+            }
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .transform-grid {
+                grid-template-columns: 1fr;
+            }
+            .transform-arrow {
+                transform: rotate(90deg);
+                padding: 20px 0;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+            .workflow-track {
+                flex-wrap: wrap;
+                gap: 24px;
+            }
+            .callouts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .multiplier-equation {
+                gap: 20px;
+            }
+        }
+
+        /* ========== CATCHPHRASE BANNER ========== */
+        .catchphrase-banner {
+            background: linear-gradient(135deg, var(--accent-amber), #ff8c42);
+            padding: 50px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .catchphrase-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(0,0,0,0.05) 20px,
+                rgba(0,0,0,0.05) 40px
+            );
+        }
+
+        .catchphrase-text {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 42px;
+            color: var(--bg-deep);
+            text-shadow: 3px 3px 0 rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 1;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(-0.5deg); }
+            50% { transform: rotate(0.5deg); }
+        }
+
+        .catchphrase-sub {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--bg-deep);
+            opacity: 0.8;
+            margin-top: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .catchphrase-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: var(--bg-deep);
+            color: var(--accent-amber);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .catchphrase-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* ========== PRINT STYLES ========== */
+        @media print {
+            .blueprint-grid {
+                display: none;
+            }
+            body {
+                background: white;
+                color: #1a1a1a;
+            }
+            .hero-title .highlight,
+            .stat-number,
+            .footer-logo {
+                -webkit-text-fill-color: #0066cc;
+                color: #0066cc;
+            }
+            .transform-card,
+            .stat-card,
+            .callout-card,
+            .impact-card {
+                border: 1px solid #ddd;
+                background: #f9f9f9;
+            }
+            * {
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blueprint-grid"></div>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">Enhanced Ralph</div>
+            <h1 class="hero-title">
+                Production-Ready Features<br>
+                at the <span class="highlight">Speed of Imagination</span>
+            </h1>
+            <p class="hero-subtitle">
+                What if velocity wasn't constrained by how fast humans can code—only by how fast you can <em>imagine</em>?
+                Feed your requirements into Enhanced Ralph. Watch our army deliver.
+            </p>
+        </div>
+        <div class="army-visual">
+            <div class="node-container">
+                <svg class="connection-lines" viewBox="0 0 500 500">
+                    <line x1="250" y1="250" x2="250" y2="50"/>
+                    <line x1="250" y1="250" x2="425" y2="125"/>
+                    <line x1="250" y1="250" x2="475" y2="250"/>
+                    <line x1="250" y1="250" x2="425" y2="375"/>
+                    <line x1="250" y1="250" x2="250" y2="450"/>
+                    <line x1="250" y1="250" x2="75" y2="375"/>
+                    <line x1="250" y1="250" x2="25" y2="250"/>
+                    <line x1="250" y1="250" x2="75" y2="125"/>
+                </svg>
+                <div class="center-node">YOU</div>
+                <div class="orbit-node">🔬</div>
+                <div class="orbit-node">📊</div>
+                <div class="orbit-node">🛡️</div>
+                <div class="orbit-node">🔍</div>
+                <div class="orbit-node">📝</div>
+                <div class="orbit-node">🧪</div>
+                <div class="orbit-node">⚡</div>
+                <div class="orbit-node">🎯</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSFORMATION SECTION -->
+    <section class="transformation">
+        <div class="container">
+            <div class="section-label">The Transformation</div>
+            <h2 class="section-title">From Chaos to Confidence</h2>
+
+            <div class="transform-grid">
+                <div class="transform-card before">
+                    <div class="card-header">
+                        <div class="card-icon">😬</div>
+                        <div>
+                            <div class="card-title">Ad-Hoc Development</div>
+                            <div class="card-subtitle">"YOLO Vibe Coding"</div>
+                        </div>
+                    </div>
+                    <ul class="transform-list">
+                        <li>
+                            <span class="icon">❌</span>
+                            <span>Manual, inconsistent commits without quality checks</span>
+                        </li>
+                        <li>
+                            <span class="icon">❌</span>
+                            <span>Documentation that's always out of date</span>
+                        </li>
+                        <li>
+                            <span class="icon">❌</span>
+                            <span>Tribal knowledge locked in one person's head</span>
+                        </li>
+                        <li>
+                            <span class="icon">❌</span>
+                            <span>Reactive bug fixing after problems surface</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="transform-arrow">→</div>
+
+                <div class="transform-card after">
+                    <div class="card-header">
+                        <div class="card-icon">🚀</div>
+                        <div>
+                            <div class="card-title">Disciplined Workflows</div>
+                            <div class="card-subtitle">BoneMonkey Powered</div>
+                        </div>
+                    </div>
+                    <ul class="transform-list">
+                        <li>
+                            <span class="icon">✅</span>
+                            <span>Quality-gated commits with automatic tests</span>
+                        </li>
+                        <li>
+                            <span class="icon">✅</span>
+                            <span>Self-healing docs that auto-update on changes</span>
+                        </li>
+                        <li>
+                            <span class="icon">✅</span>
+                            <span>9 codified standards anyone can follow</span>
+                        </li>
+                        <li>
+                            <span class="icon">✅</span>
+                            <span>Proactive type-aware code reviews</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats">
+        <div class="container">
+            <div class="section-label">By The Numbers</div>
+            <h2 class="section-title">Production-Grade Tooling</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Commands</div>
+                    <div class="stat-desc">Every workflow automated</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">~17K</div>
+                    <div class="stat-label">Lines of Code</div>
+                    <div class="stat-desc">Production-grade tooling</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Standards</div>
+                    <div class="stat-desc">Consistency codified</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Task Types</div>
+                    <div class="stat-desc">Context-aware reviews</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORKFLOW SECTION -->
+    <section class="workflow">
+        <div class="container">
+            <div class="section-label">The Process</div>
+            <h2 class="section-title">6-Phase Feature Workflow</h2>
+
+            <div class="workflow-track">
+                <div class="workflow-step">
+                    <div class="step-node">💬</div>
+                    <div class="step-label">Interview</div>
+                    <div class="step-desc">Gather requirements</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-node">🔍</div>
+                    <div class="step-label">Pre-flight</div>
+                    <div class="step-desc">Validate setup</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-node">📚</div>
+                    <div class="step-label">Research</div>
+                    <div class="step-desc">Parallel agents</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-node">📋</div>
+                    <div class="step-label">Plan</div>
+                    <div class="step-desc">Design approach</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-node">⚡</div>
+                    <div class="step-label">Work</div>
+                    <div class="step-desc">Execute tasks</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-node">✅</div>
+                    <div class="step-label">Review</div>
+                    <div class="step-desc">Quality gates</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-node">📈</div>
+                    <div class="step-label">Compound</div>
+                    <div class="step-desc">Document wins</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALLOUTS SECTION -->
+    <section class="callouts">
+        <div class="container">
+            <div class="section-label">Hidden Powers</div>
+            <h2 class="section-title">Capabilities That Scale You</h2>
+
+            <div class="callouts-grid">
+                <div class="callout-card">
+                    <div class="callout-header">
+                        <span class="callout-icon">🛡️</span>
+                        <span class="callout-title">Quality Gates on Every Commit</span>
+                    </div>
+                    <ul class="callout-list">
+                        <li>Tests run automatically</li>
+                        <li>Simplicity review</li>
+                        <li>Auto-changelog</li>
+                        <li>Branch validation</li>
+                    </ul>
+                </div>
+
+                <div class="callout-card">
+                    <div class="callout-header">
+                        <span class="callout-icon">🧠</span>
+                        <span class="callout-title">Type-Aware Intelligence</span>
+                    </div>
+                    <ul class="callout-list">
+                        <li>UI → frontend-design</li>
+                        <li>Database → integrity</li>
+                        <li>Security → sentinel</li>
+                        <li>API → patterns</li>
+                    </ul>
+                </div>
+
+                <div class="callout-card">
+                    <div class="callout-header">
+                        <span class="callout-icon">🔗</span>
+                        <span class="callout-title">Dependency-Aware Execution</span>
+                    </div>
+                    <ul class="callout-list">
+                        <li>Topological sort</li>
+                        <li>Circular detection</li>
+                        <li>Cross-milestone</li>
+                        <li>Resume on failure</li>
+                    </ul>
+                </div>
+
+                <div class="callout-card">
+                    <div class="callout-header">
+                        <span class="callout-icon">📖</span>
+                        <span class="callout-title">Self-Healing Documentation</span>
+                    </div>
+                    <ul class="callout-list">
+                        <li>Drift detection</li>
+                        <li>Auto-updates</li>
+                        <li>Version sync</li>
+                        <li>Cross-reference</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATCHPHRASE BANNER -->
+    <section class="catchphrase-banner">
+        <div class="container">
+            <div class="catchphrase-text">"Sorry folks, I'm all outta bubble gum!"</div>
+            <div class="catchphrase-sub">—But we're fresh outta features!</div>
+            <a href="bonemonkey-logo.html" class="catchphrase-link">View Logo →</a>
+            <a href="enhanced-ralph-marketing.html" class="catchphrase-link">See the Full Vision →</a>
+        </div>
+    </section>
+
+    <!-- MULTIPLIER SECTION -->
+    <section class="multiplier">
+        <div class="container">
+            <div class="section-label">The Math</div>
+            <h2 class="section-title">Your Productivity Multiplier</h2>
+
+            <div class="multiplier-equation">
+                <div class="equation-item">
+                    <div class="equation-icon">👤</div>
+                    <div class="equation-label">1 Developer</div>
+                </div>
+                <div class="equation-operator">+</div>
+                <div class="equation-item">
+                    <div class="equation-icon">🦴</div>
+                    <div class="equation-label">BoneMonkey</div>
+                </div>
+                <div class="equation-operator">=</div>
+                <div class="equation-result">
+                    <div class="result-number">5×</div>
+                    <div class="result-label">Output</div>
+                </div>
+            </div>
+
+            <div class="multiplier-features">
+                <div class="feature-item">
+                    <span class="feature-number">4</span>
+                    <span class="feature-text">Research agents<br>running in parallel</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-number">6</span>
+                    <span class="feature-text">Specialized review<br>agents available</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-number">2</span>
+                    <span class="feature-text">Auto-invoked skills<br>reducing friction</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMPACT SECTION -->
+    <section class="impact">
+        <div class="container">
+            <div class="section-label">Business Value</div>
+            <h2 class="section-title">Why This Matters</h2>
+
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-icon">🚀</div>
+                    <div class="impact-title">Velocity</div>
+                    <div class="impact-desc">Features delivered faster with quality gates that catch issues before they compound.</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">🎯</div>
+                    <div class="impact-title">Consistency</div>
+                    <div class="impact-desc">Same standards everywhere, every time. No more "it depends on who wrote it."</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">📈</div>
+                    <div class="impact-title">Scalability</div>
+                    <div class="impact-desc">Foundation for team growth without chaos. Add people, not complexity.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE SECTION -->
+    <section class="timeline">
+        <div class="container">
+            <div class="section-label">The Journey</div>
+            <h2 class="section-title">Built in 4 Days</h2>
+
+            <div class="timeline-track">
+                <div class="timeline-item">
+                    <div class="timeline-date">January 9, 2026</div>
+                    <div class="timeline-title">Core Workflows & Commit Gates</div>
+                    <div class="timeline-desc">Feature workflow, quality gates, and the foundation of disciplined development.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">January 10, 2026</div>
+                    <div class="timeline-title">Installation & Plugin Infrastructure</div>
+                    <div class="timeline-desc">One-command install, live development mode, dependency warnings.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">January 11, 2026</div>
+                    <div class="timeline-title">CLI Tooling & Standards Framework</div>
+                    <div class="timeline-desc">WDI CLI for pre-Claude scaffolding, 9 comprehensive development standards.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">January 12, 2026</div>
+                    <div class="timeline-title">Enhanced Execution & Milestone Mode</div>
+                    <div class="timeline-desc">Quality-gated feature execution, dependency resolution, milestone orchestration.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">Enhanced Ralph</div>
+            <div class="footer-tagline">A BoneMonkey Production • Production-ready features at the speed of imagination</div>
+        </div>
+    </footer>
+</body>
+</html>
