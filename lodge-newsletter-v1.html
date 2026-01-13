@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masonic Lodge Newsletter Prototypes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #1a1a2e;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    .prototype-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .prototype-nav a {
+      color: #d4af37;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .prototype-nav a:hover {
+      border-color: #d4af37;
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .intro-section {
+      padding: 6rem 2rem 3rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .intro-section h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+
+    .intro-section p {
+      color: #a0a0a0;
+      font-size: 1.1rem;
+    }
+
+    /* Newsletter Container */
+    .newsletter-section {
+      padding: 3rem 2rem 6rem;
+      min-height: 100vh;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title p {
+      color: #888;
+      font-size: 0.95rem;
+    }
+
+    /* ============================================
+       VARIATION 1: MEDIEVAL/RENAISSANCE GOTHIC
+       ============================================ */
+    .medieval-newsletter {
+      max-width: 850px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1a1510 0%, #2d2318 50%, #1a1510 100%);
+      border: 3px solid #8b7355;
+      position: relative;
+      font-family: 'Cormorant Garamond', serif;
+      box-shadow:
+        0 0 0 1px #3d3225,
+        0 0 0 4px #1a1510,
+        0 0 0 5px #8b7355,
+        0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .medieval-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L30 60M0 30L60 30' stroke='%238b7355' stroke-width='0.3' opacity='0.1'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .medieval-header {
+      background: linear-gradient(180deg, #2a2015 0%, #1a1510 100%);
+      border-bottom: 2px solid #8b7355;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .medieval-header::before,
+    .medieval-header::after {
+      content: '☩';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: #8b7355;
+    }
+
+    .medieval-header::before { left: 2rem; }
+    .medieval-header::after { right: 2rem; }
+
+    .medieval-header h1 {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 2.8rem;
+      color: #d4af37;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      letter-spacing: 2px;
+    }
+
+    .medieval-header .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: #c4a77d;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+
+    .medieval-header .date-banner {
+      display: inline-block;
+      background: #8b7355;
+      color: #1a1510;
+      padding: 0.3rem 1.5rem;
+      margin-top: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .medieval-content {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .medieval-section {
+      background: rgba(26, 21, 16, 0.8);
+      border: 1px solid #5c4d3d;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .medieval-section::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border: 1px solid #3d3225;
+      pointer-events: none;
+    }
+
+    .medieval-section h3 {
+      font-family: 'Cinzel', serif;
+      color: #d4af37;
+      font-size: 1.2rem;
+      border-bottom: 1px solid #5c4d3d;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .medieval-section h3::before {
+      content: '⚜';
+      color: #8b7355;
+    }
+
+    .medieval-section p, .medieval-section li {
+      color: #c4a77d;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .medieval-section ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .medieval-section li {
+      padding: 0.3rem 0;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .medieval-section li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: #8b7355;
+      font-size: 0.7rem;
+    }
+
+    .medieval-full-width {
+      grid-column: 1 / -1;
+    }
+
+    .medieval-cta {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #3d3225 0%, #2a2015 100%);
+      border: 2px solid #d4af37;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .medieval-cta h3 {
+      justify-content: center;
+      border-bottom: none;
+      font-size: 1.4rem;
+    }
+
+    .medieval-cta h3::before {
+      display: none;
+    }
+
+    .medieval-cta p {
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .attendance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.3rem;
+      margin-top: 0.5rem;
+    }
+
+    .attendance-grid span {
+      font-size: 0.85rem;
+      color: #a08060;
+    }
+
+    /* ============================================
+       VARIATION 2: CLASSICAL MASONIC SYMBOLISM
+       ============================================ */
+    .classical-newsletter {
+      max-width: 850px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #0a1628 0%, #0f1f3d 50%, #0a1628 100%);
+      border: 4px solid #d4af37;
+      font-family: 'Old Standard TT', serif;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset 0 0 100px rgba(212, 175, 55, 0.05),
+        0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .classical-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      height: 400px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.1'/%3E%3Ccircle cx='50' cy='50' r='35' fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.1'/%3E%3Ccircle cx='50' cy='50' r='25' fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.1'/%3E%3C/svg%3E") center/contain no-repeat;
+      pointer-events: none;
+    }
+
+    .classical-header {
+      background: linear-gradient(180deg, #0f1f3d 0%, #162d5a 50%, #0f1f3d 100%);
+      border-bottom: 3px solid #d4af37;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .classical-pillars {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem 0;
+    }
+
+    .classical-pillars.left { left: 20px; }
+    .classical-pillars.right { right: 20px; }
+
+    .pillar-icon {
+      text-align: center;
+      color: #d4af37;
+      font-size: 1.5rem;
+      opacity: 0.6;
+    }
+
+    .classical-symbol {
+      font-size: 3rem;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .classical-header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: #fff;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .classical-header .lodge-number {
+      color: #d4af37;
+      font-size: 1.1rem;
+      margin-top: 0.3rem;
+      letter-spacing: 2px;
+    }
+
+    .classical-header .edition {
+      display: inline-block;
+      border: 1px solid #d4af37;
+      padding: 0.4rem 1.5rem;
+      margin-top: 1rem;
+      color: #d4af37;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .classical-content {
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .classical-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .classical-section {
+      background: rgba(15, 31, 61, 0.7);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .classical-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    }
+
+    .classical-section h3 {
+      font-family: 'Cinzel', serif;
+      color: #d4af37;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .classical-section h3::before,
+    .classical-section h3::after {
+      content: '◆';
+      font-size: 0.5rem;
+      color: #d4af37;
+    }
+
+    .classical-section p, .classical-section li {
+      color: #b8c5d6;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .classical-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .classical-section li {
+      padding: 0.4rem 0;
+      border-bottom: 1px dotted rgba(212, 175, 55, 0.2);
+    }
+
+    .classical-section li:last-child {
+      border-bottom: none;
+    }
+
+    .classical-checkered {
+      height: 20px;
+      background: repeating-linear-gradient(
+        90deg,
+        #0a1628 0px,
+        #0a1628 20px,
+        #1a2a4a 20px,
+        #1a2a4a 40px
+      );
+      margin: 2rem 0;
+      border-top: 1px solid #d4af37;
+      border-bottom: 1px solid #d4af37;
+    }
+
+    .classical-cta {
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+      border: 2px solid #d4af37;
+    }
+
+    .classical-cta h3 {
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .classical-cta h3::before,
+    .classical-cta h3::after {
+      content: '☆';
+    }
+
+    .classical-cta p {
+      color: #d4af37;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    /* ============================================
+       VARIATION 3: MODERN MINIMALIST
+       ============================================ */
+    .modern-newsletter {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #ffffff;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    .modern-header {
+      background: #1a365d;
+      padding: 3rem 2rem 2rem;
+      position: relative;
+    }
+
+    .modern-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #d4af37, #f4d03f, #d4af37);
+    }
+
+    .modern-header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modern-logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .modern-symbol {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #d4af37;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #d4af37;
+    }
+
+    .modern-title h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .modern-title .tagline {
+      color: #d4af37;
+      font-size: 0.85rem;
+      font-weight: 400;
+    }
+
+    .modern-date {
+      text-align: right;
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .modern-date .issue {
+      color: #d4af37;
+      font-weight: 500;
+    }
+
+    .modern-content {
+      padding: 2rem;
+    }
+
+    .modern-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    .modern-main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .modern-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .modern-card {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      border-left: 4px solid #1a365d;
+    }
+
+    .modern-card.highlight {
+      border-left-color: #d4af37;
+    }
+
+    .modern-card h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #64748b;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .modern-card h4 {
+      font-size: 1.1rem;
+      color: #1a365d;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .modern-card p {
+      color: #475569;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .modern-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .modern-card li {
+      color: #475569;
+      font-size: 0.9rem;
+      padding: 0.4rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .modern-card li::before {
+      content: '→';
+      color: #d4af37;
+      font-weight: bold;
+    }
+
+    .modern-stat {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: #1a365d;
+      border-radius: 8px;
+    }
+
+    .modern-stat-number {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #d4af37;
+    }
+
+    .modern-stat-label {
+      color: #fff;
+      font-size: 0.85rem;
+    }
+
+    .modern-cta {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #1a365d 0%, #2d4a7c 100%);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .modern-cta h3 {
+      color: #fff;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .modern-cta p {
+      color: #d4af37;
+      font-size: 1rem;
+    }
+
+    .modern-footer {
+      background: #f1f5f9;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .modern-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .modern-tag {
+      background: #e2e8f0;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #475569;
+    }
+
+    /* ============================================
+       VARIATION 4: BAROQUE/VICTORIAN ORNATE
+       ============================================ */
+    .baroque-newsletter {
+      max-width: 850px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #0d0a06 0%, #1a1408 50%, #0d0a06 100%);
+      border: 8px solid transparent;
+      border-image: linear-gradient(135deg, #d4af37, #8b6914, #d4af37, #8b6914, #d4af37) 1;
+      font-family: 'Playfair Display', serif;
+      position: relative;
+      box-shadow:
+        0 0 0 2px #0d0a06,
+        0 0 0 4px #d4af37,
+        0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .baroque-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0c0 20-20 20-20 40s20 20 20 40c0-20 20-20 20-40S40 20 40 0z' fill='%23d4af37' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .baroque-header {
+      background: linear-gradient(180deg, #1a1408 0%, #251c0d 50%, #1a1408 100%);
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 3px solid #d4af37;
+      position: relative;
+    }
+
+    .baroque-ornament {
+      font-size: 2rem;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1rem;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+
+    .baroque-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #d4af37;
+      text-shadow:
+        2px 2px 0 #0d0a06,
+        0 0 30px rgba(212, 175, 55, 0.3);
+      letter-spacing: 3px;
+    }
+
+    .baroque-header .subtitle {
+      font-style: italic;
+      color: #c4a060;
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+
+    .baroque-date-frame {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 2rem;
+      background: linear-gradient(135deg, #d4af37 0%, #8b6914 50%, #d4af37 100%);
+      color: #0d0a06;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .baroque-date-frame::before,
+    .baroque-date-frame::after {
+      content: '❧';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #0d0a06;
+    }
+
+    .baroque-date-frame::before { left: 0.5rem; }
+    .baroque-date-frame::after { right: 0.5rem; transform: translateY(-50%) scaleX(-1); }
+
+    .baroque-content {
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .baroque-divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      color: #d4af37;
+      font-size: 1.5rem;
+      letter-spacing: 0.5rem;
+      opacity: 0.7;
+    }
+
+    .baroque-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .baroque-section {
+      background: rgba(26, 20, 8, 0.9);
+      border: 2px solid #8b6914;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .baroque-section::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 15px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 60 15' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 7.5Q15 0 30 7.5T60 7.5' fill='none' stroke='%23d4af37' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .baroque-section h3 {
+      color: #d4af37;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #5c4d1d;
+      font-style: italic;
+    }
+
+    .baroque-section p, .baroque-section li {
+      color: #c4a060;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .baroque-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .baroque-section li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      border-bottom: 1px dotted #3d3010;
+    }
+
+    .baroque-section li::before {
+      content: '❦';
+      position: absolute;
+      left: 0;
+      color: #d4af37;
+      font-size: 0.9rem;
+    }
+
+    .baroque-section li:last-child {
+      border-bottom: none;
+    }
+
+    .baroque-full {
+      grid-column: 1 / -1;
+    }
+
+    .baroque-cta {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #251c0d 0%, #3d2f10 50%, #251c0d 100%);
+      border: 3px solid #d4af37;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .baroque-cta::before,
+    .baroque-cta::after {
+      content: '☙';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: #d4af37;
+      opacity: 0.5;
+    }
+
+    .baroque-cta::before { left: 1rem; }
+    .baroque-cta::after { right: 1rem; transform: translateY(-50%) scaleX(-1); }
+
+    .baroque-cta h3 {
+      border-bottom: none;
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .baroque-cta p {
+      font-size: 1.1rem;
+      color: #d4af37;
+    }
+
+    .baroque-footer {
+      background: #0d0a06;
+      border-top: 2px solid #d4af37;
+      padding: 1rem;
+      text-align: center;
+      color: #8b6914;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .prototype-nav {
+        flex-wrap: wrap;
+        padding: 0.5rem 1rem;
+      }
+
+      .prototype-nav a {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+      }
+
+      .medieval-content,
+      .classical-columns,
+      .baroque-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .modern-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .classical-pillars {
+        display: none;
+      }
+
+      .medieval-header::before,
+      .medieval-header::after {
+        display: none;
+      }
+
+      .attendance-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="prototype-nav">
+    <a href="#medieval">Medieval Gothic</a>
+    <a href="#classical">Classical Masonic</a>
+    <a href="#modern">Modern Minimalist</a>
+    <a href="#baroque">Baroque Victorian</a>
+  </nav>
+
+  <!-- Introduction -->
+  <section class="intro-section">
+    <h1>Masonic Lodge Newsletter Prototypes</h1>
+    <p>Four distinct design variations exploring different aesthetic interpretations of Masonic themes for a bi-weekly attendance newsletter. Each design maintains lodge credibility while offering unique visual appeal.</p>
+  </section>
+
+  <!-- ============================================
+       VARIATION 1: MEDIEVAL/RENAISSANCE GOTHIC
+       ============================================ -->
+  <section id="medieval" class="newsletter-section">
+    <div class="section-title">
+      <h2>Variation 1: Medieval/Renaissance Gothic</h2>
+      <p>Blackletter typography, illuminated manuscript aesthetics, aged parchment textures</p>
+    </div>
+
+    <article class="medieval-newsletter">
+      <header class="medieval-header">
+        <h1>The Trestle Board</h1>
+        <div class="subtitle">A Chronicle of Brethren at Labour</div>
+        <div class="date-banner">Fortnight Ending January 12th, A.L. 6026</div>
+      </header>
+
+      <div class="medieval-content">
+        <section class="medieval-section">
+          <h3>Brethren in Attendance</h3>
+          <p>The following Brothers did answer the call of the Worshipful Master at our Stated Communication of January 7th:</p>
+          <div class="attendance-grid">
+            <span>WM Bro. Harrison</span>
+            <span>Bro. Thompson</span>
+            <span>Bro. Mitchell</span>
+            <span>SW Bro. Caldwell</span>
+            <span>Bro. Pemberton</span>
+            <span>Bro. Whitfield</span>
+            <span>JW Bro. Fairfax</span>
+            <span>Bro. Richardson</span>
+            <span>Bro. Ashworth</span>
+            <span>Bro. Sterling</span>
+            <span>Bro. Beaumont</span>
+            <span>Bro. Sinclair</span>
+          </div>
+        </section>
+
+        <section class="medieval-section">
+          <h3>Masonic Education</h3>
+          <p><strong>"The Three Great Pillars"</strong></p>
+          <p>Brother Pemberton delivered most illuminating instruction upon the symbolism of Wisdom, Strength, and Beauty, tracing their origins from King Solomon's Temple unto our modern Craft. The lecture explored how these virtues guide the Mason in his daily conduct and spiritual development.</p>
+        </section>
+
+        <section class="medieval-section medieval-full-width">
+          <h3>Forthcoming Assemblies</h3>
+          <ul>
+            <li><strong>January 21st</strong> — Stated Communication: Second Degree Exemplification</li>
+            <li><strong>January 28th</strong> — Fellowship Supper at the Widow's Son Tavern, 6:00 PM</li>
+            <li><strong>February 4th</strong> — Stated Communication: History of the Scottish Rite</li>
+            <li><strong>February 15th</strong> — Pancake Breakfast Fundraiser for Children's Hospital, 7:00 AM - 11:00 AM</li>
+            <li><strong>February 18th</strong> — Stated Communication: Third Degree Conferral</li>
+          </ul>
+        </section>
+
+        <section class="medieval-section">
+          <h3>Works of Charity</h3>
+          <p>Our Lodge hath raised <strong>$2,340</strong> toward the Widow & Orphan Fund this quarter. Additionally, Brothers volunteered 47 hours at the Community Food Pantry, serving 156 families in need.</p>
+        </section>
+
+        <section class="medieval-section">
+          <h3>From the Secretary</h3>
+          <p>Brethren who have not yet submitted their 2026 dues are kindly requested to do so. Remember that good standing is required for visitation privileges.</p>
+        </section>
+
+        <section class="medieval-section medieval-cta">
+          <h3>A Summons to Labour</h3>
+          <p>"The strength of our Fraternity lies not in the grandeur of our Temple, but in the faithfulness of the Brethren who fill it. Your presence is the mortar that binds us together."</p>
+        </section>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================
+       VARIATION 2: CLASSICAL MASONIC SYMBOLISM
+       ============================================ -->
+  <section id="classical" class="newsletter-section">
+    <div class="section-title">
+      <h2>Variation 2: Classical Masonic Symbolism</h2>
+      <p>Traditional symbols as design elements, deep blue and gold palette, geometric precision</p>
+    </div>
+
+    <article class="classical-newsletter">
+      <header class="classical-header">
+        <div class="classical-pillars left">
+          <div class="pillar-icon">☉</div>
+          <div class="pillar-icon">B</div>
+        </div>
+        <div class="classical-pillars right">
+          <div class="pillar-icon">☽</div>
+          <div class="pillar-icon">J</div>
+        </div>
+        <div class="classical-symbol">⚒</div>
+        <h1>Harmony Lodge</h1>
+        <div class="lodge-number">No. 147 F. & A.M.</div>
+        <div class="edition">Vol. XLII • Issue 2 • January 2026</div>
+      </header>
+
+      <div class="classical-content">
+        <div class="classical-columns">
+          <section class="classical-section">
+            <h3>Roll of Attendance</h3>
+            <ul>
+              <li>WM Robert Harrison</li>
+              <li>SW James Caldwell</li>
+              <li>JW Thomas Fairfax</li>
+              <li>Treas. William Sterling</li>
+              <li>Sec. Charles Mitchell</li>
+              <li>Bros. Thompson, Pemberton, Whitfield, Richardson, Ashworth, Beaumont, Sinclair</li>
+            </ul>
+            <p style="margin-top: 1rem; font-style: italic;">12 Brothers Present — Quorum Achieved</p>
+          </section>
+
+          <section class="classical-section">
+            <h3>Light from the East</h3>
+            <p><strong>Topic:</strong> "The Symbolism of the Three Steps"</p>
+            <p style="margin-top: 0.5rem;">Bro. Richardson presented on the three steps in Masonry representing Youth, Manhood, and Old Age—the stages through which every Mason must pass. The lecture connected these stages to the three degrees and their moral teachings.</p>
+          </section>
+        </div>
+
+        <div class="classical-checkered"></div>
+
+        <div class="classical-columns">
+          <section class="classical-section">
+            <h3>Calendar of Events</h3>
+            <ul>
+              <li><strong>Jan 21</strong> — Stated Meeting: EA Degree</li>
+              <li><strong>Jan 28</strong> — Past Masters Night Dinner</li>
+              <li><strong>Feb 4</strong> — Stated Meeting: Education Night</li>
+              <li><strong>Feb 11</strong> — Lodge of Instruction</li>
+              <li><strong>Feb 15</strong> — Charity Golf Tournament</li>
+              <li><strong>Feb 18</strong> — Stated Meeting: FC Degree</li>
+            </ul>
+          </section>
+
+          <section class="classical-section">
+            <h3>Charity Report</h3>
+            <p><strong>Current Quarter:</strong></p>
+            <ul>
+              <li>Scholarship Fund: $3,200 raised</li>
+              <li>Food Bank: 230 lbs donated</li>
+              <li>CHIP Program: 45 children served</li>
+              <li>Habitat Build: 32 volunteer hours</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="classical-cta">
+          <h3>From the East</h3>
+          <p>"Brethren, our Lodge is strengthened by your presence. Each empty chair diminishes us; each Brother in attendance elevates us all. I look forward to greeting you at our next Communication."</p>
+          <p style="margin-top: 0.5rem;">— WM Robert Harrison</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================
+       VARIATION 3: MODERN MINIMALIST
+       ============================================ -->
+  <section id="modern" class="newsletter-section">
+    <div class="section-title">
+      <h2>Variation 3: Modern Minimalist</h2>
+      <p>Clean typography, strategic whitespace, subtle Masonic accents, professional layout</p>
+    </div>
+
+    <article class="modern-newsletter">
+      <header class="modern-header">
+        <div class="modern-header-content">
+          <div class="modern-logo">
+            <div class="modern-symbol">⚒</div>
+            <div class="modern-title">
+              <h1>Harmony Lodge #147</h1>
+              <div class="tagline">Building Better Men Since 1892</div>
+            </div>
+          </div>
+          <div class="modern-date">
+            <div class="issue">Issue #892</div>
+            <div>January 12, 2026</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="modern-content">
+        <div class="modern-grid">
+          <div class="modern-main">
+            <div class="modern-card">
+              <h3>Featured Education</h3>
+              <h4>The Working Tools of a Fellowcraft</h4>
+              <p>Bro. David Mitchell delivered an engaging presentation on the plumb, square, and level—exploring how these tools guide us toward moral and ethical uprightness in our daily lives. The discussion sparked thoughtful conversation about applying ancient wisdom to modern challenges.</p>
+              <div class="modern-tags">
+                <span class="modern-tag">Symbolism</span>
+                <span class="modern-tag">Second Degree</span>
+                <span class="modern-tag">Ethics</span>
+              </div>
+            </div>
+
+            <div class="modern-card highlight">
+              <h3>Upcoming Events</h3>
+              <ul>
+                <li><strong>Jan 21</strong> — Stated Meeting: First Degree Conferral</li>
+                <li><strong>Jan 25</strong> — Brothers' Night Out (Local Brewery, 7 PM)</li>
+                <li><strong>Feb 4</strong> — Stated Meeting: Grand Lodge Update</li>
+                <li><strong>Feb 15</strong> — Community Pancake Breakfast (7-11 AM)</li>
+                <li><strong>Feb 18</strong> — Stated Meeting: Annual Awards Night</li>
+              </ul>
+            </div>
+
+            <div class="modern-card">
+              <h3>Community Impact</h3>
+              <p>This quarter, our lodge has made significant contributions to our community:</p>
+              <ul>
+                <li>Raised $4,500 for local school supplies</li>
+                <li>Completed Habitat for Humanity build (House #23)</li>
+                <li>Donated 180 pints through blood drive partnership</li>
+                <li>Awarded two $2,500 college scholarships</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modern-sidebar">
+            <div class="modern-stat">
+              <div class="modern-stat-number">12</div>
+              <div class="modern-stat-label">Brothers attended<br>last meeting</div>
+            </div>
+
+            <div class="modern-card">
+              <h3>Attendance</h3>
+              <ul>
+                <li>WM R. Harrison</li>
+                <li>SW J. Caldwell</li>
+                <li>JW T. Fairfax</li>
+                <li>Bro. Thompson</li>
+                <li>Bro. Mitchell</li>
+                <li>Bro. Pemberton</li>
+                <li>Bro. Whitfield</li>
+                <li>Bro. Richardson</li>
+                <li>Bro. Ashworth</li>
+                <li>Bro. Sterling</li>
+                <li>Bro. Beaumont</li>
+                <li>Bro. Sinclair</li>
+              </ul>
+            </div>
+
+            <div class="modern-card highlight">
+              <h3>Quick Links</h3>
+              <ul>
+                <li>Pay Dues Online</li>
+                <li>Event Calendar</li>
+                <li>Member Directory</li>
+                <li>Contact Officers</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modern-cta">
+            <h3>Your Lodge Needs You</h3>
+            <p>Every Brother's presence makes our meetings stronger. We hope to see you on the 21st.</p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="modern-footer">
+        <div>Harmony Lodge #147 F&AM • Est. 1892</div>
+        <div>Questions? secretary@harmonylodge147.org</div>
+      </footer>
+    </article>
+  </section>
+
+  <!-- ============================================
+       VARIATION 4: BAROQUE/VICTORIAN ORNATE
+       ============================================ -->
+  <section id="baroque" class="newsletter-section">
+    <div class="section-title">
+      <h2>Variation 4: Baroque Victorian</h2>
+      <p>Rich embellishments, ornate flourishes, luxurious textures, dramatic gold accents</p>
+    </div>
+
+    <article class="baroque-newsletter">
+      <header class="baroque-header">
+        <div class="baroque-ornament">❧ ❧ ❧</div>
+        <h1>The Ashlar</h1>
+        <div class="subtitle">A Fortnightly Dispatch from Harmony Lodge No. 147</div>
+        <div class="baroque-date-frame">January 12th, 2026</div>
+      </header>
+
+      <div class="baroque-content">
+        <div class="baroque-divider">✦ ❖ ✦</div>
+
+        <div class="baroque-columns">
+          <section class="baroque-section">
+            <h3>Brethren in Attendance</h3>
+            <p>At our most recent Stated Communication, held upon the seventh day of January, the following distinguished Brothers graced our Lodge with their presence:</p>
+            <ul>
+              <li>Worshipful Master Robert Harrison</li>
+              <li>Senior Warden James Caldwell</li>
+              <li>Junior Warden Thomas Fairfax</li>
+              <li>Brothers Thompson, Mitchell, Pemberton, Whitfield, Richardson, Ashworth, Sterling, Beaumont, and Sinclair</li>
+            </ul>
+          </section>
+
+          <section class="baroque-section">
+            <h3>Masonic Enlightenment</h3>
+            <p><em>"The Allegory of the Winding Staircase"</em></p>
+            <p>Brother Beaumont delivered a most eloquent discourse upon the symbolism of the winding stair, exploring its representation of the journey from ignorance to knowledge. His exposition on the seven liberal arts and sciences captivated all present.</p>
+          </section>
+        </div>
+
+        <div class="baroque-divider">☙ ❦ ❧</div>
+
+        <section class="baroque-section baroque-full">
+          <h3>Forthcoming Occasions</h3>
+          <ul>
+            <li><strong>The 21st of January</strong> — Stated Communication with First Degree Conferral upon Mr. Jonathan Wells</li>
+            <li><strong>The 28th of January</strong> — Table Lodge and Festive Board at Seven O'Clock</li>
+            <li><strong>The 4th of February</strong> — Stated Communication featuring Distinguished Speaker from Grand Lodge</li>
+            <li><strong>The 14th of February</strong> — Sweethearts' Dinner at the Grand Ballroom</li>
+            <li><strong>The 15th of February</strong> — Charitable Pancake Breakfast benefiting St. Jude's Children's Hospital</li>
+            <li><strong>The 18th of February</strong> — Stated Communication: Second Degree Exemplification</li>
+          </ul>
+        </section>
+
+        <div class="baroque-divider">✦ ❖ ✦</div>
+
+        <div class="baroque-columns">
+          <section class="baroque-section">
+            <h3>Works of Benevolence</h3>
+            <p>Our charitable endeavours continue to flourish. This quarter we have:</p>
+            <ul>
+              <li>Bestowed $5,000 in scholarships</li>
+              <li>Served 200 meals to those in need</li>
+              <li>Contributed 120 volunteer hours</li>
+              <li>Supported 3 widows of departed Brothers</li>
+            </ul>
+          </section>
+
+          <section class="baroque-section">
+            <h3>Secretarial Notes</h3>
+            <ul>
+              <li>Annual dues now payable — $150</li>
+              <li>New lodge pin available — $15</li>
+              <li>Memorial service: Bro. Hawthorne, Jan 20</li>
+              <li>Update contact info with Secretary</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="baroque-section baroque-cta">
+          <h3>A Personal Appeal</h3>
+          <p>"Dear Brethren, the warmth of our Temple is measured not by the flames upon our altar, but by the fellowship of Brothers gathered round it. Your presence transforms mere ritual into living tradition. We await you with brotherly love."</p>
+          <p style="margin-top: 0.5rem; font-size: 0.9rem;">— With Fraternal Regards, WM Robert Harrison</p>
+        </section>
+      </div>
+
+      <footer class="baroque-footer">
+        "Virtue is its own reward" • Harmony Lodge No. 147 F. & A.M.
+      </footer>
+    </article>
+  </section>
+
+  <script>
+    // Smooth scrolling for navigation
+    document.querySelectorAll('.prototype-nav a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

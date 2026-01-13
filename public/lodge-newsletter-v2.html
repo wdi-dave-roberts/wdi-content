@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masonic Lodge Newsletter Prototypes v2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f0f1a;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    .prototype-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 15, 26, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .prototype-nav a {
+      color: #d4af37;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      transition: all 0.3s;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .prototype-nav a:hover {
+      border-color: #d4af37;
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .intro-section {
+      padding: 6rem 2rem 3rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .intro-section h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+
+    .intro-section p {
+      color: #888;
+      font-size: 1rem;
+    }
+
+    .newsletter-section {
+      padding: 3rem 2rem 6rem;
+      min-height: 100vh;
+    }
+
+    .section-label {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-label h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-label p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* ============================================
+       VARIATION 1: DASHBOARD COMMAND CENTER
+       ============================================ */
+    .dashboard-newsletter {
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1a1f2e 0%, #151a28 100%);
+      border-radius: 16px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+    }
+
+    .dashboard-header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d1f35 100%);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .dashboard-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .dashboard-logo {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #d4af37, #aa8a2e);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #1a1f2e;
+    }
+
+    .dashboard-title h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .dashboard-title span {
+      font-size: 0.75rem;
+      color: #6b8bb8;
+    }
+
+    .dashboard-date {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #6b8bb8;
+    }
+
+    .dashboard-date strong {
+      display: block;
+      color: #d4af37;
+      font-weight: 600;
+    }
+
+    /* Hero Stats Section */
+    .dashboard-hero {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .progress-ring-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-ring {
+      position: relative;
+      width: 180px;
+      height: 180px;
+    }
+
+    .progress-ring svg {
+      transform: rotate(-90deg);
+      width: 180px;
+      height: 180px;
+    }
+
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 12;
+    }
+
+    .progress-ring .bg {
+      stroke: #2a3548;
+    }
+
+    .progress-ring .progress {
+      stroke: url(#goldGradient);
+      stroke-linecap: round;
+      stroke-dasharray: 502;
+      stroke-dashoffset: 166; /* 502 * (1 - 0.67) */
+      transition: stroke-dashoffset 1s ease;
+    }
+
+    .progress-ring-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .progress-ring-text .percentage {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #d4af37;
+      line-height: 1;
+    }
+
+    .progress-ring-text .label {
+      font-size: 0.7rem;
+      color: #6b8bb8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .progress-ring-title {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+    }
+
+    .progress-ring-subtitle {
+      font-size: 0.75rem;
+      color: #6b8bb8;
+    }
+
+    /* Category Progress Bars */
+    .category-progress {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .category-progress h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #6b8bb8;
+      margin-bottom: 0.25rem;
+    }
+
+    .category-item {
+      display: grid;
+      grid-template-columns: 100px 1fr 50px;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .category-name {
+      font-size: 0.8rem;
+      color: #a0b4cc;
+    }
+
+    .category-bar {
+      height: 8px;
+      background: #2a3548;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .category-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .category-bar-fill.complete { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .category-bar-fill.progress { background: linear-gradient(90deg, #d4af37, #f4d03f); }
+    .category-bar-fill.low { background: linear-gradient(90deg, #f97316, #fb923c); }
+
+    .category-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #d4af37;
+      text-align: right;
+    }
+
+    /* Achievement Callout */
+    .achievement-callout {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .achievement-callout h4 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+
+    .achievement-callout p {
+      font-size: 0.85rem;
+      color: #c4d4e8;
+    }
+
+    .achievement-callout strong {
+      color: #d4af37;
+    }
+
+    /* Content Grid */
+    .dashboard-content {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .dashboard-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .dashboard-card h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #6b8bb8;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dashboard-card h3::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #d4af37;
+      border-radius: 2px;
+    }
+
+    .dashboard-card p {
+      font-size: 0.9rem;
+      color: #a0b4cc;
+      line-height: 1.7;
+    }
+
+    .dashboard-card ul {
+      list-style: none;
+    }
+
+    .dashboard-card li {
+      font-size: 0.85rem;
+      color: #a0b4cc;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dashboard-card li:last-child {
+      border-bottom: none;
+    }
+
+    .dashboard-card li strong {
+      color: #d4af37;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #d4af37;
+    }
+
+    .stat-item .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6b8bb8;
+    }
+
+    .attendance-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.3rem;
+    }
+
+    .attendance-grid span {
+      font-size: 0.8rem;
+      color: #a0b4cc;
+    }
+
+    .dashboard-cta {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d1f35 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .dashboard-cta h3::before {
+      display: none;
+    }
+
+    .dashboard-cta h3 {
+      justify-content: center;
+      color: #d4af37;
+      font-size: 0.9rem;
+    }
+
+    .dashboard-cta p {
+      color: #c4d4e8;
+    }
+
+    .pdf-link {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid #d4af37;
+      border-radius: 6px;
+      color: #d4af37;
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .pdf-link:hover {
+      background: rgba(212, 175, 55, 0.3);
+    }
+
+    /* ============================================
+       VARIATION 2: JOURNEY MAP TIMELINE
+       ============================================ */
+    .journey-newsletter {
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #faf8f5 0%, #f5f2ed 100%);
+      font-family: 'Playfair Display', serif;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .journey-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L30 60M0 30L60 30' stroke='%23d4af37' stroke-width='0.3' opacity='0.08'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .journey-header {
+      background: linear-gradient(135deg, #1a365d 0%, #0f2442 100%);
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      border-bottom: 4px solid #d4af37;
+    }
+
+    .journey-header h1 {
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .journey-header .subtitle {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: #d4af37;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .journey-header .date {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #8aa8c7;
+      margin-top: 0.5rem;
+    }
+
+    .journey-content {
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Timeline */
+    .journey-timeline {
+      position: relative;
+      padding: 2rem 0;
+    }
+
+    .journey-timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, #d4af37 0%, #d4af37 67%, #e0e0e0 67%, #e0e0e0 100%);
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .timeline-item:nth-child(odd) {
+      flex-direction: row;
+    }
+
+    .timeline-item:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .timeline-content {
+      width: calc(50% - 40px);
+      background: #fff;
+      padding: 1.25rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid #e8e4de;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content {
+      margin-right: auto;
+      text-align: right;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+      margin-left: auto;
+      text-align: left;
+    }
+
+    .timeline-node {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      z-index: 2;
+    }
+
+    .timeline-node.complete {
+      background: #d4af37;
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.3);
+    }
+
+    .timeline-node.incomplete {
+      background: #e0e0e0;
+      border-color: #f5f2ed;
+    }
+
+    .timeline-node.current {
+      background: #fff;
+      border: 3px solid #d4af37;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+    }
+
+    .timeline-content h3 {
+      font-size: 1rem;
+      color: #1a365d;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-content p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .timeline-content .hero-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #d4af37, #f4d03f);
+      color: #1a365d;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    .timeline-content .status {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-content .status.complete { color: #22c55e; }
+    .timeline-content .status.in-progress { color: #d4af37; }
+    .timeline-content .status.upcoming { color: #94a3b8; }
+
+    /* Journey Sidebar Panels */
+    .journey-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .journey-panel {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid #e8e4de;
+    }
+
+    .journey-panel h3 {
+      font-size: 0.9rem;
+      color: #1a365d;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #d4af37;
+    }
+
+    .journey-panel p, .journey-panel li {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .journey-panel ul {
+      list-style: none;
+    }
+
+    .journey-panel li {
+      padding: 0.4rem 0;
+      border-bottom: 1px dotted #e0e0e0;
+    }
+
+    .journey-panel li:last-child {
+      border-bottom: none;
+    }
+
+    .journey-cta {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #1a365d 0%, #0f2442 100%);
+      text-align: center;
+      padding: 1.5rem;
+      color: #fff;
+    }
+
+    .journey-cta h3 {
+      color: #d4af37;
+      border-bottom: none;
+    }
+
+    .journey-cta p {
+      color: #c4d8ec;
+    }
+
+    /* ============================================
+       VARIATION 3: ACHIEVEMENT BOARD GAMIFIED
+       ============================================ */
+    .achievement-newsletter {
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+      font-family: 'Montserrat', sans-serif;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .achievement-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .achievement-header {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, transparent 100%);
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .achievement-header .lodge-level {
+      display: inline-block;
+      background: linear-gradient(135deg, #d4af37, #f4d03f);
+      color: #1a0a2e;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .achievement-header h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .achievement-header .subtitle {
+      font-size: 0.85rem;
+      color: #a78bfa;
+    }
+
+    /* XP Bar */
+    .xp-bar-container {
+      margin-top: 1.5rem;
+      padding: 0 2rem;
+    }
+
+    .xp-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #a78bfa;
+      margin-bottom: 0.5rem;
+    }
+
+    .xp-bar {
+      height: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .xp-bar-fill {
+      height: 100%;
+      width: 67%;
+      background: linear-gradient(90deg, #d4af37, #f4d03f, #d4af37);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .xp-bar-fill::after {
+      content: '67%';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #1a0a2e;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .achievement-content {
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Achievement Grid */
+    .achievements-unlocked {
+      margin-bottom: 2rem;
+    }
+
+    .achievements-unlocked h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #d4af37;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .achievements-unlocked h2::before {
+      content: '🏆';
+    }
+
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .achievement-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .achievement-card.unlocked {
+      border-color: rgba(212, 175, 55, 0.5);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+    }
+
+    .achievement-card.unlocked::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #d4af37, #f4d03f);
+    }
+
+    .achievement-card.locked {
+      opacity: 0.5;
+    }
+
+    .achievement-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .achievement-card h4 {
+      font-size: 0.85rem;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .achievement-card p {
+      font-size: 0.7rem;
+      color: #a78bfa;
+    }
+
+    .achievement-card .hero {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.3);
+      color: #d4af37;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    /* Stats Cards */
+    .achievement-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .achievement-stat {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .achievement-stat .icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .achievement-stat .value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #d4af37;
+    }
+
+    .achievement-stat .label {
+      font-size: 0.65rem;
+      color: #a78bfa;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Info Cards */
+    .achievement-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .info-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .info-card h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #a78bfa;
+      margin-bottom: 1rem;
+    }
+
+    .info-card p {
+      font-size: 0.85rem;
+      color: #c4b5fd;
+      line-height: 1.7;
+    }
+
+    .info-card ul {
+      list-style: none;
+    }
+
+    .info-card li {
+      font-size: 0.8rem;
+      color: #c4b5fd;
+      padding: 0.4rem 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .info-card li strong {
+      color: #d4af37;
+    }
+
+    .achievement-cta {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(147, 51, 234, 0.2));
+      border: 2px solid #d4af37;
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    .achievement-cta h3 {
+      color: #d4af37;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .achievement-cta p {
+      color: #c4b5fd;
+      font-size: 0.9rem;
+    }
+
+    /* ============================================
+       VARIATION 4: CLASSIC BROADSHEET
+       ============================================ */
+    .broadsheet-newsletter {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fffef8;
+      font-family: 'Crimson Text', serif;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .broadsheet-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 20L100 180M20 100L180 100' stroke='%23d4af37' stroke-width='0.3' opacity='0.05'/%3E%3Ccircle cx='100' cy='100' r='60' fill='none' stroke='%23d4af37' stroke-width='0.3' opacity='0.05'/%3E%3C/svg%3E") center/400px repeat;
+      pointer-events: none;
+    }
+
+    .broadsheet-header {
+      background: linear-gradient(180deg, #1a2a3a 0%, #0d1a28 100%);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      border-bottom: 4px double #d4af37;
+      position: relative;
+    }
+
+    .broadsheet-masthead {
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .broadsheet-masthead h1 {
+      font-size: 2.5rem;
+      color: #fff;
+      letter-spacing: 4px;
+    }
+
+    .broadsheet-masthead .tagline {
+      font-size: 0.85rem;
+      color: #d4af37;
+      font-style: italic;
+    }
+
+    .broadsheet-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #8aa8c7;
+    }
+
+    .broadsheet-content {
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Three Column Layout */
+    .broadsheet-columns {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    .broadsheet-main {
+      border-right: 1px solid #e0dcd4;
+      padding-right: 2rem;
+    }
+
+    .broadsheet-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Drop Cap */
+    .drop-cap::first-letter {
+      float: left;
+      font-size: 4rem;
+      line-height: 0.8;
+      padding-right: 0.5rem;
+      color: #d4af37;
+      font-weight: 700;
+    }
+
+    /* Article Styles */
+    .broadsheet-article {
+      margin-bottom: 2rem;
+    }
+
+    .broadsheet-article h2 {
+      font-size: 1.4rem;
+      color: #1a2a3a;
+      margin-bottom: 0.75rem;
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 0.5rem;
+    }
+
+    .broadsheet-article p {
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.8;
+      text-align: justify;
+      margin-bottom: 1rem;
+    }
+
+    .broadsheet-article h3 {
+      font-size: 1.1rem;
+      color: #1a2a3a;
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    /* Pull Quote */
+    .pull-quote {
+      border-left: 4px solid #d4af37;
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), transparent);
+    }
+
+    .pull-quote p {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: #1a2a3a;
+      text-align: left;
+    }
+
+    .pull-quote cite {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.5rem;
+      font-style: normal;
+    }
+
+    /* Sidebar Box */
+    .sidebar-box {
+      background: #f8f6f0;
+      border: 1px solid #e0dcd4;
+      padding: 1.25rem;
+    }
+
+    .sidebar-box h3 {
+      font-size: 0.9rem;
+      color: #1a2a3a;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #d4af37;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+    }
+
+    .sidebar-box ul {
+      list-style: none;
+    }
+
+    .sidebar-box li {
+      font-size: 0.9rem;
+      color: #444;
+      padding: 0.5rem 0;
+      border-bottom: 1px dotted #d0ccc4;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .sidebar-box li:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-box li::before {
+      content: '✓';
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    .sidebar-box li.pending::before {
+      content: '○';
+      color: #d4af37;
+    }
+
+    /* Heroes Box */
+    .heroes-box {
+      background: linear-gradient(135deg, #1a2a3a 0%, #0d1a28 100%);
+      border: 2px solid #d4af37;
+      padding: 1.25rem;
+      color: #fff;
+    }
+
+    .heroes-box h3 {
+      color: #d4af37;
+      border-bottom-color: rgba(212, 175, 55, 0.5);
+    }
+
+    .heroes-box p {
+      font-size: 0.9rem;
+      color: #c4d8ec;
+      line-height: 1.7;
+    }
+
+    .heroes-box strong {
+      color: #d4af37;
+    }
+
+    /* Events List */
+    .events-list li {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .events-list li::before {
+      display: none;
+    }
+
+    .events-list .date {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #d4af37;
+    }
+
+    .events-list .event-name {
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    /* Broadsheet Footer */
+    .broadsheet-footer {
+      background: linear-gradient(180deg, #1a2a3a 0%, #0d1a28 100%);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      border-top: 4px double #d4af37;
+    }
+
+    .broadsheet-footer p {
+      font-size: 1rem;
+      color: #d4af37;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+
+    .broadsheet-footer .small {
+      font-size: 0.8rem;
+      color: #8aa8c7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .prototype-nav {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+      }
+
+      .prototype-nav a {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.5rem;
+      }
+
+      .dashboard-hero,
+      .dashboard-content,
+      .journey-panels,
+      .achievement-grid,
+      .achievement-stats,
+      .achievement-info,
+      .broadsheet-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .category-item {
+        grid-template-columns: 80px 1fr 40px;
+      }
+
+      .timeline-item {
+        flex-direction: column !important;
+        padding-left: 40px;
+      }
+
+      .timeline-content {
+        width: 100% !important;
+        text-align: left !important;
+      }
+
+      .timeline-node {
+        left: 0;
+        transform: none;
+      }
+
+      .journey-timeline::before {
+        left: 12px;
+      }
+
+      .broadsheet-main {
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 1px solid #e0dcd4;
+        padding-bottom: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- SVG Definitions -->
+  <svg width="0" height="0">
+    <defs>
+      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#d4af37"/>
+        <stop offset="50%" style="stop-color:#f4d03f"/>
+        <stop offset="100%" style="stop-color:#d4af37"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Navigation -->
+  <nav class="prototype-nav">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#journey">Journey Map</a>
+    <a href="#achievement">Achievement Board</a>
+    <a href="#broadsheet">Classic Broadsheet</a>
+  </nav>
+
+  <!-- Introduction -->
+  <section class="intro-section">
+    <h1>Lodge Newsletter Prototypes v2</h1>
+    <p>Four distinct designs featuring Lion and Pillar progress tracking, optimized for driving brother attendance. Each scannable in under 60 seconds.</p>
+  </section>
+
+  <!-- ============================================
+       VARIATION 1: DASHBOARD COMMAND CENTER
+       ============================================ -->
+  <section id="dashboard" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 1: Dashboard Command Center</h2>
+      <p>Modern metrics dashboard with progress rings and data visualization</p>
+    </div>
+
+    <article class="dashboard-newsletter">
+      <header class="dashboard-header">
+        <div class="dashboard-brand">
+          <div class="dashboard-logo">⚒</div>
+          <div class="dashboard-title">
+            <h1>Manteo Lodge #521</h1>
+            <span>North Carolina • F. & A.M.</span>
+          </div>
+        </div>
+        <div class="dashboard-date">
+          <strong>Issue #42</strong>
+          January 12, 2026
+        </div>
+      </header>
+
+      <div class="dashboard-hero">
+        <div class="progress-ring-container">
+          <div class="progress-ring">
+            <svg viewBox="0 0 180 180">
+              <circle class="bg" cx="90" cy="90" r="80"/>
+              <circle class="progress" cx="90" cy="90" r="80"/>
+            </svg>
+            <div class="progress-ring-text">
+              <div class="percentage">67%</div>
+              <div class="label">Complete</div>
+            </div>
+          </div>
+          <div class="progress-ring-title">Lion and Pillar Excellence</div>
+          <div class="progress-ring-subtitle">15 of 22 requirements met</div>
+        </div>
+
+        <div class="category-progress">
+          <h3>Category Progress</h3>
+          <div class="category-item">
+            <span class="category-name">Mandatory</span>
+            <div class="category-bar"><div class="category-bar-fill progress" style="width: 83%"></div></div>
+            <span class="category-count">5/6</span>
+          </div>
+          <div class="category-item">
+            <span class="category-name">Education</span>
+            <div class="category-bar"><div class="category-bar-fill complete" style="width: 100%"></div></div>
+            <span class="category-count">3/3</span>
+          </div>
+          <div class="category-item">
+            <span class="category-name">Patriotism</span>
+            <div class="category-bar"><div class="category-bar-fill low" style="width: 50%"></div></div>
+            <span class="category-count">2/4</span>
+          </div>
+          <div class="category-item">
+            <span class="category-name">Philanthropy</span>
+            <div class="category-bar"><div class="category-bar-fill complete" style="width: 100%"></div></div>
+            <span class="category-count">2/2</span>
+          </div>
+          <div class="category-item">
+            <span class="category-name">Membership</span>
+            <div class="category-bar"><div class="category-bar-fill low" style="width: 33%"></div></div>
+            <span class="category-count">1/3</span>
+          </div>
+          <div class="category-item">
+            <span class="category-name">Affiliated</span>
+            <div class="category-bar"><div class="category-bar-fill low" style="width: 50%"></div></div>
+            <span class="category-count">2/4</span>
+          </div>
+
+          <div class="achievement-callout">
+            <h4>Recent Achievement</h4>
+            <p><strong>Bro. Mitchell</strong> completed our VA hospital visit, earning credit for Patriotism Category Item 2. <strong>Bro. Caldwell</strong> attended Wilkerson College!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-content">
+        <div class="dashboard-card">
+          <h3>Charitable Impact</h3>
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="number">$2,340</div>
+              <div class="label">Raised</div>
+            </div>
+            <div class="stat-item">
+              <div class="number">47</div>
+              <div class="label">Hours</div>
+            </div>
+            <div class="stat-item">
+              <div class="number">156</div>
+              <div class="label">Families</div>
+            </div>
+          </div>
+          <p>Community Food Pantry partnership continues strong. Next volunteer day: January 25th.</p>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Upcoming Events</h3>
+          <ul>
+            <li><span>Jan 21</span> <strong>Stated Meeting: EA Degree</strong></li>
+            <li><span>Jan 28</span> <strong>Table Lodge Dinner</strong></li>
+            <li><span>Feb 4</span> <strong>Stated Meeting: Education</strong></li>
+            <li><span>Feb 15</span> <strong>Pancake Breakfast</strong></li>
+          </ul>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Last Meeting Education</h3>
+          <p><strong>"The Working Tools of a Fellowcraft"</strong></p>
+          <p>Bro. Richardson explored the plumb, square, and level—connecting ancient tools to modern ethical living. Discussion followed on applying these principles at work and home.</p>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Attendance — Jan 7</h3>
+          <div class="attendance-grid">
+            <span>WM R. Harrison</span>
+            <span>Bro. Pemberton</span>
+            <span>SW J. Caldwell</span>
+            <span>Bro. Whitfield</span>
+            <span>JW T. Fairfax</span>
+            <span>Bro. Richardson</span>
+            <span>Bro. Thompson</span>
+            <span>Bro. Ashworth</span>
+            <span>Bro. Mitchell</span>
+            <span>Bro. Sterling</span>
+            <span>Bro. Beaumont</span>
+            <span>Bro. Sinclair</span>
+          </div>
+        </div>
+
+        <div class="dashboard-card dashboard-cta">
+          <h3>We Need 2 More Patriotism Items</h3>
+          <p>Can you help? Volunteer for Wreaths Across America (Feb 22) or perform a Toast to the Flag at our next meeting. Every brother's contribution moves us toward Excellence.</p>
+          <a href="Lion_and_Pillar_Application_2025.pdf" class="pdf-link">View Full Award Criteria (PDF)</a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================
+       VARIATION 2: JOURNEY MAP TIMELINE
+       ============================================ -->
+  <section id="journey" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 2: Journey Map Timeline</h2>
+      <p>Visual roadmap with milestone markers and achievement badges</p>
+    </div>
+
+    <article class="journey-newsletter">
+      <header class="journey-header">
+        <h1>Manteo Lodge #521</h1>
+        <div class="subtitle">Our Journey to Excellence</div>
+        <div class="date">Bi-Weekly Update • January 12, 2026</div>
+      </header>
+
+      <div class="journey-content">
+        <div class="journey-timeline">
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="status complete">Complete</div>
+              <h3>Mandatory Foundation</h3>
+              <p>Donated to MHCO, WhiteStone, and NC Masonic Foundation. Veterans recognized at every meeting.</p>
+              <span class="hero-badge">5 of 6 Items Done</span>
+            </div>
+            <div class="timeline-node complete"></div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="status complete">Complete</div>
+              <h3>Education Excellence</h3>
+              <p>Bro. Caldwell attended Wilkerson College. Book club established. Regular ritual discussions ongoing.</p>
+              <span class="hero-badge">Bro. Caldwell</span>
+            </div>
+            <div class="timeline-node complete"></div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="status in-progress">In Progress</div>
+              <h3>Patriotism</h3>
+              <p>VA hospital visit complete (thanks Bro. Mitchell!). Need: Wreaths Across America + Toast to Flag.</p>
+              <span class="hero-badge">Bro. Mitchell</span>
+            </div>
+            <div class="timeline-node current"></div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="status in-progress">In Progress</div>
+              <h3>Membership Growth</h3>
+              <p>Widow appreciation dinner planned for Feb. Need: District event participation + Grandview updates.</p>
+            </div>
+            <div class="timeline-node current"></div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="status upcoming">Upcoming</div>
+              <h3>Lion and Pillar Award</h3>
+              <p>Target: June 30, 2026. We're 67% there—just 7 more items to complete!</p>
+            </div>
+            <div class="timeline-node incomplete"></div>
+          </div>
+        </div>
+
+        <div class="journey-panels">
+          <div class="journey-panel">
+            <h3>Last Meeting Education</h3>
+            <p><strong>"The Working Tools of a Fellowcraft"</strong></p>
+            <p>Bro. Richardson delivered an engaging presentation on the plumb, square, and level—exploring how these tools guide us toward moral uprightness in daily life.</p>
+          </div>
+
+          <div class="journey-panel">
+            <h3>Brothers Present — Jan 7</h3>
+            <ul>
+              <li>WM R. Harrison, SW J. Caldwell, JW T. Fairfax</li>
+              <li>Bros. Thompson, Mitchell, Pemberton, Whitfield</li>
+              <li>Bros. Richardson, Ashworth, Sterling, Beaumont, Sinclair</li>
+            </ul>
+            <p style="margin-top: 0.5rem; font-style: italic;">12 Brothers in attendance</p>
+          </div>
+
+          <div class="journey-panel">
+            <h3>Upcoming Events</h3>
+            <ul>
+              <li><strong>Jan 21</strong> — Stated Meeting: EA Degree Conferral</li>
+              <li><strong>Jan 28</strong> — Table Lodge Dinner, 6:30 PM</li>
+              <li><strong>Feb 4</strong> — Stated Meeting: Grand Lodge Update</li>
+              <li><strong>Feb 15</strong> — Community Pancake Breakfast, 7-11 AM</li>
+            </ul>
+          </div>
+
+          <div class="journey-panel">
+            <h3>Charitable Impact</h3>
+            <p><strong>$2,340</strong> raised this quarter for community causes. <strong>47 hours</strong> volunteered at the Food Pantry, serving <strong>156 families</strong>.</p>
+            <p style="margin-top: 0.5rem;">Pancake Breakfast proceeds benefit the Masonic Home for Children.</p>
+          </div>
+
+          <div class="journey-panel journey-cta">
+            <h3>Your Journey Matters</h3>
+            <p>Every brother who attends strengthens our lodge. We're 7 items away from Excellence—your participation in the Wreaths Across America event or a Toast to the Flag could be the milestone we need.</p>
+            <p style="margin-top: 0.75rem;"><a href="Lion_and_Pillar_Application_2025.pdf" style="color: #d4af37;">View complete award criteria (PDF)</a></p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================
+       VARIATION 3: ACHIEVEMENT BOARD GAMIFIED
+       ============================================ -->
+  <section id="achievement" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 3: Achievement Board</h2>
+      <p>Gamified trophy case with badges, XP bar, and unlocked achievements</p>
+    </div>
+
+    <article class="achievement-newsletter">
+      <header class="achievement-header">
+        <div class="lodge-level">Level 67 — Advancing</div>
+        <h1>Manteo Lodge #521</h1>
+        <div class="subtitle">Achievement Unlocked: January 12, 2026</div>
+        <div class="xp-bar-container">
+          <div class="xp-bar-label">
+            <span>Progress to Lion and Pillar Excellence</span>
+            <span>15 / 22 Achievements</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-bar-fill"></div>
+          </div>
+        </div>
+      </header>
+
+      <div class="achievement-content">
+        <div class="achievements-unlocked">
+          <h2>Recent Achievements Unlocked</h2>
+          <div class="achievement-grid">
+            <div class="achievement-card unlocked">
+              <div class="achievement-icon">🎖️</div>
+              <h4>VA Hospital Hero</h4>
+              <p>Patriotism Category</p>
+              <span class="hero">Bro. Mitchell</span>
+            </div>
+            <div class="achievement-card unlocked">
+              <div class="achievement-icon">📚</div>
+              <h4>Scholar's Path</h4>
+              <p>Wilkerson College</p>
+              <span class="hero">Bro. Caldwell</span>
+            </div>
+            <div class="achievement-card unlocked">
+              <div class="achievement-icon">💰</div>
+              <h4>Triple Donor</h4>
+              <p>All 3 Masonic Charities</p>
+              <span class="hero">Lodge Effort</span>
+            </div>
+            <div class="achievement-card locked">
+              <div class="achievement-icon">🎺</div>
+              <h4>Toast Master</h4>
+              <p>First Toast to Flag</p>
+            </div>
+            <div class="achievement-card locked">
+              <div class="achievement-icon">🎗️</div>
+              <h4>Wreath Layer</h4>
+              <p>Wreaths Across America</p>
+            </div>
+            <div class="achievement-card locked">
+              <div class="achievement-icon">🏆</div>
+              <h4>Excellence Award</h4>
+              <p>Complete All Categories</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="achievement-stats">
+          <div class="achievement-stat">
+            <div class="icon">👥</div>
+            <div class="value">12</div>
+            <div class="label">Brothers Present</div>
+          </div>
+          <div class="achievement-stat">
+            <div class="icon">💵</div>
+            <div class="value">$2,340</div>
+            <div class="label">Raised</div>
+          </div>
+          <div class="achievement-stat">
+            <div class="icon">⏱️</div>
+            <div class="value">47</div>
+            <div class="label">Volunteer Hours</div>
+          </div>
+          <div class="achievement-stat">
+            <div class="icon">👨‍👩‍👧‍👦</div>
+            <div class="value">156</div>
+            <div class="label">Families Served</div>
+          </div>
+        </div>
+
+        <div class="achievement-info">
+          <div class="info-card">
+            <h3>Last Session Education</h3>
+            <p><strong>"The Working Tools of a Fellowcraft"</strong></p>
+            <p>Bro. Richardson guided us through the plumb, square, and level—ancient tools with timeless lessons for ethical living. +50 XP to all who attended!</p>
+          </div>
+
+          <div class="info-card">
+            <h3>Upcoming Quests</h3>
+            <ul>
+              <li><span>Jan 21</span> <strong>Stated Meeting: EA Degree</strong></li>
+              <li><span>Jan 28</span> <strong>Table Lodge Dinner</strong></li>
+              <li><span>Feb 4</span> <strong>Grand Lodge Update</strong></li>
+              <li><span>Feb 15</span> <strong>Pancake Breakfast</strong></li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3>Party Members — Jan 7</h3>
+            <ul>
+              <li>WM Harrison, SW Caldwell, JW Fairfax</li>
+              <li>Bros. Thompson, Mitchell, Pemberton</li>
+              <li>Bros. Whitfield, Richardson, Ashworth</li>
+              <li>Bros. Sterling, Beaumont, Sinclair</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3>Unlock Next Achievement</h3>
+            <p><strong>Toast Master</strong> — Be the first brother to perform a Toast to the Flag at our next meeting. This rare achievement unlocks Patriotism progress!</p>
+            <p style="margin-top: 0.5rem;"><a href="Lion_and_Pillar_Application_2025.pdf" style="color: #d4af37;">Full Achievement Guide (PDF)</a></p>
+          </div>
+
+          <div class="achievement-cta">
+            <h3>Join the Quest for Excellence</h3>
+            <p>We're 7 achievements away from the Lion and Pillar Award. Your presence at the next meeting adds +100 XP to our lodge score. See you January 21st!</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================
+       VARIATION 4: CLASSIC BROADSHEET
+       ============================================ -->
+  <section id="broadsheet" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 4: Classic Broadsheet</h2>
+      <p>Traditional newspaper columns with elegant gold accents and pull quotes</p>
+    </div>
+
+    <article class="broadsheet-newsletter">
+      <header class="broadsheet-header">
+        <div class="broadsheet-masthead">
+          <h1>The Manteo Mason</h1>
+          <div class="tagline">A Bi-Weekly Chronicle of Manteo Lodge #521, F. & A.M. of North Carolina</div>
+        </div>
+        <div class="broadsheet-meta">
+          <span>Vol. XLII, No. 2</span>
+          <span>January 12, 2026</span>
+          <span>Est. 1892</span>
+        </div>
+      </header>
+
+      <div class="broadsheet-content">
+        <div class="broadsheet-columns">
+          <div class="broadsheet-main">
+            <article class="broadsheet-article">
+              <h2>Lodge Advances to 67% on Path to Excellence Award</h2>
+              <p class="drop-cap">Manteo Lodge continues its steady march toward the prestigious Lion and Pillar Lodge of Excellence Award, having now completed fifteen of the twenty-two requirements needed for recognition at the Grand Lodge Annual Communication.</p>
+              <p>The past fortnight has seen significant progress. Brother David Mitchell organized and led a successful visitation to the VA Medical Center in Durham, where lodge members spent an afternoon with veterans in the rehabilitation ward. This effort secured completion of Patriotism Category Item 2.</p>
+              <p>Meanwhile, Brother James Caldwell returned from Wilkerson College with renewed enthusiasm for Masonic education, having spent a weekend immersed in the deeper teachings of the Craft. His attendance fulfills Education Category Item 3.</p>
+
+              <div class="pull-quote">
+                <p>"Every brother who walks through our lodge door strengthens the bonds of our fraternity. We are but seven items from Excellence—and each of you holds the key."</p>
+                <cite>— Worshipful Master Robert Harrison</cite>
+              </div>
+
+              <h3>The Working Tools Illuminated</h3>
+              <p>At our January 7th Communication, Brother Thomas Richardson delivered a masterful presentation on "The Working Tools of a Fellowcraft." His exploration of the plumb, square, and level drew connections between the operative tools of ancient stonemasons and the speculative lessons they teach modern Masons about moral uprightness, fair dealing, and equality before the Great Architect.</p>
+              <p>The ensuing discussion proved lively, with several brothers sharing personal reflections on applying these principles in their professional lives. Such exchanges remind us why attendance matters—the education continues well after the lecture concludes.</p>
+            </article>
+
+            <article class="broadsheet-article">
+              <h2>Charitable Works Continue Strong</h2>
+              <p>Our partnership with the Community Food Pantry has yielded remarkable results this quarter: forty-seven volunteer hours contributed, one hundred fifty-six families served, and $2,340 raised for operational support. The February 15th Pancake Breakfast will benefit the Masonic Home for Children at Oxford.</p>
+            </article>
+          </div>
+
+          <div class="broadsheet-sidebar">
+            <div class="sidebar-box heroes-box">
+              <h3>This Month's Heroes</h3>
+              <p><strong>Bro. David Mitchell</strong> — Organized VA hospital visitation, securing Patriotism credit</p>
+              <p style="margin-top: 0.75rem;"><strong>Bro. James Caldwell</strong> — Attended Wilkerson College, completing Education requirement</p>
+            </div>
+
+            <div class="sidebar-box">
+              <h3>Lion and Pillar Progress</h3>
+              <ul>
+                <li>Mandatory Items (5/6)</li>
+                <li>Education Category (3/3)</li>
+                <li>Philanthropy Category (2/2)</li>
+                <li class="pending">Patriotism Category (2/4)</li>
+                <li class="pending">Membership Category (1/3)</li>
+                <li class="pending">Affiliated Category (2/4)</li>
+              </ul>
+              <p style="margin-top: 0.75rem; font-size: 0.8rem;"><a href="Lion_and_Pillar_Application_2025.pdf" style="color: #1a2a3a;">View full criteria (PDF)</a></p>
+            </div>
+
+            <div class="sidebar-box">
+              <h3>Upcoming Events</h3>
+              <ul class="events-list">
+                <li>
+                  <span class="date">January 21</span>
+                  <span class="event-name">Stated Meeting — EA Degree</span>
+                </li>
+                <li>
+                  <span class="date">January 28</span>
+                  <span class="event-name">Table Lodge Dinner, 6:30 PM</span>
+                </li>
+                <li>
+                  <span class="date">February 4</span>
+                  <span class="event-name">Stated Meeting — Grand Lodge Update</span>
+                </li>
+                <li>
+                  <span class="date">February 15</span>
+                  <span class="event-name">Pancake Breakfast, 7-11 AM</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="sidebar-box">
+              <h3>In Attendance — Jan 7</h3>
+              <p style="font-size: 0.85rem; color: #555; line-height: 1.6;">WM R. Harrison, SW J. Caldwell, JW T. Fairfax, Bros. Thompson, Mitchell, Pemberton, Whitfield, Richardson, Ashworth, Sterling, Beaumont, Sinclair</p>
+              <p style="margin-top: 0.5rem; font-style: italic; font-size: 0.85rem;">12 Brothers Present</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="broadsheet-footer">
+        <p>"The strength of our Craft lies not in grand temples, but in faithful brethren."</p>
+        <div class="small">We need your presence on January 21st — help us complete our journey to Excellence.</div>
+      </footer>
+    </article>
+  </section>
+
+  <script>
+    // Smooth scrolling for navigation
+    document.querySelectorAll('.prototype-nav a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

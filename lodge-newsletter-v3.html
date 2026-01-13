@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masonic Lodge Newsletter Prototypes v3 - Manteo Lodge #521</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&family=Archivo+Narrow:wght@400;500;600;700&family=Poiret+One&family=Bebas+Neue&family=Satisfy&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Source Serif 4', serif;
+      background: #0d1117;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       NAVIGATION
+       ============================================ */
+    .prototype-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(13, 17, 23, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .prototype-nav a {
+      color: #d4af37;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: all 0.3s;
+      font-size: 0.85rem;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.5px;
+    }
+
+    .prototype-nav a:hover {
+      border-color: #d4af37;
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    /* ============================================
+       INTRO SECTION
+       ============================================ */
+    .intro-section {
+      padding: 6rem 2rem 3rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .intro-section h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .intro-section p {
+      color: #8b949e;
+      font-size: 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .intro-section .version-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #d4af37, #f4d03f);
+      color: #1a1a2e;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      font-family: 'Archivo Narrow', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ============================================
+       NEWSLETTER SECTION WRAPPER
+       ============================================ */
+    .newsletter-section {
+      padding: 4rem 2rem 6rem;
+      min-height: 100vh;
+    }
+
+    .section-label {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-label h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-label p {
+      color: #6e7681;
+      font-size: 0.9rem;
+    }
+
+    /* ============================================
+       VARIATION 1: LION & PILLAR - HERALDIC CREST
+       ============================================ */
+    .heraldic-newsletter {
+      max-width: 800px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #1a365d 0%, #0f2442 100%);
+      border: 3px solid #d4af37;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .heraldic-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      pointer-events: none;
+    }
+
+    .heraldic-header {
+      text-align: center;
+      padding: 2.5rem 2rem 2rem;
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
+      border-bottom: 2px solid #d4af37;
+      position: relative;
+    }
+
+    .heraldic-shield {
+      width: 120px;
+      height: 140px;
+      margin: 0 auto 1rem;
+      position: relative;
+    }
+
+    .heraldic-shield svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .heraldic-header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #d4af37;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .heraldic-header .lodge-number {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: #f4d03f;
+      letter-spacing: 2px;
+    }
+
+    .heraldic-ribbon {
+      background: linear-gradient(90deg, transparent, #8b0000 10%, #a00000 50%, #8b0000 90%, transparent);
+      color: #fff;
+      padding: 0.5rem 2rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 1rem;
+      position: relative;
+    }
+
+    .heraldic-ribbon::before,
+    .heraldic-ribbon::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 20px;
+      height: 2px;
+      background: #d4af37;
+    }
+
+    .heraldic-ribbon::before { left: 1rem; }
+    .heraldic-ribbon::after { right: 1rem; }
+
+    .heraldic-content {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .heraldic-panel {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .heraldic-panel::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 20%;
+      right: 20%;
+      height: 3px;
+      background: #d4af37;
+    }
+
+    .heraldic-panel h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: #d4af37;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .heraldic-panel h3::before,
+    .heraldic-panel h3::after {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: rgba(212, 175, 55, 0.5);
+    }
+
+    .heraldic-panel p,
+    .heraldic-panel li {
+      color: #c9d1d9;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .heraldic-panel ul {
+      list-style: none;
+    }
+
+    .heraldic-panel li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+
+    .heraldic-panel li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 6px;
+      height: 6px;
+      background: #d4af37;
+      transform: rotate(45deg);
+    }
+
+    .heraldic-full-width {
+      grid-column: 1 / -1;
+    }
+
+    .heraldic-events-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .heraldic-events-table th {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      color: #d4af37;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      text-align: left;
+    }
+
+    .heraldic-events-table td {
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #c9d1d9;
+      font-size: 0.85rem;
+    }
+
+    .heraldic-cta {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(139, 0, 0, 0.3), rgba(139, 0, 0, 0.1));
+      border: 1px solid rgba(139, 0, 0, 0.5);
+    }
+
+    .heraldic-cta p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: #f4d03f;
+    }
+
+    .heraldic-footer {
+      text-align: center;
+      padding: 1.5rem;
+      border-top: 2px solid #d4af37;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .heraldic-footer p {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      color: #8b949e;
+      letter-spacing: 1px;
+    }
+
+    /* ============================================
+       VARIATION 2: CORNERSTONE - BLUEPRINT
+       ============================================ */
+    .blueprint-newsletter {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #faf8f0;
+      color: #2a4f7a;
+      position: relative;
+      border: 2px solid #2a4f7a;
+      padding: 1.5rem;
+    }
+
+    .blueprint-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(rgba(42, 79, 122, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(42, 79, 122, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .blueprint-inner {
+      border: 1px solid rgba(42, 79, 122, 0.3);
+      position: relative;
+    }
+
+    .blueprint-corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: #2a4f7a;
+      opacity: 0.6;
+    }
+
+    .blueprint-corner.tl { top: 8px; left: 8px; }
+    .blueprint-corner.tr { top: 8px; right: 8px; text-align: right; }
+    .blueprint-corner.bl { bottom: 8px; left: 8px; }
+    .blueprint-corner.br { bottom: 8px; right: 8px; text-align: right; }
+
+    .blueprint-header {
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 1px dashed rgba(42, 79, 122, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .blueprint-compass {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+
+    .blueprint-compass svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .blueprint-title-block {
+      flex: 1;
+    }
+
+    .blueprint-title-block h1 {
+      font-family: 'Archivo Narrow', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #2a4f7a;
+      border-bottom: 2px solid #2a4f7a;
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .blueprint-title-block .subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: #5a7a9a;
+    }
+
+    .blueprint-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: #5a7a9a;
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .blueprint-content {
+      padding: 1.5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .blueprint-section {
+      position: relative;
+      padding: 1rem;
+      border: 1px solid rgba(42, 79, 122, 0.2);
+    }
+
+    .blueprint-section::before {
+      content: attr(data-section);
+      position: absolute;
+      top: -0.5rem;
+      left: 1rem;
+      background: #faf8f0;
+      padding: 0 0.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: #e67e22;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .blueprint-section h3 {
+      font-family: 'Archivo Narrow', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2a4f7a;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(42, 79, 122, 0.2);
+    }
+
+    .blueprint-section p,
+    .blueprint-section li {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.85rem;
+      color: #3d5a80;
+      line-height: 1.6;
+    }
+
+    .blueprint-section ul {
+      list-style: none;
+    }
+
+    .blueprint-section li {
+      padding-left: 1.25rem;
+      position: relative;
+      margin-bottom: 0.4rem;
+    }
+
+    .blueprint-section li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55rem;
+      width: 8px;
+      height: 1px;
+      background: #e67e22;
+    }
+
+    .blueprint-section li::after {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0.35rem;
+      width: 4px;
+      height: 4px;
+      border: 1px solid #e67e22;
+      border-radius: 50%;
+    }
+
+    .blueprint-full {
+      grid-column: 1 / -1;
+    }
+
+    .blueprint-schedule {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+    }
+
+    .blueprint-schedule th {
+      background: rgba(42, 79, 122, 0.1);
+      padding: 0.5rem;
+      text-align: left;
+      font-weight: 700;
+      color: #2a4f7a;
+      border: 1px solid rgba(42, 79, 122, 0.2);
+    }
+
+    .blueprint-schedule td {
+      padding: 0.5rem;
+      border: 1px solid rgba(42, 79, 122, 0.2);
+      color: #3d5a80;
+    }
+
+    .blueprint-schedule .highlight {
+      background: rgba(230, 126, 34, 0.1);
+      font-weight: 600;
+    }
+
+    .blueprint-cta {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 1rem;
+      border: 2px solid #e67e22;
+      background: rgba(230, 126, 34, 0.05);
+    }
+
+    .blueprint-cta p {
+      font-family: 'Archivo Narrow', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2a4f7a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .blueprint-cta span {
+      color: #e67e22;
+    }
+
+    .blueprint-footer {
+      padding: 1rem 2rem;
+      border-top: 1px dashed rgba(42, 79, 122, 0.4);
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: #5a7a9a;
+    }
+
+    /* ============================================
+       VARIATION 3: LAMBSKIN - PARCHMENT & SEAL
+       ============================================ */
+    .parchment-newsletter {
+      max-width: 780px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 50%, #f5e6d3 100%);
+      color: #4a3728;
+      border: none;
+      position: relative;
+      padding: 3rem;
+      box-shadow:
+        0 0 0 1px rgba(74, 55, 40, 0.2),
+        0 0 0 4px #f5e6d3,
+        0 0 0 5px rgba(74, 55, 40, 0.3),
+        0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .parchment-newsletter::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      border: 1px solid rgba(74, 55, 40, 0.2);
+      pointer-events: none;
+    }
+
+    .parchment-corner-flourish {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      opacity: 0.4;
+    }
+
+    .parchment-corner-flourish.tl { top: 2rem; left: 2rem; }
+    .parchment-corner-flourish.tr { top: 2rem; right: 2rem; transform: scaleX(-1); }
+    .parchment-corner-flourish.bl { bottom: 2rem; left: 2rem; transform: scaleY(-1); }
+    .parchment-corner-flourish.br { bottom: 2rem; right: 2rem; transform: scale(-1); }
+
+    .parchment-header {
+      text-align: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(74, 55, 40, 0.3);
+      margin-bottom: 1.5rem;
+    }
+
+    .parchment-seal {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1rem;
+      background: radial-gradient(circle at 30% 30%, #a52a2a, #8b0000);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .parchment-seal::after {
+      content: '';
+      position: absolute;
+      width: 80%;
+      height: 80%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    .parchment-seal svg {
+      width: 50px;
+      height: 50px;
+      fill: rgba(255, 255, 255, 0.9);
+    }
+
+    .parchment-header h1 {
+      font-family: 'Satisfy', cursive;
+      font-size: 2.2rem;
+      color: #4a3728;
+      margin-bottom: 0.25rem;
+    }
+
+    .parchment-header .lodge-info {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: #6b5344;
+      font-style: italic;
+    }
+
+    .parchment-date-line {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      color: #8b7355;
+      margin-top: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    .parchment-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .parchment-section {
+      position: relative;
+    }
+
+    .parchment-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #4a3728;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(74, 55, 40, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .parchment-section h3::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #8b0000;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .parchment-section p {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.9rem;
+      color: #5c4a3d;
+      line-height: 1.8;
+      text-align: justify;
+    }
+
+    .parchment-section ul {
+      list-style: none;
+    }
+
+    .parchment-section li {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.9rem;
+      color: #5c4a3d;
+      padding-left: 1.25rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .parchment-section li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 6px;
+      height: 6px;
+      border: 1px solid #8b0000;
+      border-radius: 50%;
+    }
+
+    .parchment-full {
+      grid-column: 1 / -1;
+    }
+
+    .parchment-events {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .parchment-event-card {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.3);
+      border-left: 3px solid #8b0000;
+    }
+
+    .parchment-event-card .date {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #8b0000;
+      margin-bottom: 0.25rem;
+    }
+
+    .parchment-event-card .event {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.9rem;
+      color: #4a3728;
+      font-weight: 600;
+    }
+
+    .parchment-event-card .details {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.8rem;
+      color: #6b5344;
+      font-style: italic;
+    }
+
+    .parchment-cta {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 1rem;
+      border-top: 1px solid rgba(74, 55, 40, 0.2);
+      border-bottom: 1px solid rgba(74, 55, 40, 0.2);
+    }
+
+    .parchment-cta p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: #4a3728;
+      line-height: 1.6;
+    }
+
+    .parchment-cta .signature {
+      font-family: 'Satisfy', cursive;
+      font-size: 1.2rem;
+      color: #8b0000;
+      margin-top: 1rem;
+    }
+
+    .parchment-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      color: #8b7355;
+      font-style: italic;
+    }
+
+    /* ============================================
+       VARIATION 4: TRAVELER - VINTAGE POSTER
+       ============================================ */
+    .poster-newsletter {
+      max-width: 750px;
+      margin: 0 auto;
+      background: #f5f0e6;
+      color: #1a2a3a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .poster-sunburst {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: repeating-conic-gradient(
+        from 0deg,
+        #e07b53 0deg 5deg,
+        #f5f0e6 5deg 10deg
+      );
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .poster-header {
+      position: relative;
+      text-align: center;
+      padding: 2.5rem 2rem 1.5rem;
+      background: linear-gradient(180deg, #1a2a3a 0%, #2d4a5a 100%);
+      color: #f5f0e6;
+    }
+
+    .poster-header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(180deg, #2d4a5a, transparent);
+    }
+
+    .poster-badge {
+      display: inline-block;
+      background: #e07b53;
+      color: #f5f0e6;
+      padding: 0.25rem 1rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+    }
+
+    .poster-header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      letter-spacing: 4px;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .poster-header .tagline {
+      font-family: 'Poiret One', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      color: #2d6a6a;
+      background: #f5f0e6;
+      display: inline-block;
+      padding: 0.25rem 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .poster-lighthouse {
+      position: absolute;
+      right: 2rem;
+      top: 1rem;
+      width: 60px;
+      height: 80px;
+      opacity: 0.3;
+    }
+
+    .poster-content {
+      position: relative;
+      padding: 2.5rem 2rem 2rem;
+    }
+
+    .poster-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .poster-section h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      color: #1a2a3a;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .poster-section h3::before {
+      content: '';
+      width: 30px;
+      height: 3px;
+      background: #e07b53;
+    }
+
+    .poster-section p {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.95rem;
+      color: #2d4a5a;
+      line-height: 1.7;
+      padding-left: 2.5rem;
+    }
+
+    .poster-section ul {
+      list-style: none;
+      padding-left: 2.5rem;
+    }
+
+    .poster-section li {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.9rem;
+      color: #2d4a5a;
+      margin-bottom: 0.4rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .poster-section li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 6px;
+      height: 6px;
+      background: #2d6a6a;
+    }
+
+    .poster-events-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding-left: 2.5rem;
+    }
+
+    .poster-event {
+      background: #2d6a6a;
+      color: #f5f0e6;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .poster-event::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: #e07b53;
+    }
+
+    .poster-event .date {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #e07b53;
+    }
+
+    .poster-event .title {
+      font-family: 'Archivo Narrow', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0.25rem 0;
+    }
+
+    .poster-event .info {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .poster-cta {
+      background: linear-gradient(135deg, #e07b53, #c96a45);
+      color: #f5f0e6;
+      text-align: center;
+      padding: 2rem;
+      margin: 1rem 2rem;
+      position: relative;
+    }
+
+    .poster-cta::before,
+    .poster-cta::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f5f0e6;
+    }
+
+    .poster-cta::before {
+      top: 10px;
+      left: 10px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .poster-cta::after {
+      bottom: 10px;
+      right: 10px;
+      border-left: none;
+      border-top: none;
+    }
+
+    .poster-cta h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      margin-bottom: 0.5rem;
+    }
+
+    .poster-cta p {
+      font-family: 'Poiret One', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+
+    .poster-footer {
+      background: #1a2a3a;
+      color: #f5f0e6;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .poster-footer-left {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .poster-footer-right {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .poster-footer-stat {
+      text-align: center;
+    }
+
+    .poster-footer-stat .number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: #e07b53;
+    }
+
+    .poster-footer-stat .label {
+      font-family: 'Archivo Narrow', sans-serif;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
+
+    /* ============================================
+       RESPONSIVE STYLES
+       ============================================ */
+    @media (max-width: 768px) {
+      .prototype-nav {
+        flex-wrap: wrap;
+        padding: 0.75rem 1rem;
+        gap: 0.25rem;
+      }
+
+      .prototype-nav a {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+      }
+
+      .intro-section {
+        padding: 5rem 1rem 2rem;
+      }
+
+      .intro-section h1 {
+        font-size: 1.6rem;
+      }
+
+      .newsletter-section {
+        padding: 3rem 1rem 4rem;
+      }
+
+      /* Heraldic responsive */
+      .heraldic-content {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+        gap: 1.5rem;
+      }
+
+      .heraldic-header h1 {
+        font-size: 1.4rem;
+      }
+
+      /* Blueprint responsive */
+      .blueprint-content {
+        grid-template-columns: 1fr;
+      }
+
+      .blueprint-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .blueprint-meta {
+        text-align: center;
+      }
+
+      /* Parchment responsive */
+      .parchment-newsletter {
+        padding: 2rem 1.5rem;
+      }
+
+      .parchment-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .parchment-events {
+        grid-template-columns: 1fr;
+      }
+
+      .parchment-header h1 {
+        font-size: 1.8rem;
+      }
+
+      /* Poster responsive */
+      .poster-header h1 {
+        font-size: 2rem;
+      }
+
+      .poster-events-grid {
+        grid-template-columns: 1fr;
+        padding-left: 0;
+      }
+
+      .poster-section p,
+      .poster-section ul {
+        padding-left: 0;
+      }
+
+      .poster-cta {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      .poster-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="prototype-nav">
+    <a href="#heraldic">Lion & Pillar</a>
+    <a href="#blueprint">Cornerstone</a>
+    <a href="#parchment">Lambskin</a>
+    <a href="#poster">Traveler</a>
+  </nav>
+
+  <!-- Intro Section -->
+  <section class="intro-section">
+    <div class="version-badge">Version 3 Prototypes</div>
+    <h1>Manteo Masonic Lodge #521</h1>
+    <p>Four distinct newsletter concepts exploring thematic interpretations of Masonic heritage. Each design maintains the dignity of the Craft while offering a unique visual approach to engage brothers and encourage meeting attendance.</p>
+  </section>
+
+  <!-- ============================================
+       VARIATION 1: LION & PILLAR - HERALDIC CREST
+       ============================================ -->
+  <section id="heraldic" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 1</h2>
+      <p>Lion & Pillar - Heraldic Crest Style</p>
+    </div>
+
+    <div class="heraldic-newsletter">
+      <header class="heraldic-header">
+        <div class="heraldic-shield">
+          <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Shield shape -->
+            <path d="M5 5 L95 5 L95 70 Q95 100 50 115 Q5 100 5 70 Z" fill="#1a365d" stroke="#d4af37" stroke-width="3"/>
+            <!-- Inner border -->
+            <path d="M12 12 L88 12 L88 68 Q88 94 50 107 Q12 94 12 68 Z" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1"/>
+            <!-- Square and Compass simplified -->
+            <path d="M50 30 L30 80 M50 30 L70 80" stroke="#d4af37" stroke-width="2" stroke-linecap="round"/>
+            <path d="M35 55 L65 55" stroke="#d4af37" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="50" cy="40" r="8" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+            <!-- Decorative elements -->
+            <circle cx="50" cy="85" r="3" fill="#8b0000"/>
+          </svg>
+        </div>
+        <h1>Manteo Lodge</h1>
+        <div class="lodge-number">No. 521 A.F. & A.M.</div>
+        <div class="heraldic-ribbon">Bi-Weekly Communication</div>
+      </header>
+
+      <div class="heraldic-content">
+        <!-- Attendance Panel -->
+        <div class="heraldic-panel">
+          <h3>Roll of Honor</h3>
+          <p style="font-size: 0.8rem; color: #8b949e; margin-bottom: 0.75rem;">Stated Communication - January 7, 2026</p>
+          <ul>
+            <li>WM David Palmer, Presiding</li>
+            <li>SW Michael Torres</li>
+            <li>JW Robert Chen</li>
+            <li>Treasurer James Wilson</li>
+            <li>Secretary Thomas Hayes</li>
+            <li>SD Marcus Brown</li>
+            <li>JD Christopher Lee</li>
+            <li>Tyler Benjamin Adams</li>
+          </ul>
+          <p style="margin-top: 0.75rem; font-style: italic; color: #8b949e; font-size: 0.85rem;">Plus 8 additional brothers in attendance</p>
+        </div>
+
+        <!-- Education Panel -->
+        <div class="heraldic-panel">
+          <h3>Masonic Light</h3>
+          <p style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">"The Symbolism of the Three Steps"</p>
+          <p>Brother Marcus Brown delivered an illuminating presentation on the three steps leading to the East, representing the three stages of human life: Youth, with its vigor and learning; Manhood, with its strength and purpose; and Age, with its wisdom and reflection. The lecture reminded us that each stage offers unique opportunities for service to the Craft.</p>
+        </div>
+
+        <!-- Events Panel - Full Width -->
+        <div class="heraldic-panel heraldic-full-width">
+          <h3>Forthcoming Assemblies</h3>
+          <table class="heraldic-events-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Event</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>January 21, 2026</td>
+                <td>Stated Communication</td>
+                <td>7:30 PM - Lodge Education: "Geometry in the Craft"</td>
+              </tr>
+              <tr>
+                <td>February 4, 2026</td>
+                <td>Stated Communication</td>
+                <td>7:30 PM - First Degree Conferral</td>
+              </tr>
+              <tr>
+                <td>February 15, 2026</td>
+                <td>Pancake Breakfast</td>
+                <td>8:00 AM - 11:00 AM - Community Fundraiser</td>
+              </tr>
+              <tr>
+                <td>February 22, 2026</td>
+                <td>Family Dinner</td>
+                <td>6:00 PM - Winter Social at the Lodge</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Charity Panel -->
+        <div class="heraldic-panel">
+          <h3>Charitable Works</h3>
+          <ul>
+            <li><strong>School Supply Drive:</strong> $1,250 raised, 150 backpacks donated to Manteo Elementary</li>
+            <li><strong>Food Bank Partnership:</strong> 200 volunteer hours this quarter</li>
+            <li><strong>Scholarship Fund:</strong> $8,500 available for spring awards</li>
+          </ul>
+        </div>
+
+        <!-- Contact Panel -->
+        <div class="heraldic-panel">
+          <h3>Lodge Information</h3>
+          <ul>
+            <li>Meetings: 1st & 3rd Tuesdays, 7:30 PM</li>
+            <li>Dinner: 6:30 PM before each meeting</li>
+            <li>Location: 123 Queen Elizabeth Ave, Manteo, NC</li>
+            <li>Secretary: secretary@manteo521.org</li>
+          </ul>
+        </div>
+
+        <!-- CTA Panel -->
+        <div class="heraldic-cta">
+          <p>"The strength of the Lodge lies not in its walls, but in the faithful attendance of its members. Your presence honors the Craft and enriches us all."</p>
+        </div>
+      </div>
+
+      <footer class="heraldic-footer">
+        <p>Making Good Men Better Since 1875 - Manteo Lodge #521, Grand Lodge of North Carolina</p>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VARIATION 2: CORNERSTONE - BLUEPRINT
+       ============================================ -->
+  <section id="blueprint" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 2</h2>
+      <p>The Cornerstone - Blueprint/Architectural Style</p>
+    </div>
+
+    <div class="blueprint-newsletter">
+      <div class="blueprint-inner">
+        <div class="blueprint-corner tl">A1<br>REV.03</div>
+        <div class="blueprint-corner tr">SCALE<br>1:1</div>
+        <div class="blueprint-corner bl">DWG<br>2026-01</div>
+        <div class="blueprint-corner br">SHEET<br>1 OF 1</div>
+
+        <header class="blueprint-header">
+          <div class="blueprint-compass">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer circle -->
+              <circle cx="40" cy="40" r="38" stroke="#2a4f7a" stroke-width="1"/>
+              <circle cx="40" cy="40" r="35" stroke="#2a4f7a" stroke-width="0.5"/>
+              <!-- Compass points -->
+              <path d="M40 5 L40 15 M40 65 L40 75 M5 40 L15 40 M65 40 L75 40" stroke="#2a4f7a" stroke-width="1"/>
+              <!-- N indicator -->
+              <text x="40" y="12" text-anchor="middle" font-family="Space Mono" font-size="6" fill="#e67e22">N</text>
+              <!-- Inner square -->
+              <rect x="25" y="25" width="30" height="30" stroke="#2a4f7a" stroke-width="1" fill="none"/>
+              <!-- Cross hairs -->
+              <path d="M40 28 L40 52 M28 40 L52 40" stroke="#2a4f7a" stroke-width="0.5"/>
+            </svg>
+          </div>
+          <div class="blueprint-title-block">
+            <h1>Manteo Lodge #521</h1>
+            <div class="subtitle">Bi-Weekly Communication Specifications</div>
+          </div>
+          <div class="blueprint-meta">
+            ISSUE DATE: 01.12.2026<br>
+            PREPARED BY: T. HAYES, SEC.<br>
+            APPROVED BY: D. PALMER, WM
+          </div>
+        </header>
+
+        <div class="blueprint-content">
+          <!-- Attendance Section -->
+          <div class="blueprint-section" data-section="SEC-01">
+            <h3>Attendance Record</h3>
+            <p style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #5a7a9a; margin-bottom: 0.5rem;">STATED COMM. // 01.07.2026</p>
+            <ul>
+              <li>WM David Palmer [PRESIDING]</li>
+              <li>SW Michael Torres</li>
+              <li>JW Robert Chen</li>
+              <li>Treas. James Wilson</li>
+              <li>Sec. Thomas Hayes</li>
+              <li>SD Marcus Brown</li>
+              <li>JD Christopher Lee</li>
+              <li>Tyler Benjamin Adams</li>
+              <li style="color: #5a7a9a; font-style: italic;">+ 8 additional members present</li>
+            </ul>
+          </div>
+
+          <!-- Education Section -->
+          <div class="blueprint-section" data-section="SEC-02">
+            <h3>Lodge Education</h3>
+            <p style="font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #e67e22; margin-bottom: 0.5rem;">TOPIC: "THE SYMBOLISM OF THE THREE STEPS"</p>
+            <p>Bro. Marcus Brown presented on the symbolic meaning of the three steps in Masonic ritual - representing Youth (learning), Manhood (strength), and Age (wisdom). Discussion followed on applying these principles to daily life and lodge work.</p>
+          </div>
+
+          <!-- Schedule Section - Full Width -->
+          <div class="blueprint-section blueprint-full" data-section="SEC-03">
+            <h3>Project Schedule</h3>
+            <table class="blueprint-schedule">
+              <thead>
+                <tr>
+                  <th>DATE</th>
+                  <th>EVENT ID</th>
+                  <th>DESCRIPTION</th>
+                  <th>TIME</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>01.21.2026</td>
+                  <td>SC-002</td>
+                  <td>Stated Communication - "Geometry in the Craft"</td>
+                  <td>19:30</td>
+                </tr>
+                <tr class="highlight">
+                  <td>02.04.2026</td>
+                  <td>SC-003</td>
+                  <td>Stated Communication - First Degree Conferral</td>
+                  <td>19:30</td>
+                </tr>
+                <tr>
+                  <td>02.15.2026</td>
+                  <td>FR-001</td>
+                  <td>Pancake Breakfast Fundraiser</td>
+                  <td>08:00-11:00</td>
+                </tr>
+                <tr>
+                  <td>02.22.2026</td>
+                  <td>SO-001</td>
+                  <td>Family Dinner - Winter Social</td>
+                  <td>18:00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Charitable Works -->
+          <div class="blueprint-section" data-section="SEC-04">
+            <h3>Community Impact Metrics</h3>
+            <ul>
+              <li><strong>Supply Drive:</strong> $1,250 / 150 units delivered</li>
+              <li><strong>Food Bank:</strong> 200 volunteer hours (Q4)</li>
+              <li><strong>Scholarship:</strong> $8,500 fund balance</li>
+            </ul>
+          </div>
+
+          <!-- Site Info -->
+          <div class="blueprint-section" data-section="SEC-05">
+            <h3>Site Specifications</h3>
+            <ul>
+              <li><strong>Location:</strong> 123 Queen Elizabeth Ave</li>
+              <li><strong>Coordinates:</strong> 35.9082N, 75.6757W</li>
+              <li><strong>Assembly:</strong> 1st & 3rd Tuesdays</li>
+              <li><strong>Contact:</strong> secretary@manteo521.org</li>
+            </ul>
+          </div>
+
+          <!-- CTA -->
+          <div class="blueprint-cta">
+            <p>CONSTRUCTION REQUIRES <span>ALL HANDS</span> - YOUR PRESENCE BUILDS THE TEMPLE</p>
+          </div>
+        </div>
+
+        <footer class="blueprint-footer">
+          <span>MANTEO LODGE #521 // GRAND LODGE OF NORTH CAROLINA</span>
+          <span>EST. 1875 // MAKING GOOD MEN BETTER</span>
+          <span>DO NOT SCALE FROM DRAWING</span>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VARIATION 3: LAMBSKIN - PARCHMENT & SEAL
+       ============================================ -->
+  <section id="parchment" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 3</h2>
+      <p>The Lambskin - Parchment & Seal Style</p>
+    </div>
+
+    <div class="parchment-newsletter">
+      <!-- Corner flourishes (simplified) -->
+      <svg class="parchment-corner-flourish tl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 55 Q5 5 55 5" stroke="#4a3728" stroke-width="1" fill="none"/>
+        <path d="M10 50 Q10 10 50 10" stroke="#4a3728" stroke-width="0.5" fill="none"/>
+        <circle cx="15" cy="15" r="3" fill="#8b0000" opacity="0.5"/>
+      </svg>
+      <svg class="parchment-corner-flourish tr" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 55 Q5 5 55 5" stroke="#4a3728" stroke-width="1" fill="none"/>
+        <path d="M10 50 Q10 10 50 10" stroke="#4a3728" stroke-width="0.5" fill="none"/>
+        <circle cx="15" cy="15" r="3" fill="#8b0000" opacity="0.5"/>
+      </svg>
+      <svg class="parchment-corner-flourish bl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 55 Q5 5 55 5" stroke="#4a3728" stroke-width="1" fill="none"/>
+        <path d="M10 50 Q10 10 50 10" stroke="#4a3728" stroke-width="0.5" fill="none"/>
+        <circle cx="15" cy="15" r="3" fill="#8b0000" opacity="0.5"/>
+      </svg>
+      <svg class="parchment-corner-flourish br" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 55 Q5 5 55 5" stroke="#4a3728" stroke-width="1" fill="none"/>
+        <path d="M10 50 Q10 10 50 10" stroke="#4a3728" stroke-width="0.5" fill="none"/>
+        <circle cx="15" cy="15" r="3" fill="#8b0000" opacity="0.5"/>
+      </svg>
+
+      <header class="parchment-header">
+        <div class="parchment-seal">
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <!-- Square and Compass -->
+            <path d="M25 10 L15 40 M25 10 L35 40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M17 28 L33 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <text x="25" y="38" text-anchor="middle" font-size="8" fill="currentColor">G</text>
+          </svg>
+        </div>
+        <h1>Manteo Lodge No. 521</h1>
+        <div class="lodge-info">Ancient Free & Accepted Masons of North Carolina</div>
+        <div class="parchment-date-line">Bi-Weekly Communication - January 2026</div>
+      </header>
+
+      <div class="parchment-content">
+        <!-- Attendance -->
+        <div class="parchment-section">
+          <h3>Brothers in Attendance</h3>
+          <p style="font-size: 0.85rem; color: #8b7355; margin-bottom: 0.5rem;">Stated Communication of January 7th, in the Year of Light 6026</p>
+          <ul>
+            <li>Worshipful Master David Palmer, presiding</li>
+            <li>Senior Warden Michael Torres</li>
+            <li>Junior Warden Robert Chen</li>
+            <li>Treasurer James Wilson</li>
+            <li>Secretary Thomas Hayes</li>
+            <li>Senior Deacon Marcus Brown</li>
+            <li>Junior Deacon Christopher Lee</li>
+            <li>Tyler Benjamin Adams</li>
+          </ul>
+          <p style="font-style: italic; margin-top: 0.5rem; color: #8b7355;">Together with eight additional brethren</p>
+        </div>
+
+        <!-- Education -->
+        <div class="parchment-section">
+          <h3>Masonic Enlightenment</h3>
+          <p><em>"The Symbolism of the Three Steps"</em></p>
+          <p style="margin-top: 0.5rem;">Brother Marcus Brown delivered a most edifying discourse upon the three steps ascending to the East, illustrating the journey of life through Youth, Manhood, and Age. Each stage, he reminded us, offers its own lessons and opportunities for service to the Craft and to humanity.</p>
+        </div>
+
+        <!-- Events - Full Width -->
+        <div class="parchment-section parchment-full">
+          <h3>Calendar of Events</h3>
+          <div class="parchment-events">
+            <div class="parchment-event-card">
+              <div class="date">January 21st, 2026</div>
+              <div class="event">Stated Communication</div>
+              <div class="details">7:30 PM - "Geometry in the Craft"</div>
+            </div>
+            <div class="parchment-event-card">
+              <div class="date">February 4th, 2026</div>
+              <div class="event">Stated Communication</div>
+              <div class="details">7:30 PM - First Degree Conferral</div>
+            </div>
+            <div class="parchment-event-card">
+              <div class="date">February 15th, 2026</div>
+              <div class="event">Pancake Breakfast</div>
+              <div class="details">8:00 AM - Community Fundraiser</div>
+            </div>
+            <div class="parchment-event-card">
+              <div class="date">February 22nd, 2026</div>
+              <div class="event">Family Dinner</div>
+              <div class="details">6:00 PM - Winter Social</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charity -->
+        <div class="parchment-section">
+          <h3>Works of Charity</h3>
+          <ul>
+            <li>School Supply Drive: One thousand two hundred fifty dollars raised; one hundred fifty backpacks bestowed upon Manteo Elementary</li>
+            <li>Outer Banks Food Bank: Two hundred hours of fraternal service rendered</li>
+            <li>Scholarship Endowment: Eight thousand five hundred dollars held in trust</li>
+          </ul>
+        </div>
+
+        <!-- Lodge Info -->
+        <div class="parchment-section">
+          <h3>Lodge Particulars</h3>
+          <ul>
+            <li>Regular Communications held the first and third Tuesdays at half-past seven in the evening</li>
+            <li>Supper served at half-past six preceding each meeting</li>
+            <li>Lodge situated at 123 Queen Elizabeth Avenue, Manteo</li>
+            <li>Correspondence: secretary@manteo521.org</li>
+          </ul>
+        </div>
+
+        <!-- CTA -->
+        <div class="parchment-cta">
+          <p>"Let us not forsake the assembling of ourselves together, for in fellowship we find strength, in ritual we find meaning, and in brotherhood we find purpose."</p>
+          <div class="signature">~ The Brethren of Manteo Lodge</div>
+        </div>
+      </div>
+
+      <footer class="parchment-footer">
+        <p>Chartered by the Most Worshipful Grand Lodge of Ancient Free and Accepted Masons of North Carolina, Anno Domini 1875</p>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VARIATION 4: TRAVELER - VINTAGE POSTER
+       ============================================ -->
+  <section id="poster" class="newsletter-section">
+    <div class="section-label">
+      <h2>Variation 4</h2>
+      <p>The Traveler - Vintage Travel Poster Style</p>
+    </div>
+
+    <div class="poster-newsletter">
+      <div class="poster-sunburst"></div>
+
+      <header class="poster-header">
+        <div class="poster-badge">Bi-Weekly Update</div>
+        <h1>MANTEO LODGE #521</h1>
+        <div class="tagline">YOUR DESTINATION FOR BROTHERHOOD</div>
+        <svg class="poster-lighthouse" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M25 80 L35 80 L38 30 L22 30 Z" fill="currentColor"/>
+          <path d="M20 30 L40 30 L42 20 L18 20 Z" fill="currentColor"/>
+          <rect x="26" y="10" width="8" height="10" fill="currentColor"/>
+          <path d="M26 5 L30 0 L34 5 Z" fill="currentColor"/>
+          <!-- Light rays -->
+          <path d="M30 15 L10 5 M30 15 L50 5" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+        </svg>
+      </header>
+
+      <div class="poster-content">
+        <!-- Last Meeting -->
+        <div class="poster-section">
+          <h3>Who Was There?</h3>
+          <p><strong>January 7th Stated Communication</strong> - WM David Palmer presided, joined by SW Michael Torres, JW Robert Chen, and officers Marcus Brown, Christopher Lee, Benjamin Adams, plus 11 more brothers. A full house!</p>
+        </div>
+
+        <!-- Education -->
+        <div class="poster-section">
+          <h3>What Did We Learn?</h3>
+          <p>Brother Marcus Brown took us on a journey through <strong>"The Symbolism of the Three Steps"</strong> - exploring how Youth, Manhood, and Age each bring unique gifts to our Masonic journey. The discussion that followed was one for the books!</p>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="poster-section">
+          <h3>Where Are We Going?</h3>
+          <div class="poster-events-grid">
+            <div class="poster-event">
+              <div class="date">JAN 21</div>
+              <div class="title">Stated Communication</div>
+              <div class="info">7:30 PM - "Geometry in the Craft"</div>
+            </div>
+            <div class="poster-event">
+              <div class="date">FEB 4</div>
+              <div class="title">Degree Night</div>
+              <div class="info">7:30 PM - First Degree Conferral</div>
+            </div>
+            <div class="poster-event">
+              <div class="date">FEB 15</div>
+              <div class="title">Pancake Breakfast</div>
+              <div class="info">8-11 AM - Community Fundraiser</div>
+            </div>
+            <div class="poster-event">
+              <div class="date">FEB 22</div>
+              <div class="title">Family Dinner</div>
+              <div class="info">6:00 PM - Winter Social</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Community Impact -->
+        <div class="poster-section">
+          <h3>Making A Difference</h3>
+          <ul>
+            <li><strong>150 backpacks</strong> delivered to Manteo Elementary ($1,250 raised!)</li>
+            <li><strong>200 hours</strong> served at the Outer Banks Food Bank</li>
+            <li><strong>$8,500</strong> scholarship fund ready for spring awards</li>
+          </ul>
+        </div>
+
+        <!-- CTA -->
+        <div class="poster-cta">
+          <h3>PACK YOUR BAGS FOR BROTHERHOOD</h3>
+          <p>Every journey begins with a single step through the Lodge door</p>
+        </div>
+      </div>
+
+      <footer class="poster-footer">
+        <div class="poster-footer-left">
+          Meetings: 1st & 3rd Tuesdays, 7:30 PM<br>
+          123 Queen Elizabeth Ave, Manteo NC<br>
+          secretary@manteo521.org
+        </div>
+        <div class="poster-footer-right">
+          <div class="poster-footer-stat">
+            <div class="number">151</div>
+            <div class="label">Years Strong</div>
+          </div>
+          <div class="poster-footer-stat">
+            <div class="number">200+</div>
+            <div class="label">Service Hours</div>
+          </div>
+          <div class="poster-footer-stat">
+            <div class="number">16</div>
+            <div class="label">Last Meeting</div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- Smooth Scroll JavaScript -->
+  <script>
+    document.querySelectorAll('.prototype-nav a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

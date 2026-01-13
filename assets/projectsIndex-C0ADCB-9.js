@@ -1,0 +1,1 @@
+import{m as o}from"./style-BiNWWHRh.js";o.data("projectList",()=>({projects:[],async init(){try{const t=await fetch("/projects/_manifest.json");if(t.ok){const s=await t.json();this.projects=s.projects||[]}}catch(t){console.error("Failed to load projects manifest:",t)}}}));window.Alpine=o;o.start();

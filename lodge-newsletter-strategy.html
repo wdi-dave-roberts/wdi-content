@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletter Strategy - Manteo Lodge #521</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #1a365d;
+      --gold: #d4af37;
+      --gold-light: #f4d03f;
+      --text: #2d3748;
+      --text-light: #4a5568;
+      --bg: #fafafa;
+      --white: #ffffff;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--navy);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(212, 175, 55, 0.2);
+      color: var(--gold);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #0f2442 100%);
+      color: var(--white);
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--navy);
+      padding: 0.25rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      color: #a0b4cc;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat .number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .hero-stat .label {
+      font-size: 0.85rem;
+      color: #8aa8c7;
+    }
+
+    /* Main Content */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    /* Section Styles */
+    .section {
+      margin-bottom: 4rem;
+    }
+
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .section h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-intro {
+      color: var(--text-light);
+      font-size: 1.05rem;
+    }
+
+    /* Card Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 .icon {
+      font-size: 1.25rem;
+    }
+
+    .card p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .card .tag {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      color: #8b6914;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-top: 0.75rem;
+    }
+
+    /* Version Cards */
+    .version-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .version-header {
+      background: linear-gradient(135deg, var(--navy) 0%, #0f2442 100%);
+      color: var(--white);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .version-header h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      color: var(--gold);
+    }
+
+    .version-header .version-badge {
+      background: rgba(255,255,255,0.15);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .version-content {
+      padding: 2rem;
+    }
+
+    .version-theme {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .design-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .design-item {
+      background: var(--bg);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .design-item h4 {
+      font-size: 0.95rem;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .design-item p {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .version-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--navy);
+      color: var(--gold);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .version-link:hover {
+      background: #0f2442;
+    }
+
+    /* Comparison Table */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .comparison-table th {
+      background: var(--navy);
+      color: var(--white);
+      padding: 1rem;
+      font-size: 0.85rem;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .comparison-table th:first-child {
+      background: linear-gradient(135deg, var(--navy), #0f2442);
+    }
+
+    .comparison-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comparison-table tr:hover td {
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    .rating {
+      display: flex;
+      gap: 2px;
+    }
+
+    .rating-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #e2e8f0;
+    }
+
+    .rating-dot.filled {
+      background: var(--gold);
+    }
+
+    .rating-dot.half {
+      background: linear-gradient(90deg, var(--gold) 50%, #e2e8f0 50%);
+    }
+
+    /* Recommendation Cards */
+    .rec-card {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.02) 100%);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .rec-card.primary {
+      background: linear-gradient(135deg, var(--navy) 0%, #0f2442 100%);
+      border-color: var(--gold);
+    }
+
+    .rec-card.primary h3 {
+      color: var(--gold);
+    }
+
+    .rec-card.primary p {
+      color: #c4d8ec;
+    }
+
+    .rec-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--navy);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+
+    .rec-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--navy);
+      margin-bottom: 0.75rem;
+    }
+
+    .rec-card p {
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+
+    .rec-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .rec-feature {
+      background: rgba(255,255,255,0.2);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .rec-card.primary .rec-feature {
+      background: rgba(212, 175, 55, 0.2);
+      color: var(--gold);
+    }
+
+    /* Decision Grid */
+    .decision-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .decision-item {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .decision-number {
+      width: 36px;
+      height: 36px;
+      background: var(--navy);
+      color: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+    }
+
+    .decision-content h4 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+
+    .decision-content p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .decision-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .decision-option {
+      background: var(--bg);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      border: 1px solid var(--border);
+    }
+
+    /* Implementation Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-left: 1.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      background: var(--gold);
+      border-radius: 50%;
+      border: 3px solid var(--white);
+      box-shadow: 0 0 0 2px var(--gold);
+    }
+
+    .timeline-item h4 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-item p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      background: linear-gradient(135deg, var(--navy) 0%, #0f2442 100%);
+      border-radius: 16px;
+      padding: 3rem;
+      text-align: center;
+      color: var(--white);
+    }
+
+    .cta-section h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: #a0b4cc;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .cta-btn.primary {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    .cta-btn.primary:hover {
+      background: var(--gold-light);
+    }
+
+    .cta-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .cta-btn.secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--navy);
+      color: #8aa8c7;
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .footer a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    /* Print Styles */
+    @media print {
+      .nav, .cta-buttons { display: none; }
+      .hero { padding: 2rem; }
+      .main { padding: 1rem; }
+      .section { page-break-inside: avoid; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 1.8rem; }
+      .hero-stats { flex-direction: column; gap: 1.5rem; }
+      .design-list { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-brand">Manteo Lodge #521</div>
+    <div class="nav-links">
+      <a href="#summary">Summary</a>
+      <a href="#evolution">Design Evolution</a>
+      <a href="#comparison">Comparison</a>
+      <a href="#recommendations">Recommendations</a>
+      <a href="#implementation">Implementation</a>
+      <a href="#decisions">Decisions</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">Strategy Document</div>
+    <h1>Newsletter Initiative</h1>
+    <p>A comprehensive design exploration and implementation strategy for a bi-weekly newsletter to engage lodge members and encourage meeting attendance.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="number">3</div>
+        <div class="label">Design Rounds</div>
+      </div>
+      <div class="hero-stat">
+        <div class="number">12</div>
+        <div class="label">Unique Concepts</div>
+      </div>
+      <div class="hero-stat">
+        <div class="number">4</div>
+        <div class="label">Top Candidates</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Executive Summary -->
+    <section id="summary" class="section">
+      <div class="section-header">
+        <div class="section-number">Section I</div>
+        <h2>Executive Summary</h2>
+        <p class="section-intro">Key findings and recommendations from our newsletter design exploration.</p>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3><span class="icon">🎯</span> Purpose</h3>
+          <p>Create a bi-weekly newsletter to keep brothers informed about lodge activities, education topics, and upcoming events while encouraging regular meeting attendance.</p>
+          <span class="tag">Communication</span>
+        </div>
+        <div class="card">
+          <h3><span class="icon">📊</span> Approach</h3>
+          <p>Three rounds of design exploration, each with four distinct concepts, progressing from traditional to modern to thematic interpretations.</p>
+          <span class="tag">12 Prototypes</span>
+        </div>
+        <div class="card">
+          <h3><span class="icon">✅</span> Key Finding</h3>
+          <p>The v3 "Thematic" designs best balance Masonic dignity with modern readability. The Cornerstone (Blueprint) and Lion & Pillar designs emerged as top candidates.</p>
+          <span class="tag">Recommended</span>
+        </div>
+        <div class="card">
+          <h3><span class="icon">📋</span> Next Steps</h3>
+          <p>Leadership should select a design direction, define content sources, and establish a production workflow. Five key decisions outlined below.</p>
+          <span class="tag">Action Required</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design Evolution -->
+    <section id="evolution" class="section">
+      <div class="section-header">
+        <div class="section-number">Section II</div>
+        <h2>Design Evolution</h2>
+        <p class="section-intro">Three rounds of exploration, each building on learnings from the previous.</p>
+      </div>
+
+      <!-- Version 1 -->
+      <div class="version-card">
+        <div class="version-header">
+          <h3>Version 1: Traditional Foundations</h3>
+          <span class="version-badge">4 Designs</span>
+        </div>
+        <div class="version-content">
+          <p class="version-theme"><strong>Theme:</strong> Historical and traditional approaches exploring different eras of design. These concepts establish baseline aesthetics rooted in Masonic heritage.</p>
+          <div class="design-list">
+            <div class="design-item">
+              <h4>Medieval Gothic</h4>
+              <p>Blackletter typography, illuminated manuscript aesthetics, aged parchment textures</p>
+            </div>
+            <div class="design-item">
+              <h4>Classical Masonic</h4>
+              <p>Traditional symbols, deep blue and gold palette, geometric precision, pillar motifs</p>
+            </div>
+            <div class="design-item">
+              <h4>Modern Minimalist</h4>
+              <p>Clean typography, strategic whitespace, subtle Masonic accents, card-based layout</p>
+            </div>
+            <div class="design-item">
+              <h4>Baroque Victorian</h4>
+              <p>Rich embellishments, ornate flourishes, luxurious gold textures</p>
+            </div>
+          </div>
+          <a href="lodge-newsletter-v1.html" class="version-link">View V1 Prototypes &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Version 2 -->
+      <div class="version-card">
+        <div class="version-header">
+          <h3>Version 2: Modern & Functional</h3>
+          <span class="version-badge">4 Designs</span>
+        </div>
+        <div class="version-content">
+          <p class="version-theme"><strong>Theme:</strong> Contemporary approaches with data visualization and progress tracking. Introduced the "Lion and Pillar" award progress concept.</p>
+          <div class="design-list">
+            <div class="design-item">
+              <h4>Dashboard Command</h4>
+              <p>Progress rings, data visualization, category tracking bars, achievement callouts</p>
+            </div>
+            <div class="design-item">
+              <h4>Journey Map</h4>
+              <p>Visual timeline with milestone markers, roadmap metaphor, completion badges</p>
+            </div>
+            <div class="design-item">
+              <h4>Achievement Board</h4>
+              <p>Gamified trophy case, XP progress bar, unlocked/locked badges, purple accent theme</p>
+            </div>
+            <div class="design-item">
+              <h4>Classic Broadsheet</h4>
+              <p>Traditional newspaper columns, drop caps, pull quotes, sidebar boxes</p>
+            </div>
+          </div>
+          <a href="lodge-newsletter-v2.html" class="version-link">View V2 Prototypes &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Version 3 -->
+      <div class="version-card">
+        <div class="version-header">
+          <h3>Version 3: Thematic Excellence</h3>
+          <span class="version-badge">4 Designs</span>
+        </div>
+        <div class="version-content">
+          <p class="version-theme"><strong>Theme:</strong> Refined concepts with strong thematic identities. Each design tells a cohesive visual story while maintaining excellent readability.</p>
+          <div class="design-list">
+            <div class="design-item">
+              <h4>Lion & Pillar (Heraldic)</h4>
+              <p>Shield crest, crimson ribbon, heraldic panels, formal tone, navy/gold/crimson palette</p>
+            </div>
+            <div class="design-item">
+              <h4>Cornerstone (Blueprint)</h4>
+              <p>Architectural drawing style, grid background, technical annotations, orange accents</p>
+            </div>
+            <div class="design-item">
+              <h4>Lambskin (Parchment)</h4>
+              <p>Elegant parchment texture, wax seal, cursive headers, sepia tones</p>
+            </div>
+            <div class="design-item">
+              <h4>Traveler (Vintage Poster)</h4>
+              <p>1930s travel poster aesthetic, sunburst, bold typography, teal/coral palette</p>
+            </div>
+          </div>
+          <a href="lodge-newsletter-v3.html" class="version-link">View V3 Prototypes &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Matrix -->
+    <section id="comparison" class="section">
+      <div class="section-header">
+        <div class="section-number">Section III</div>
+        <h2>Design Comparison</h2>
+        <p class="section-intro">How each v3 design rates on key criteria. Ratings from 1-5 dots.</p>
+      </div>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Criteria</th>
+            <th>Lion & Pillar</th>
+            <th>Cornerstone</th>
+            <th>Lambskin</th>
+            <th>Traveler</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Masonic Heritage</strong><br><small>Honors tradition</small></td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Modern Readability</strong><br><small>Easy to scan</small></td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Email Compatibility</strong><br><small>Works in inboxes</small></td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Print Quality</strong><br><small>For handouts</small></td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Production Ease</strong><br><small>Time to create</small></td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Unique Appeal</strong><br><small>Stands out</small></td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot"></span>
+              </div>
+            </td>
+            <td>
+              <div class="rating">
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+                <span class="rating-dot filled"></span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Recommendations -->
+    <section id="recommendations" class="section">
+      <div class="section-header">
+        <div class="section-number">Section IV</div>
+        <h2>Recommendations</h2>
+        <p class="section-intro">Based on our analysis, here are the recommended approaches for different use cases.</p>
+      </div>
+
+      <div class="rec-card primary">
+        <span class="rec-badge">Primary Recommendation</span>
+        <h3>Cornerstone (Blueprint) Design</h3>
+        <p>The Blueprint design offers the best balance of Masonic heritage, modern readability, and production efficiency. Its architectural theme connects to the building metaphor central to Masonry while maintaining a clean, professional appearance that works well in both email and print formats.</p>
+        <div class="rec-features">
+          <span class="rec-feature">Best Email Compatibility</span>
+          <span class="rec-feature">Unique Visual Identity</span>
+          <span class="rec-feature">Clear Information Hierarchy</span>
+          <span class="rec-feature">Moderate Production Effort</span>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <span class="rec-badge">Traditional Alternative</span>
+        <h3>Lion & Pillar (Heraldic) Design</h3>
+        <p>For lodges preferring a more formal, traditional presentation, the Heraldic design provides maximum gravitas. Best suited for print distribution where the rich details can be fully appreciated.</p>
+        <div class="rec-features">
+          <span class="rec-feature">Maximum Tradition</span>
+          <span class="rec-feature">Excellent Print Quality</span>
+          <span class="rec-feature">Formal Tone</span>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <span class="rec-badge">Accessible Alternative</span>
+        <h3>Traveler (Vintage Poster) Design</h3>
+        <p>For lodges wanting maximum engagement and a welcoming feel, the Traveler design offers friendly, approachable aesthetics while remaining distinctive. Best for lodges focused on attracting younger members.</p>
+        <div class="rec-features">
+          <span class="rec-feature">Most Approachable</span>
+          <span class="rec-feature">High Readability</span>
+          <span class="rec-feature">Easy to Produce</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Implementation -->
+    <section id="implementation" class="section">
+      <div class="section-header">
+        <div class="section-number">Section V</div>
+        <h2>Implementation Considerations</h2>
+        <p class="section-intro">Key factors to consider when moving from prototype to production.</p>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3><span class="icon">📝</span> Content Sources</h3>
+          <p><strong>Who provides what:</strong></p>
+          <ul style="margin-top: 0.5rem; padding-left: 1.25rem; color: var(--text-light); font-size: 0.9rem;">
+            <li>Secretary: Attendance records, upcoming events</li>
+            <li>Education Officer: Education topic summaries</li>
+            <li>Worshipful Master: Message from the East</li>
+            <li>Charity Chair: Charitable works updates</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="icon">⚙️</span> Production Workflow</h3>
+          <p><strong>Suggested process:</strong></p>
+          <ul style="margin-top: 0.5rem; padding-left: 1.25rem; color: var(--text-light); font-size: 0.9rem;">
+            <li>Content due: 3 days after each meeting</li>
+            <li>Draft review: WM or designee</li>
+            <li>Send date: Monday following meeting</li>
+            <li>Archive: Posted to lodge website</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="icon">📧</span> Email Platform</h3>
+          <p><strong>Options to consider:</strong></p>
+          <ul style="margin-top: 0.5rem; padding-left: 1.25rem; color: var(--text-light); font-size: 0.9rem;">
+            <li>Mailchimp: Free tier for small lists</li>
+            <li>Constant Contact: Nonprofit pricing</li>
+            <li>Buttondown: Simple, affordable</li>
+            <li>Manual: Gmail with BCC (not ideal)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="icon">📅</span> Frequency Options</h3>
+          <p><strong>Common cadences:</strong></p>
+          <ul style="margin-top: 0.5rem; padding-left: 1.25rem; color: var(--text-light); font-size: 0.9rem;">
+            <li>Bi-weekly: After each stated meeting</li>
+            <li>Monthly: Comprehensive summary</li>
+            <li>Quarterly: Minimal effort, less timely</li>
+          </ul>
+          <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-light);"><em>Bi-weekly recommended for engagement.</em></p>
+        </div>
+      </div>
+
+      <h3 style="font-family: 'Cinzel', serif; color: var(--navy); margin: 2rem 0 1rem;">Suggested Implementation Timeline</h3>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Phase 1: Decision</h4>
+          <p>Leadership reviews prototypes and selects design direction. Identify content owners and email platform.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Phase 2: Template Setup</h4>
+          <p>Convert selected design to email-compatible template. Set up email platform account and import member list.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Phase 3: Pilot Issue</h4>
+          <p>Produce first newsletter with real content. Send to officers for feedback before full distribution.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Phase 4: Launch</h4>
+          <p>Send first issue to full membership. Gather feedback and refine process.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Phase 5: Sustain</h4>
+          <p>Establish regular production rhythm. Review engagement metrics monthly.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Decision Points -->
+    <section id="decisions" class="section">
+      <div class="section-header">
+        <div class="section-number">Section VI</div>
+        <h2>Decision Points for Leadership</h2>
+        <p class="section-intro">Key questions that require lodge leadership input before proceeding.</p>
+      </div>
+
+      <div class="decision-grid">
+        <div class="decision-item">
+          <div class="decision-number">1</div>
+          <div class="decision-content">
+            <h4>Which design direction resonates best?</h4>
+            <p>Review all prototypes and select a primary design. Consider your lodge's character and member demographics.</p>
+            <div class="decision-options">
+              <span class="decision-option">Cornerstone (Blueprint)</span>
+              <span class="decision-option">Lion & Pillar (Heraldic)</span>
+              <span class="decision-option">Lambskin (Parchment)</span>
+              <span class="decision-option">Traveler (Poster)</span>
+            </div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-number">2</div>
+          <div class="decision-content">
+            <h4>What frequency makes sense?</h4>
+            <p>Balance engagement value against production effort. Who will be responsible for consistent delivery?</p>
+            <div class="decision-options">
+              <span class="decision-option">Bi-weekly (recommended)</span>
+              <span class="decision-option">Monthly</span>
+              <span class="decision-option">Quarterly</span>
+            </div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-number">3</div>
+          <div class="decision-content">
+            <h4>Who will own content creation?</h4>
+            <p>Assign responsibility for gathering content, writing copy, and producing each issue.</p>
+            <div class="decision-options">
+              <span class="decision-option">Secretary</span>
+              <span class="decision-option">Dedicated volunteer</span>
+              <span class="decision-option">Rotating committee</span>
+              <span class="decision-option">External help</span>
+            </div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-number">4</div>
+          <div class="decision-content">
+            <h4>What budget is available for email tools?</h4>
+            <p>Email platforms range from free to ~$20/month for typical lodge sizes. Some offer nonprofit discounts.</p>
+            <div class="decision-options">
+              <span class="decision-option">$0 (free tier)</span>
+              <span class="decision-option">$10-20/month</span>
+              <span class="decision-option">Included in existing tools</span>
+            </div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-number">5</div>
+          <div class="decision-content">
+            <h4>Do we need print distribution?</h4>
+            <p>Some brothers prefer or require printed newsletters. This affects design choices and production workflow.</p>
+            <div class="decision-options">
+              <span class="decision-option">Email only</span>
+              <span class="decision-option">Email + print for requests</span>
+              <span class="decision-option">Both formats equally</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <h2>Ready to Proceed?</h2>
+      <p>Review the prototype designs, discuss these decision points with lodge leadership, and let us know how you'd like to move forward.</p>
+      <div class="cta-buttons">
+        <a href="lodge-newsletter-v3.html" class="cta-btn primary">View Latest Prototypes</a>
+        <a href="lodge-newsletter-v1.html" class="cta-btn secondary">V1: Traditional</a>
+        <a href="lodge-newsletter-v2.html" class="cta-btn secondary">V2: Modern</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Manteo Lodge #521 Newsletter Strategy Document</p>
+    <p style="margin-top: 0.5rem;">Prepared January 2026 &bull; <a href="lodge-newsletter-v3.html">View Prototypes</a></p>
+  </footer>
+
+  <!-- Smooth Scroll -->
+  <script>
+    document.querySelectorAll('.nav-links a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

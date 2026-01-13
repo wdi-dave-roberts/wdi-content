@@ -1,1 +1,0 @@
-import{m as t}from"./style-ZMe_c9AX.js";import{s as e,i as o}from"./gantt-BGPsXA2F.js";window.setViewMode=e;window.Alpine=t;t.start();document.addEventListener("DOMContentLoaded",()=>{o("#gantt","/projects/kitchen-remodel/data.json")});
