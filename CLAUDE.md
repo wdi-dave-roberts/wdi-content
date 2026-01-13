@@ -162,14 +162,14 @@ The site is hosted on GitHub Pages with automatic deployment on every push to `m
 ```bash
 cp my-page.html public/
 git add public/my-page.html && git commit -m "Add my-page" && git push
-echo "Live at: https://whitedoeinn.github.io/wdi-content/public/my-page.html"
+echo -e "Live at:\n  https://whitedoeinn.github.io/wdi-content/public/my-page.html"
 ```
 
 **New project** (with Gantt, gallery, etc.):
 ```bash
 npm run create-project
 git add projects/my-project/ && git commit -m "Add my-project" && git push
-echo "Live at: https://whitedoeinn.github.io/wdi-content/projects/my-project/"
+echo -e "Live at:\n  https://whitedoeinn.github.io/wdi-content/projects/my-project/"
 ```
 
 ### Deployment Timeline
