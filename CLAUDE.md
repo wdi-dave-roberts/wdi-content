@@ -12,6 +12,9 @@ Management tools and internal applications for White Doe Inn (Inspired Manteo Mo
 ## Project Structure
 
 ```
+├── .github/
+│   └── workflows/
+│       └── deploy.yml         # Auto-deploy to GitHub Pages on push
 ├── index.html                 # Main landing page
 ├── public/                    # Static files (served as-is)
 │   ├── expense-form.html      # Expense reimbursement form
@@ -30,7 +33,8 @@ Management tools and internal applications for White Doe Inn (Inspired Manteo Mo
 │       ├── index.html         # Project page
 │       └── reference/         # Documents, receipts
 ├── scripts/
-│   └── create-project.js      # Interactive project creation CLI
+│   ├── create-project.js      # Interactive project creation CLI
+│   └── update-plugins.sh      # Re-vendor wdi plugin from source
 └── src/
     ├── main.ts                # Entry point - initializes Alpine.js
     ├── style.css              # Tailwind + DaisyUI configuration
@@ -139,7 +143,47 @@ Import types from `src/types/project-data.d.ts`:
 import type { ProjectData, Task, Vendor, Receipt, Note } from './types/project-data'
 ```
 
+## Deployment
+
+The site is hosted on GitHub Pages with automatic deployment on every push to `main`.
+
+**Live site**: https://whitedoeinn.github.io/wdi-content/
+
+### How It Works
+
+1. Push to `main` triggers GitHub Actions workflow (`.github/workflows/deploy.yml`)
+2. Build job runs `npm ci` + `npm run build` (~15 seconds)
+3. Deploy job uploads `dist/` to GitHub Pages (~3-7 minutes)
+4. Site is live
+
+### Adding New Content
+
+**Static HTML file** (standalone pages):
+```bash
+# Add to public/
+cp my-page.html public/
+git add public/my-page.html && git commit -m "Add my-page" && git push
+# Available at: https://whitedoeinn.github.io/wdi-content/public/my-page.html
+```
+
+**New project** (with Gantt, gallery, etc.):
+```bash
+npm run create-project
+git add projects/my-project/ && git commit -m "Add my-project" && git push
+# Available at: https://whitedoeinn.github.io/wdi-content/projects/my-project/
+```
+
+### Deployment Timeline
+
+| Step | Duration |
+|------|----------|
+| Build | ~15 seconds |
+| Deploy | 3-7 minutes |
+| **Total** | ~4-8 minutes |
+
 ## URL Structure
+
+### Local Development (http://localhost:5173/wdi-content/)
 
 | Path | Description |
 |------|-------------|
@@ -147,7 +191,15 @@ import type { ProjectData, Task, Vendor, Receipt, Note } from './types/project-d
 | `/projects/` | Projects listing |
 | `/projects/{slug}/` | Individual project |
 | `/public/{file}.html` | Static files |
-| `/{file}.html` | Symlinks to public/ (backward compat) |
+
+### Production (https://whitedoeinn.github.io/wdi-content/)
+
+| Path | Live URL |
+|------|----------|
+| `/` | https://whitedoeinn.github.io/wdi-content/ |
+| `/projects/` | https://whitedoeinn.github.io/wdi-content/projects/ |
+| `/projects/{slug}/` | https://whitedoeinn.github.io/wdi-content/projects/{slug}/ |
+| `/public/{file}.html` | https://whitedoeinn.github.io/wdi-content/public/{file}.html |
 
 ## Development Notes
 
