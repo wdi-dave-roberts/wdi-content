@@ -1,0 +1,8 @@
+{
+  "name": "wdi",
+  "description": "WDI development toolkit - vendored from dev-plugins",
+  "version": "1.0.0",
+  "commands": "./commands/",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}

@@ -1,0 +1,11 @@
+{
+  "vendored_at": "2026-01-13T07:26:32Z",
+  "source": "/Users/davidroberts/vscode-projects/dev-plugins-workflows",
+  "wdi_version": "1.0.0",
+  "external_dependencies": {
+    "compound-engineering": {
+      "source": "every-marketplace",
+      "note": "Install globally: claude plugin install compound-engineering --scope project"
+    }
+  }
+}
