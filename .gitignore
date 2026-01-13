@@ -12,3 +12,6 @@ dist/
 
 # Backup files
 *.bak
+
+# Playwright MCP
+.playwright-mcp/
