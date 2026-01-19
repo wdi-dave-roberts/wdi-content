@@ -1,0 +1,264 @@
+{
+  "_meta": {
+    "source": "~/Downloads/schedule.pdf",
+    "extractedDate": "2026-01-18",
+    "purpose": "Close-out schedule extracted from PDF for review before merging into data.json",
+    "assumptions": [
+      "Today is 2026-01-18, so 'Now - Thursday, 23 January' becomes 2026-01-18 to 2026-01-23",
+      "Drywall and wall/ceiling paint are complete per PDF overview",
+      "Upper cabinets are owner-supplied, installed by Weathertek",
+      "Lower cabinets + equipment installed by Crest (owner-direct vendor)",
+      "No countertops needed - commercial lowers have integrated stainless tops",
+      "Flooring main install assumed complete; 'base and cap' is trim/finishing",
+      "Health Dept inspection is separate from building final inspection"
+    ],
+    "openQuestions": [
+      "Has a Change Order been issued for the schedule extension (Jan 16 -> Feb 4)?",
+      "What is the current status of trim/crown molding work?",
+      "Is electrical finish actually underway or complete?",
+      "Is plumbing finish actually underway or complete?"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "trim-crown-molding",
+      "name": "Trim & Crown Molding",
+      "start": "2026-01-18",
+      "end": "2026-01-23",
+      "progress": 0,
+      "status": "in_progress",
+      "category": "finish",
+      "assignee": "vendor:weathertek",
+      "description": "Install door and window casing, crown molding, fill, sand, prime, and apply first finish coat. Final caulk deferred to post-equipment.",
+      "notes": "PDF says 'Now - Thursday, 23 January'. Final caulk intentionally deferred until after equipment install."
+    },
+    {
+      "id": "upper-cabinet-prep",
+      "name": "Upper Cabinet Readiness",
+      "start": "2026-01-24",
+      "end": "2026-01-24",
+      "progress": 0,
+      "status": "scheduled",
+      "category": "fixtures",
+      "assignee": "vendor:weathertek",
+      "description": "Confirm delivery, stage area, verify blocking and elevations for upper cabinets.",
+      "notes": "Owner-supplied cabinets. Prep day before install."
+    },
+    {
+      "id": "upper-cabinet-install",
+      "name": "Upper Cabinet Installation",
+      "start": "2026-01-26",
+      "end": "2026-01-26",
+      "progress": 0,
+      "dependencies": ["upper-cabinet-prep", "trim-crown-molding"],
+      "status": "scheduled",
+      "category": "fixtures",
+      "assignee": "vendor:weathertek",
+      "description": "Install all upper cabinets. Must be complete prior to Crest mobilization.",
+      "notes": "CRITICAL: Blocking Crest install on Jan 27. No float."
+    },
+    {
+      "id": "crest-equipment-install",
+      "name": "Crest Equipment & Lower Cabinet Installation",
+      "start": "2026-01-27",
+      "end": "2026-01-27",
+      "progress": 0,
+      "dependencies": ["upper-cabinet-install"],
+      "status": "scheduled",
+      "category": "fixtures",
+      "assignee": "vendor:crest-food-service",
+      "description": "Crest installs all kitchen equipment and lower stainless cabinets. MEP trades on standby.",
+      "notes": "Owner-direct vendor. One-day install. MEP standby for connections."
+    },
+    {
+      "id": "flooring-base-cap",
+      "name": "Flooring Base & Cap",
+      "start": "2026-01-28",
+      "end": "2026-01-28",
+      "progress": 0,
+      "dependencies": ["crest-equipment-install"],
+      "status": "scheduled",
+      "category": "finish",
+      "assignee": "vendor:ck-flooring",
+      "description": "Install flooring base and cap along all walls.",
+      "notes": "Must be after equipment to ensure proper fit at equipment interfaces."
+    },
+    {
+      "id": "final-caulk-paint",
+      "name": "Final Caulk & Finish Paint",
+      "start": "2026-01-29",
+      "end": "2026-01-29",
+      "progress": 0,
+      "dependencies": ["flooring-base-cap"],
+      "status": "scheduled",
+      "category": "finish",
+      "assignee": "vendor:weathertek",
+      "description": "Final caulk and finish paint across all trim, cabinets, crown, and floor interfaces.",
+      "notes": "This is the touch-up/completion pass after all equipment and flooring trim installed."
+    },
+    {
+      "id": "final-inspections",
+      "name": "Final Inspections (Building + Health Dept)",
+      "start": "2026-02-02",
+      "end": "2026-02-02",
+      "progress": 0,
+      "dependencies": ["final-caulk-paint"],
+      "status": "scheduled",
+      "category": "inspection",
+      "assignee": "vendor:town-of-manteo",
+      "description": "Final building inspection and Health Department approval.",
+      "notes": "Health Dept approval required for commercial kitchen operation."
+    },
+    {
+      "id": "commissioning",
+      "name": "Commissioning & Staff Walkthrough",
+      "start": "2026-02-03",
+      "end": "2026-02-03",
+      "progress": 0,
+      "dependencies": ["final-inspections"],
+      "status": "scheduled",
+      "category": "cleanup",
+      "assignee": "vendor:inspired-manteo",
+      "description": "Equipment testing, staff walkthrough, and final cleaning.",
+      "notes": "Owner-led. Verify all equipment operational before opening."
+    },
+    {
+      "id": "kitchen-opening",
+      "name": "Kitchen Opening",
+      "start": "2026-02-04",
+      "end": "2026-02-04",
+      "progress": 0,
+      "dependencies": ["commissioning"],
+      "status": "scheduled",
+      "category": "milestone",
+      "description": "White Doe Inn opens with fully operational kitchen.",
+      "notes": "Hard date. Non-negotiable per PDF."
+    }
+  ],
+  "milestones": [
+    {
+      "id": "upper-cabinets-complete",
+      "name": "Upper Cabinets Fully Installed",
+      "date": "2026-01-26",
+      "status": "upcoming",
+      "tasks": ["upper-cabinet-install"],
+      "notes": "No float. Blocking Crest."
+    },
+    {
+      "id": "crest-complete",
+      "name": "Crest Equipment Installation Complete",
+      "date": "2026-01-27",
+      "status": "upcoming",
+      "tasks": ["crest-equipment-install"],
+      "notes": "One-day install. Zero float between Jan 27-29."
+    },
+    {
+      "id": "flooring-trim-complete",
+      "name": "Flooring Base & Cap Complete",
+      "date": "2026-01-28",
+      "status": "upcoming",
+      "tasks": ["flooring-base-cap"]
+    },
+    {
+      "id": "finishes-complete",
+      "name": "Final Caulk & Finish Paint Complete",
+      "date": "2026-01-29",
+      "status": "upcoming",
+      "tasks": ["final-caulk-paint"]
+    },
+    {
+      "id": "health-dept-approval",
+      "name": "Health Department Final Approval",
+      "date": "2026-02-02",
+      "status": "upcoming",
+      "tasks": ["final-inspections"],
+      "notes": "Required for commercial kitchen operation."
+    },
+    {
+      "id": "inn-opening",
+      "name": "Inn Open / Kitchen Fully Operational",
+      "date": "2026-02-04",
+      "status": "upcoming",
+      "tasks": ["kitchen-opening"],
+      "notes": "Hard opening date. Non-negotiable."
+    }
+  ],
+  "vendors": [
+    {
+      "id": "crest-food-service",
+      "name": "Crest Food Service EQ",
+      "type": "owner-direct",
+      "trade": "kitchen-equipment",
+      "status": "active",
+      "paymentTerms": "owner-direct",
+      "notes": "Owner-contracted vendor per contract Exhibit B. Not through Weathertek. Installs commercial kitchen equipment and lower stainless cabinets.",
+      "folder": "Crest Food Service"
+    }
+  ],
+  "taskStatusUpdates": {
+    "_comment": "Suggested updates to existing tasks in data.json based on PDF stating these are complete",
+    "drywall": {
+      "currentStatus": "in_progress",
+      "currentProgress": 80,
+      "suggestedStatus": "completed",
+      "suggestedProgress": 100,
+      "reason": "PDF states 'drywall... are complete'"
+    },
+    "paint": {
+      "currentStatus": "scheduled",
+      "currentProgress": 0,
+      "suggestedStatus": "completed",
+      "suggestedProgress": 100,
+      "reason": "PDF states 'wall/ceiling paint are complete'"
+    },
+    "flooring": {
+      "currentStatus": "scheduled",
+      "currentProgress": 0,
+      "suggestedStatus": "completed",
+      "suggestedProgress": 100,
+      "reason": "PDF implies main flooring complete; only 'base and cap' (trim) remains"
+    },
+    "electrical-trim": {
+      "currentId": "electrical-trim",
+      "suggestedId": "electrical-finish",
+      "suggestedName": "Electrical Finish",
+      "currentStatus": "scheduled",
+      "suggestedStatus": "in_progress",
+      "reason": "Per David: electrical finish is underway"
+    },
+    "plumbing-trim": {
+      "currentId": "plumbing-trim",
+      "suggestedId": "plumbing-finish",
+      "suggestedName": "Plumbing Finish",
+      "currentStatus": "scheduled",
+      "suggestedStatus": "in_progress",
+      "reason": "Per David: plumbing finish needs update"
+    }
+  },
+  "tasksToRemove": [
+    {
+      "id": "countertops",
+      "reason": "Commercial lower cabinets have pre-installed stainless tops. No separate countertop install."
+    },
+    {
+      "id": "cabinets",
+      "reason": "Replace with split tasks: upper-cabinet-install (Weathertek) and crest-equipment-install (Crest does lowers)"
+    },
+    {
+      "id": "appliances",
+      "reason": "Merged into crest-equipment-install"
+    },
+    {
+      "id": "punch-list",
+      "reason": "Replaced by commissioning task. Traditional punch list concept absorbed into final-caulk-paint and commissioning."
+    }
+  ],
+  "contractImplications": {
+    "originalCompletionDate": "2026-01-16",
+    "newCompletionDate": "2026-02-04",
+    "extensionDays": 19,
+    "changeOrderRequired": true,
+    "changeOrderReference": null,
+    "notes": "Per contract Section 4.1, any change affecting schedule must be described by Contractor in email with schedule impact. Per Exhibit C, only milestone date changes approved by email Change Order may modify the contractual schedule."
+  }
+}
