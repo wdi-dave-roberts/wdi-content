@@ -16,3 +16,4 @@ dist/
 # Playwright MCP
 .playwright-mcp/
 .claude/
+.claude/
