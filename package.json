@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "create-project": "node scripts/create-project.js"
+    "create-project": "node scripts/create-project.js",
+    "fabric-research": "./scripts/fabric-research.sh"
   },
   "repository": {
     "type": "git",
