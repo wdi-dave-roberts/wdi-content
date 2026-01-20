@@ -16,4 +16,6 @@ dist/
 # Playwright MCP
 .playwright-mcp/
 .claude/
-.claude/
+
+# Generated files
+*.xlsx

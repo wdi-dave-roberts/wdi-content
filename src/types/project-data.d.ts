@@ -1,11 +1,11 @@
 // Project Data Types
 // Auto-generated from project-data.schema.json
 
-export type TaskStatus = 'pending' | 'scheduled' | 'in_progress' | 'completed' | 'blocked' | 'cancelled'
-export type TaskPriority = 'low' | 'normal' | 'high' | 'critical'
+export type TaskStatus = 'pending' | 'scheduled' | 'inProgress' | 'completed' | 'blocked' | 'cancelled'
+export type TaskPriority = 'critical' | 'high' | 'normal' | 'low'
+export type TaskOwner = 'Owner' | 'Contractor'
 export type TaskCategory =
   | 'demolition'
-  | 'rough-in'
   | 'structural'
   | 'mechanical'
   | 'electrical'
@@ -14,6 +14,10 @@ export type TaskCategory =
   | 'fixtures'
   | 'cleanup'
   | 'inspection'
+  | 'equipment'
+  | 'windowsAndDoors'
+
+export type IssueStatus = 'open' | 'inProgress' | 'blocked' | 'resolved'
 
 export type VendorType =
   | 'general-contractor'
@@ -117,13 +121,16 @@ export type LienWaiverType = 'conditional' | 'unconditional'
 // Entity interfaces
 
 export interface Task {
-  id: string
+  id: string // Hierarchical: "1", "1.1", "1.2.3" - auto-generated
+  parentId?: string // Parent task ID for subtasks
   name: string
   start: string // YYYY-MM-DD
   end: string // YYYY-MM-DD
+  owner: TaskOwner
+  assignee?: string // Vendor name from vendor list
+  dependencies?: string[] // Task IDs that must complete first
+  subtasks?: Task[] // Recursive nested subtasks
   progress?: number
-  dependencies?: string[]
-  assignee?: string // vendor:{id}
   status?: TaskStatus
   priority?: TaskPriority
   category?: TaskCategory
@@ -131,6 +138,8 @@ export interface Task {
   estimatedCost?: number
   actualCost?: number
   location?: string
+  lastUpdated?: string // ISO 8601 - auto-generated
+  comments?: string
 }
 
 export interface VendorContact {
@@ -308,6 +317,18 @@ export interface ChangeOrder {
   href?: string
 }
 
+export interface Issue {
+  id: string // Auto-generated: I1, I2, I3...
+  title: string
+  description?: string
+  status: IssueStatus
+  priority: TaskPriority
+  affectedTasks: string[] // Task IDs impacted by this issue
+  created?: string // ISO 8601 - auto-generated
+  resolved?: string // ISO 8601 - when resolved
+  comments?: string
+}
+
 export interface ContractParties {
   owner?: string // vendor:{id}
   contractor?: string // vendor:{id}
@@ -337,6 +358,7 @@ export interface ProjectData {
   milestones?: Milestone[]
   payments?: Payment[]
   changeOrders?: ChangeOrder[]
+  issues?: Issue[]
   budget?: Budget
   contract?: Contract
 }
@@ -348,4 +370,5 @@ export type TaskTag = `task:${string}`
 export type ReceiptTag = `receipt:${string}`
 export type MilestoneTag = `milestone:${string}`
 export type ChangeOrderTag = `co:${string}`
-export type EntityTag = VendorTag | TaskTag | ReceiptTag | MilestoneTag | ChangeOrderTag | 'project'
+export type IssueTag = `issue:${string}`
+export type EntityTag = VendorTag | TaskTag | ReceiptTag | MilestoneTag | ChangeOrderTag | IssueTag | 'project'
