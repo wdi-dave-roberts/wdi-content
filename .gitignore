@@ -15,7 +15,14 @@ dist/
 
 # Playwright MCP
 .playwright-mcp/
+
+# Claude Code local settings (machine-specific)
 .claude/
+
+# Exception: Committed plan files
+!.claude/plans/
+!.claude/plans/*.md
+!.claude/plans/.gitkeep
 
 # Generated files
 *.xlsx
