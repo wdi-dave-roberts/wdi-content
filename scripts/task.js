@@ -1328,6 +1328,46 @@ function parseQuantityAndSpec(value) {
 }
 
 /**
+ * Parse combined delivery date and order link response
+ * Expected format: "2026-01-25, https://amazon.com/..." or "2026-01-25, N/A"
+ */
+function parseDateAndLink(value) {
+  if (!value || typeof value !== 'string') return null;
+
+  const result = {};
+  const trimmed = value.trim();
+
+  // Look for date pattern (YYYY-MM-DD) anywhere in the string
+  const dateMatch = trimmed.match(/\b(\d{4}-\d{2}-\d{2})\b/);
+  if (dateMatch) {
+    result.expectedDate = dateMatch[1];
+  }
+
+  // Look for URL pattern (http/https or common domains)
+  const urlMatch = trimmed.match(/(https?:\/\/[^\s,]+|www\.[^\s,]+|amazon\.com[^\s,]*)/i);
+  if (urlMatch) {
+    let url = urlMatch[1];
+    // Add https:// if missing
+    if (!url.startsWith('http')) {
+      url = 'https://' + url;
+    }
+    result.orderLink = url;
+  } else {
+    // Check if there's text after the date that's not N/A
+    const afterDate = dateMatch
+      ? trimmed.substring(trimmed.indexOf(dateMatch[1]) + dateMatch[1].length).replace(/^[\s,]+/, '').trim()
+      : trimmed;
+    if (afterDate && afterDate.toLowerCase() !== 'n/a' && afterDate.length > 3) {
+      result.orderLink = afterDate;
+    } else if (afterDate.toLowerCase() === 'n/a') {
+      result.orderLink = 'N/A';
+    }
+  }
+
+  return Object.keys(result).length > 0 ? result : null;
+}
+
+/**
  * Get the appropriate question for a material based on its lifecycle state.
  * Returns null if no question is needed.
  *
@@ -1384,23 +1424,39 @@ function getMaterialQuestion(material, taskId) {
       };
 
     case 'ordered':
-      // Priority 1: Get expected delivery date
-      if (!expectedDate) {
-        return {
-          type: 'date',
-          prompt: `When is "${name}" expected to arrive?`,
-          field: 'expectedDate',
-          assignee: 'tonia',
-          materialId: id,
-          taskId,
-          autoApply: (response) => {
-            const value = typeof response === 'object' ? response.value : response;
-            return value ? { expectedDate: value } : null;
-          }
-        };
-      }
-      // Priority 2: Get order link (for tracking/reference)
-      if (!orderLink) {
+      // Combined question for delivery date + order link (minimizes questions)
+      if (!expectedDate || !orderLink) {
+        // Both missing - ask combined question
+        if (!expectedDate && !orderLink) {
+          return {
+            type: 'free-text',
+            prompt: `For "${name}": What is the expected delivery date and order link? (e.g., "2026-01-25, https://amazon.com/..." or "2026-01-25, N/A")`,
+            fields: ['expectedDate', 'orderLink'],
+            assignee: 'tonia',
+            materialId: id,
+            taskId,
+            autoApply: (response) => {
+              const value = typeof response === 'object' ? response.value : response;
+              return parseDateAndLink(value);
+            }
+          };
+        }
+        // Only expectedDate missing
+        if (!expectedDate) {
+          return {
+            type: 'date',
+            prompt: `When is "${name}" expected to arrive?`,
+            field: 'expectedDate',
+            assignee: 'tonia',
+            materialId: id,
+            taskId,
+            autoApply: (response) => {
+              const value = typeof response === 'object' ? response.value : response;
+              return value ? { expectedDate: value } : null;
+            }
+          };
+        }
+        // Only orderLink missing
         return {
           type: 'free-text',
           prompt: `What is the order link for "${name}"? (e.g., Amazon order URL, or 'N/A' if not applicable)`,
@@ -1411,12 +1467,11 @@ function getMaterialQuestion(material, taskId) {
           autoApply: (response) => {
             const value = typeof response === 'object' ? response.value : response;
             if (!value) return null;
-            // Store 'N/A' explicitly so we don't re-ask
             return { orderLink: value.trim() };
           }
         };
       }
-      // Priority 3: Check if past due and ask for delivery confirmation
+      // Check if past due and ask for delivery confirmation
       if (expectedDate < today) {
         return {
           type: 'yes-no',
@@ -1450,16 +1505,22 @@ function generateMaterialQuestionId(type, materialId, field) {
 }
 
 /**
- * Check if a question already exists for a material
+ * Check if a question already exists for a material's fields
+ * @param {Object} data - The data object
+ * @param {string} materialId - The material ID
+ * @param {string|string[]} fields - Field(s) to check for (e.g., 'expectedDate' or ['expectedDate', 'orderLink'])
  */
-function materialQuestionExists(data, materialId, questionType, field) {
+function materialQuestionExists(data, materialId, questionType, fields) {
   const questions = data.questions || [];
-  return questions.some(q =>
-    q.relatedMaterial === materialId &&
-    q.type === questionType &&
-    q.status !== 'resolved' &&
-    (field ? q.id.includes(field) : true)
-  );
+  const fieldsArray = Array.isArray(fields) ? fields : [fields];
+
+  return questions.some(q => {
+    if (q.relatedMaterial !== materialId) return false;
+    if (q.status === 'resolved') return false;
+
+    // Check if any of the fields we want to ask about are already covered
+    return fieldsArray.some(field => q.id.includes(field));
+  });
 }
 
 /**
@@ -1523,7 +1584,7 @@ function generateMaterialQuestions(data) {
     if (!rule) continue;
 
     // Check if question already exists
-    const existingQuestion = materialQuestionExists(data, material.id, rule.type, rule.field || rule.fields?.[0]);
+    const existingQuestion = materialQuestionExists(data, material.id, rule.type, rule.fields || rule.field);
     if (existingQuestion) continue;
 
     // Generate question ID
@@ -2522,7 +2583,7 @@ async function cmdMaterialsCheck() {
     }
 
     // Check if question already exists
-    const existingQuestion = materialQuestionExists(data, material.id, rule.type, rule.field || rule.fields?.[0]);
+    const existingQuestion = materialQuestionExists(data, material.id, rule.type, rule.fields || rule.field);
     if (existingQuestion) {
       console.log(dim(`📦 ${material.name} (${material.status}) - question already exists`));
       continue;

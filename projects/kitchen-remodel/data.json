@@ -1080,36 +1080,6 @@
       "relatedTask": "project-finish"
     },
     {
-      "id": "sq-date-hinges-back-door-expectedDate",
-      "created": "2026-01-21",
-      "type": "date",
-      "prompt": "When is \"Hinges (Back Door)\" expected to arrive?",
-      "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "install-doors",
-      "relatedMaterial": "hinges-back-door"
-    },
-    {
-      "id": "sq-date-doorknob-back-door-expectedDate",
-      "created": "2026-01-21",
-      "type": "date",
-      "prompt": "When is \"Doorknob (Back Door)\" expected to arrive?",
-      "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "install-doors",
-      "relatedMaterial": "doorknob-back-door"
-    },
-    {
-      "id": "sq-date-doorknob-hinges-hvac-expectedDate",
-      "created": "2026-01-21",
-      "type": "date",
-      "prompt": "When is \"Doorknob & Hinges (HVAC)\" expected to arrive?",
-      "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "install-doors",
-      "relatedMaterial": "doorknob-hinges-hvac"
-    },
-    {
       "id": "sq-free-text-receptacle-light-switch-covers-quantity-detail",
       "created": "2026-01-21",
       "type": "free-text",
@@ -1118,16 +1088,6 @@
       "status": "open",
       "relatedTask": "finish-electrical",
       "relatedMaterial": "receptacle-light-switch-covers"
-    },
-    {
-      "id": "sq-date-upper-cabinet-handles-expectedDate",
-      "created": "2026-01-21",
-      "type": "date",
-      "prompt": "When is \"Upper Cabinet Handles\" expected to arrive?",
-      "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "upper-cabinet-install",
-      "relatedMaterial": "upper-cabinet-handles"
     },
     {
       "id": "sq-free-text-hinges-main-kitchen-door-orderLink",
@@ -1158,6 +1118,46 @@
       "status": "open",
       "relatedTask": "upper-cabinet-install",
       "relatedMaterial": "upper-cabinets"
+    },
+    {
+      "id": "sq-free-text-hinges-back-door-expectedDate-orderLink",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Hinges (Back Door)\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "hinges-back-door"
+    },
+    {
+      "id": "sq-free-text-doorknob-back-door-expectedDate-orderLink",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Doorknob (Back Door)\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "doorknob-back-door"
+    },
+    {
+      "id": "sq-free-text-doorknob-hinges-hvac-expectedDate-orderLink",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Doorknob & Hinges (HVAC)\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "doorknob-hinges-hvac"
+    },
+    {
+      "id": "sq-free-text-upper-cabinet-handles-expectedDate-orderLink",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Upper Cabinet Handles\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "upper-cabinet-install",
+      "relatedMaterial": "upper-cabinet-handles"
     }
   ],
   "budget": {
