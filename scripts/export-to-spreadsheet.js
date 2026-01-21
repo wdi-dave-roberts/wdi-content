@@ -44,7 +44,7 @@ function formatDate(dateStr) {
 // Get completeness status for a material
 function getMaterialCompleteness(material) {
   const missing = [];
-  const { status, quantity, detail, expectedDate } = material;
+  const { status, quantity, detail, expectedDate, orderLink } = material;
 
   switch (status) {
     case 'need-to-order':
@@ -53,6 +53,7 @@ function getMaterialCompleteness(material) {
       break;
     case 'ordered':
       if (!expectedDate) missing.push('expectedDate');
+      if (!orderLink) missing.push('orderLink');
       break;
     case 'on-hand':
       // Complete
@@ -360,7 +361,7 @@ for (const task of data.tasks) {
 const materialsRows = [];
 materialsRows.push([
   'Material ID', 'Material Name', 'Status', 'Completeness', 'For Task',
-  'Depends On', 'Quantity', 'Expected Date', 'Detail', 'Notes', 'Comments'
+  'Depends On', 'Quantity', 'Expected Date', 'Order Link', 'Detail', 'Notes', 'Comments'
 ]);
 
 for (const task of data.tasks) {
@@ -376,6 +377,7 @@ for (const task of data.tasks) {
       dependsOn,
       mat.quantity || '',
       formatDate(mat.expectedDate),
+      mat.orderLink || '',
       mat.detail || '',
       mat.notes || '',
       '' // Comments column
@@ -701,11 +703,12 @@ wsMaterialsData['!cols'] = [
   { wch: 30 }, // Material ID
   { wch: 35 }, // Material Name
   { wch: 15 }, // Status
-  { wch: 18 }, // Completeness
+  { wch: 22 }, // Completeness
   { wch: 30 }, // For Task
   { wch: 35 }, // Depends On
   { wch: 10 }, // Quantity
   { wch: 15 }, // Expected Date
+  { wch: 40 }, // Order Link
   { wch: 25 }, // Detail
   { wch: 40 }, // Notes
   { wch: 40 }, // Comments
@@ -898,11 +901,11 @@ for (let row = 1; row < taskHierarchyRows.length; row++) {
 }
 
 // Apply formatting to Materials sheet
-styleHeaderRow(wsMaterialsData, 11);
+styleHeaderRow(wsMaterialsData, 12);
 setRowHeight(wsMaterialsData, 0, 30);
 
 for (let row = 1; row < materialsRows.length; row++) {
-  for (let col = 0; col < 11; col++) {
+  for (let col = 0; col < 12; col++) {
     const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
     if (wsMaterialsData[cellRef]) {
       applyCellStyle(wsMaterialsData, cellRef, {
@@ -1070,7 +1073,7 @@ wsByAssigneeData['!freeze'] = { xSplit: 0, ySplit: 1 };
 // Set auto-filter for data exploration
 wsScheduleData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: scheduleRows.length - 1, c: 10 } }) };
 wsTaskHierarchyData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: taskHierarchyRows.length - 1, c: 12 } }) };
-wsMaterialsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: materialsRows.length - 1, c: 10 } }) };
+wsMaterialsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: materialsRows.length - 1, c: 11 } }) };
 wsVendorsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: vendorsRows.length - 1, c: 6 } }) };
 wsOpenQuestionsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: openQuestionsRows.length - 1, c: 10 } }) };
 wsByAssigneeData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: byAssigneeRows.length - 1, c: 8 } }) };

@@ -1336,7 +1336,7 @@ function parseQuantityAndSpec(value) {
  * @returns {Object|null} Question rule or null if material is complete
  */
 function getMaterialQuestion(material, taskId) {
-  const { id, name, status, quantity, detail, expectedDate } = material;
+  const { id, name, status, quantity, detail, expectedDate, orderLink } = material;
   const today = new Date().toISOString().split('T')[0];
 
   switch (status) {
@@ -1384,6 +1384,7 @@ function getMaterialQuestion(material, taskId) {
       };
 
     case 'ordered':
+      // Priority 1: Get expected delivery date
       if (!expectedDate) {
         return {
           type: 'date',
@@ -1398,7 +1399,24 @@ function getMaterialQuestion(material, taskId) {
           }
         };
       }
-      // Check if past due
+      // Priority 2: Get order link (for tracking/reference)
+      if (!orderLink) {
+        return {
+          type: 'free-text',
+          prompt: `What is the order link for "${name}"? (e.g., Amazon order URL, or 'N/A' if not applicable)`,
+          field: 'orderLink',
+          assignee: 'tonia',
+          materialId: id,
+          taskId,
+          autoApply: (response) => {
+            const value = typeof response === 'object' ? response.value : response;
+            if (!value) return null;
+            // Store 'N/A' explicitly so we don't re-ask
+            return { orderLink: value.trim() };
+          }
+        };
+      }
+      // Priority 3: Check if past due and ask for delivery confirmation
       if (expectedDate < today) {
         return {
           type: 'yes-no',
@@ -1493,7 +1511,7 @@ function findMaterial(data, materialId) {
  */
 function getMaterialCompleteness(material) {
   const missing = [];
-  const { status, quantity, detail, expectedDate } = material;
+  const { status, quantity, detail, expectedDate, orderLink } = material;
 
   switch (status) {
     case 'need-to-order':
@@ -1502,6 +1520,7 @@ function getMaterialCompleteness(material) {
       break;
     case 'ordered':
       if (!expectedDate) missing.push('expectedDate');
+      if (!orderLink) missing.push('orderLink');
       break;
     case 'on-hand':
       // Complete

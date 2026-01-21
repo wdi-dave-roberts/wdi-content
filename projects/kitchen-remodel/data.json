@@ -1128,6 +1128,36 @@
       "status": "open",
       "relatedTask": "upper-cabinet-install",
       "relatedMaterial": "upper-cabinet-handles"
+    },
+    {
+      "id": "sq-free-text-hinges-main-kitchen-door-orderLink",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "What is the order link for \"Hinges (Main Kitchen Door)\"? (e.g., Amazon order URL, or 'N/A' if not applicable)",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "hinges-main-kitchen-door"
+    },
+    {
+      "id": "sq-free-text-retractable-extension-cord-orderLink",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "What is the order link for \"Retractable Extension Cord\"? (e.g., Amazon order URL, or 'N/A' if not applicable)",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "misc-equipment-install",
+      "relatedMaterial": "retractable-extension-cord"
+    },
+    {
+      "id": "sq-free-text-upper-cabinets-orderLink",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "What is the order link for \"Upper Cabinets\"? (e.g., Amazon order URL, or 'N/A' if not applicable)",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "upper-cabinet-install",
+      "relatedMaterial": "upper-cabinets"
     }
   ],
   "budget": {
