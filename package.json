@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "create-project": "node scripts/create-project.js"
+    "create-project": "node scripts/create-project.js",
+    "task": "node scripts/task.js"
   },
   "repository": {
     "type": "git",

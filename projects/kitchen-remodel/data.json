@@ -144,14 +144,17 @@
           "name": "Hinges (Main Kitchen Door)",
           "status": "ordered",
           "quantity": 4,
-          "expectedDate": "2026-01-22"
+          "expectedDate": "2026-01-22",
+          "orderLink": "https://www.lowes.com/mylowes/orders/details?t=MzAwOTAxMDIxMjYyMDI3OTQz&ih=Qg=="
         },
         {
           "id": "hinges-back-door",
           "name": "Hinges (Back Door)",
           "status": "ordered",
           "quantity": 3,
-          "detail": "4\" Antique Bronze"
+          "detail": "4\" Antique Bronze",
+          "orderLink": "https://www.lowes.com/mylowes/orders/details?t=MzAwOTAxMDIxMjYyMDI3OTQz&ih=Qg==",
+          "expectedDate": "2026-01-26"
         },
         {
           "id": "doorknob-back-door",
@@ -159,7 +162,9 @@
           "status": "ordered",
           "quantity": 1,
           "detail": "Antique Bronze",
-          "purchasingTask": "doorknob-back-door"
+          "purchasingTask": "doorknob-back-door",
+          "orderLink": "https://www.lowes.com/mylowes/orders/details?t=MzAwOTAxMDIxMjYyMDI3OTQz&ih=Qg==",
+          "expectedDate": "2026-01-26"
         },
         {
           "id": "deadbolt-back-door",
@@ -174,7 +179,9 @@
           "status": "ordered",
           "quantity": 2,
           "detail": "Antique Bronze",
-          "purchasingTask": "doorknob-hinges-hvac"
+          "purchasingTask": "doorknob-hinges-hvac",
+          "orderLink": "https://www.lowes.com/mylowes/orders/details?t=MzAwOTAxMDIxMjYyMDI3OTQz&ih=Qg==",
+          "expectedDate": "2026-01-26"
         }
       ],
       "subtasks": [
@@ -210,7 +217,8 @@
           ],
           "notes": "1. Install existing 32\" door with jamb. 2. Same casing as main kitchen door."
         }
-      ]
+      ],
+      "assignee": "vendor:danny"
     },
     {
       "id": "build-back-deck",
@@ -656,7 +664,8 @@
           "status": "ordered",
           "quantity": 1,
           "expectedDate": "2026-01-26",
-          "purchasingTask": "retractable-extension-cord"
+          "purchasingTask": "retractable-extension-cord",
+          "orderLink": "Ordered via Amazzon"
         }
       ],
       "subtasks": [
@@ -694,13 +703,16 @@
           "name": "Upper Cabinets",
           "status": "ordered",
           "quantity": 4,
-          "expectedDate": "2026-01-22"
+          "expectedDate": "2026-01-22",
+          "orderLink": "Cabinets to go arriving Thurs Jan 22"
         },
         {
           "id": "upper-cabinet-handles",
           "name": "Upper Cabinet Handles",
           "status": "ordered",
-          "purchasingTask": "upper-cabinet-handles"
+          "purchasingTask": "upper-cabinet-handles",
+          "orderLink": "https://www.amazon.com/dp/B0DR1ZPTSN?smid=A35IJ506ODRC0Q&ref_=chk_typ_imgToDp&th=1",
+          "expectedDate": "2026-01-26"
         }
       ],
       "notes": "Requires cabinet crown installation.",
@@ -907,16 +919,6 @@
   "notes": [],
   "questions": [
     {
-      "id": "sq-assignee-install-doors",
-      "created": "2026-01-20",
-      "type": "assignee",
-      "prompt": "Who should install the doors?",
-      "question": "Who installs the doors? Need assignee for Install Doors task.",
-      "assignee": "brandon",
-      "status": "open",
-      "relatedTask": "install-doors"
-    },
-    {
       "id": "sq-dependency-inspection",
       "created": "2026-01-20",
       "type": "dependency",
@@ -1080,84 +1082,482 @@
       "relatedTask": "project-finish"
     },
     {
-      "id": "sq-free-text-receptacle-light-switch-covers-quantity-detail",
+      "id": "tq-free-text-main-kitchen-door-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
-      "prompt": "How many \"Receptacle and Light Switch Covers\" are needed, and what are the specifications? (Answer 'N/A' for specs if not applicable)",
-      "assignee": "tonia",
+      "prompt": "For \"Main Kitchen Door\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
       "status": "open",
-      "relatedTask": "finish-electrical",
-      "relatedMaterial": "receptacle-light-switch-covers"
+      "relatedTask": "main-kitchen-door"
     },
     {
-      "id": "sq-free-text-hinges-main-kitchen-door-orderLink",
+      "id": "tq-free-text-install-back-door-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
-      "prompt": "What is the order link for \"Hinges (Main Kitchen Door)\"? (e.g., Amazon order URL, or 'N/A' if not applicable)",
-      "assignee": "tonia",
+      "prompt": "For \"Install Back Door\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
       "status": "open",
+      "relatedTask": "install-back-door"
+    },
+    {
+      "id": "tq-free-text-hvac-door-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"HVAC Door\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "hvac-door"
+    },
+    {
+      "id": "tq-date-range-build-back-deck-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Build Back Deck with Ramp\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "build-back-deck"
+    },
+    {
+      "id": "tq-date-range-remove-old-porch-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Remove Old Porch Steps and Posts\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "remove-old-porch"
+    },
+    {
+      "id": "tq-date-range-verify-install-time-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Verify Install Time\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "verify-install-time"
+    },
+    {
+      "id": "tq-date-range-finish-plumbing-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Finish Plumbing\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-plumbing"
+    },
+    {
+      "id": "tq-date-range-schedule-finish-plumbing-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Finish Plumbing\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-finish-plumbing"
+    },
+    {
+      "id": "tq-date-range-finish-plumbing-work-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Finish Plumbing\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-plumbing-work"
+    },
+    {
+      "id": "tq-date-range-install-handsink-laundry-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Install Existing Handsink in Laundry Room\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-handsink-laundry"
+    },
+    {
+      "id": "tq-date-range-schedule-baseboard-install-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Baseboard Install\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-baseboard-install"
+    },
+    {
+      "id": "tq-date-range-baseboard-install-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Baseboard Install\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "baseboard-install"
+    },
+    {
+      "id": "tq-date-range-move-mop-sink-receptacle-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Move Receptacle Over Mop Sink\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "move-mop-sink-receptacle"
+    },
+    {
+      "id": "tq-date-range-install-coach-lamp-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Install Coach Lamp\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-coach-lamp"
+    },
+    {
+      "id": "tq-date-range-install-light-string-receptacle-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Install Receptacle for Light Strings\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-light-string-receptacle"
+    },
+    {
+      "id": "tq-date-range-add-tv-receptacle-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Add Receptacle for TV Over Passthrough\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "add-tv-receptacle"
+    },
+    {
+      "id": "tq-date-range-finish-lighting-install-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Finish Lighting Install\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-lighting-install"
+    },
+    {
+      "id": "tq-date-range-schedule-electrical-signoff-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Electrical Sign-off\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-electrical-signoff"
+    },
+    {
+      "id": "tq-date-range-electrical-signoff-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Electrical Sign-off\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "electrical-signoff"
+    },
+    {
+      "id": "tq-date-range-connect-passthrough-heat-lamp-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Connect Passthrough Heat Lamp\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "connect-passthrough-heat-lamp"
+    },
+    {
+      "id": "tq-date-range-install-propane-line-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Install Propane Line for Gas Range\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-propane-line"
+    },
+    {
+      "id": "tq-date-range-paint-lobby-passthrough-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Paint Lobby Passthrough Wall\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "paint-lobby-passthrough"
+    },
+    {
+      "id": "tq-date-range-paint-doors-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Paint Doors (Kitchen Main, Back, HVAC)\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "paint-doors"
+    },
+    {
+      "id": "tq-date-range-touch-up-ceiling-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Touch Up Ceiling Damage (as needed)\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "touch-up-ceiling"
+    },
+    {
+      "id": "tq-date-range-finish-drywall-kitchen-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Finish Drywall Kitchen\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-drywall-kitchen"
+    },
+    {
+      "id": "tq-date-range-finish-drywall-scupernong-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Finish Drywall Scupernong\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-drywall-scupernong"
+    },
+    {
+      "id": "tq-date-range-install-dishwasher-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Install Dishwasher\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-dishwasher"
+    },
+    {
+      "id": "tq-free-text-install-ovens-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Install Ovens\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-ovens"
+    },
+    {
+      "id": "tq-free-text-move-appliances-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Move Range, Freezers and Refrigerators\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "move-appliances"
+    },
+    {
+      "id": "tq-date-range-schedule-siding-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Siding\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-siding"
+    },
+    {
+      "id": "tq-date-range-siding-work-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Siding\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "siding-work"
+    },
+    {
+      "id": "tq-date-range-schedule-town-manteo-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Town of Manteo\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-town-manteo"
+    },
+    {
+      "id": "tq-date-range-schedule-dare-county-health-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Dare County Health\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-dare-county-health"
+    },
+    {
+      "id": "tq-free-text-town-manteo-inspection-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Town of Manteo\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "town-manteo-inspection"
+    },
+    {
+      "id": "tq-free-text-dare-county-health-inspection-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Dare County Health\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "dare-county-health-inspection"
+    },
+    {
+      "id": "tq-free-text-install-pot-rack-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Install Pot Rack\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-pot-rack"
+    },
+    {
+      "id": "tq-date-range-schedule-upper-cabinet-install-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Installation\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-upper-cabinet-install"
+    },
+    {
+      "id": "tq-free-text-install-upper-cabinets-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Install Upper Cabinets\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-upper-cabinets"
+    },
+    {
+      "id": "tq-date-range-close-permit-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Close Building Permit\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "close-permit"
+    },
+    {
+      "id": "tq-free-text-project-finish-start-end-assignee",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "For \"Project Finish\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "project-finish"
+    },
+    {
+      "id": "tq-date-range-schedule-final-punch-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Schedule Final Punch Walkthrough\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "schedule-final-punch"
+    },
+    {
+      "id": "tq-date-range-final-punch-walkthrough-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Final Punch Walkthrough\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "final-punch-walkthrough"
+    },
+    {
+      "id": "tq-date-range-punch-remediation-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Punch List Remediation\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "punch-remediation"
+    },
+    {
+      "id": "tq-date-range-final-clean-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Final Clean\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "final-clean"
+    },
+    {
+      "id": "tq-date-range-final-acceptance-start-end",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should \"Final Acceptance\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "final-acceptance"
+    },
+    {
+      "id": "sq-date-hinges-back-door-expectedDate",
+      "created": "2026-01-21",
+      "type": "date",
+      "prompt": "When is \"Hinges (Back Door)\" expected to arrive?",
+      "assignee": "tonia",
+      "status": "resolved",
       "relatedTask": "install-doors",
-      "relatedMaterial": "hinges-main-kitchen-door"
+      "relatedMaterial": "hinges-back-door",
+      "response": {
+        "type": "free-text",
+        "value": "46048"
+      },
+      "respondedAt": "2026-01-21",
+      "resolvedAt": "2026-01-21"
     },
     {
-      "id": "sq-free-text-retractable-extension-cord-orderLink",
+      "id": "sq-date-doorknob-back-door-expectedDate",
       "created": "2026-01-21",
-      "type": "free-text",
-      "prompt": "What is the order link for \"Retractable Extension Cord\"? (e.g., Amazon order URL, or 'N/A' if not applicable)",
+      "type": "date",
+      "prompt": "When is \"Doorknob (Back Door)\" expected to arrive?",
       "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "misc-equipment-install",
-      "relatedMaterial": "retractable-extension-cord"
+      "status": "resolved",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "doorknob-back-door",
+      "response": {
+        "type": "free-text",
+        "value": "46048"
+      },
+      "respondedAt": "2026-01-21",
+      "resolvedAt": "2026-01-21"
     },
     {
-      "id": "sq-free-text-upper-cabinets-orderLink",
+      "id": "sq-date-doorknob-hinges-hvac-expectedDate",
       "created": "2026-01-21",
-      "type": "free-text",
-      "prompt": "What is the order link for \"Upper Cabinets\"? (e.g., Amazon order URL, or 'N/A' if not applicable)",
+      "type": "date",
+      "prompt": "When is \"Doorknob & Hinges (HVAC)\" expected to arrive?",
       "assignee": "tonia",
-      "status": "open",
+      "status": "resolved",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "doorknob-hinges-hvac",
+      "response": {
+        "type": "free-text",
+        "value": "46048"
+      },
+      "respondedAt": "2026-01-21",
+      "resolvedAt": "2026-01-21"
+    },
+    {
+      "id": "sq-date-upper-cabinet-handles-expectedDate",
+      "created": "2026-01-21",
+      "type": "date",
+      "prompt": "When is \"Upper Cabinet Handles\" expected to arrive?",
+      "assignee": "tonia",
+      "status": "resolved",
       "relatedTask": "upper-cabinet-install",
-      "relatedMaterial": "upper-cabinets"
+      "relatedMaterial": "upper-cabinet-handles",
+      "response": {
+        "type": "free-text",
+        "value": "46048"
+      },
+      "respondedAt": "2026-01-21",
+      "resolvedAt": "2026-01-21"
     },
     {
-      "id": "sq-free-text-hinges-back-door-expectedDate-orderLink",
+      "id": "tq-date-range-install-doors-start-end",
       "created": "2026-01-21",
-      "type": "free-text",
-      "prompt": "For \"Hinges (Back Door)\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
-      "assignee": "tonia",
+      "type": "date-range",
+      "prompt": "When should \"Install Doors\" be scheduled?",
+      "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-doors",
-      "relatedMaterial": "hinges-back-door"
-    },
-    {
-      "id": "sq-free-text-doorknob-back-door-expectedDate-orderLink",
-      "created": "2026-01-21",
-      "type": "free-text",
-      "prompt": "For \"Doorknob (Back Door)\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
-      "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "install-doors",
-      "relatedMaterial": "doorknob-back-door"
-    },
-    {
-      "id": "sq-free-text-doorknob-hinges-hvac-expectedDate-orderLink",
-      "created": "2026-01-21",
-      "type": "free-text",
-      "prompt": "For \"Doorknob & Hinges (HVAC)\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
-      "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "install-doors",
-      "relatedMaterial": "doorknob-hinges-hvac"
-    },
-    {
-      "id": "sq-free-text-upper-cabinet-handles-expectedDate-orderLink",
-      "created": "2026-01-21",
-      "type": "free-text",
-      "prompt": "For \"Upper Cabinet Handles\": What is the expected delivery date and order link? (e.g., \"2026-01-25, https://amazon.com/...\" or \"2026-01-25, N/A\")",
-      "assignee": "tonia",
-      "status": "open",
-      "relatedTask": "upper-cabinet-install",
-      "relatedMaterial": "upper-cabinet-handles"
+      "relatedTask": "install-doors"
     }
   ],
   "budget": {

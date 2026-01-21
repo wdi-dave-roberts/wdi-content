@@ -86,6 +86,51 @@ export type PaymentMethod = 'cash' | 'check' | 'credit-card' | 'debit' | 'wire' 
 export type NoteType = 'general' | 'issue' | 'decision' | 'question' | 'reminder' | 'change-request'
 export type NotePriority = 'low' | 'normal' | 'high' | 'urgent'
 
+// Question types for Open Questions system
+export type QuestionAssignee = 'brandon' | 'dave' | 'tonia'
+export type QuestionStatus = 'open' | 'answered' | 'resolved'
+export type QuestionReviewStatus = 'pending' | 'accepted' | 'rejected'
+
+// Structured question types
+export type QuestionType =
+  | 'assignee'
+  | 'date'
+  | 'date-range'
+  | 'dependency'
+  | 'yes-no'
+  | 'select-one'
+  | 'material-status'
+  | 'notification'
+  | 'free-text'
+
+// Structured response types (type-safe union)
+export type StructuredResponse =
+  | { type: 'assignee'; value: string }           // vendor:{id}
+  | { type: 'date'; value: string }               // YYYY-MM-DD
+  | { type: 'date-range'; start: string; end: string }
+  | { type: 'dependency'; tasks: string[] }       // task IDs
+  | { type: 'yes-no'; value: boolean }
+  | { type: 'select-one'; value: string }
+  | { type: 'material-status'; value: string }    // MaterialStatus value
+  | { type: 'notification'; acknowledged: boolean }
+  | { type: 'free-text'; value: string }
+
+// Question config for type-specific options
+export interface QuestionConfig {
+  tradeFilter?: string[]      // For assignee: filter by vendor trades
+  options?: string[]          // For select-one: list of valid options
+  statusOptions?: string[]    // For material-status: valid status values
+}
+
+// Applied change record for audit trail
+export interface AppliedChange {
+  entity: 'task' | 'subtask' | 'material'
+  entityId: string
+  field: string
+  oldValue: unknown
+  newValue: unknown
+}
+
 export type MilestoneStatus = 'upcoming' | 'reached' | 'missed'
 
 // Payment types
@@ -329,6 +374,39 @@ export interface Issue {
   comments?: string
 }
 
+export interface Question {
+  id: string // Auto-generated: sq-{type}-{slug} for structured, q-{slug} for legacy
+  created: string // YYYY-MM-DD
+
+  // Question definition
+  type?: QuestionType           // Structured question type (undefined = legacy free-text)
+  prompt?: string               // New field for structured questions
+  question?: string             // Legacy field (kept for backward compatibility)
+  config?: QuestionConfig       // Type-specific options
+
+  // Context
+  relatedTask?: string          // Task ID (without task: prefix)
+  relatedMaterial?: string      // Material ID from task's materialDependencies
+
+  // Assignment
+  assignee: QuestionAssignee
+  status: QuestionStatus
+
+  // Response
+  response?: StructuredResponse | string  // Structured response or legacy string
+  responseNotes?: string        // Optional explanation with response
+  respondedAt?: string          // YYYY-MM-DD when response was added
+
+  // Review workflow
+  reviewStatus?: QuestionReviewStatus  // pending | accepted | rejected
+  rejectionReason?: string      // Reason if rejected
+  appliedChanges?: AppliedChange[]     // Audit trail of changes made
+
+  // Resolution
+  resolvedAt?: string           // YYYY-MM-DD when resolved (replaces resolvedDate)
+  resolvedDate?: string         // Legacy field (kept for backward compatibility)
+}
+
 export interface ContractParties {
   owner?: string // vendor:{id}
   contractor?: string // vendor:{id}
@@ -355,6 +433,7 @@ export interface ProjectData {
   vendors: Vendor[]
   receipts: Receipt[]
   notes: Note[]
+  questions?: Question[]
   milestones?: Milestone[]
   payments?: Payment[]
   changeOrders?: ChangeOrder[]
@@ -371,4 +450,5 @@ export type ReceiptTag = `receipt:${string}`
 export type MilestoneTag = `milestone:${string}`
 export type ChangeOrderTag = `co:${string}`
 export type IssueTag = `issue:${string}`
-export type EntityTag = VendorTag | TaskTag | ReceiptTag | MilestoneTag | ChangeOrderTag | IssueTag | 'project'
+export type QuestionTag = `question:${string}`
+export type EntityTag = VendorTag | TaskTag | ReceiptTag | MilestoneTag | ChangeOrderTag | IssueTag | QuestionTag | 'project'

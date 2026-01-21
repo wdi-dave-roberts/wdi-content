@@ -324,7 +324,8 @@ Main data file: `projects/kitchen-remodel/data.json`
 - **tasks**: Parent tasks with subtasks, dependencies, assignees, dates, materials
 - **vendors**: Contractor/supplier contacts (referenced as `vendor:{id}`)
 - **receipts**: Financial records with links to source files in `reference/`
-- **notes**: Journal entries; tag with `gc-action-required` for GC responses
+- **questions**: Open questions assigned to Brandon (GC), Dave, or Tonia
+- **notes**: Journal entries (general notes, not questions)
 - **milestones**: Project milestones
 - **budget**: Budget totals and tracking
 
@@ -333,7 +334,7 @@ Main data file: `projects/kitchen-remodel/data.json`
 - Subtasks inherit parent task's assignee/dates/status unless overridden
 - `dependencies`: array of task/subtask IDs that must complete first
 - `materialDependencies`: links tasks to required materials (inline or by ID)
-- Notes with `gc-action-required` tag appear in GC Action Needed sheet
+- Questions linked to tasks via `relatedTask` field; appear in "Open Questions" sheet
 
 ### Task Statuses
 - `scheduled` - Has dates, ready to work
@@ -341,12 +342,24 @@ Main data file: `projects/kitchen-remodel/data.json`
 - `complete` - Finished
 - `needs-scheduled` - Needs dates assigned
 
-### Export Script
-`scripts/export-to-spreadsheet.js` generates:
-- `projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx` (7 sheets)
-- `projects/kitchen-remodel/exports/*.csv` (for Google Sheets import)
+### Master Spreadsheet
 
-**Sheets**: Instructions, Schedule (dependency order), By Assignee, Tasks, Materials, Vendors, GC Action Needed (unprotected for GC input)
+**Kitchen-Remodel-Tracker.xlsx** is the master task spreadsheet for the kitchen remodel project.
+
+**Location in Google Drive**:
+```
+~/Google Drive/Shared drives/White Doe Inn/Operations/Building and Maintenance /Kitchen Remodel/Kitchen-Remodel-Tracker.xlsx
+```
+
+**Sheets**: Instructions, Schedule (dependency order), By Assignee, Tasks, Materials, Vendors, Open Questions (unprotected for responses)
+
+> **Note**: Any other spreadsheets in the Kitchen Remodel folder (e.g., `task-tracker-sample.xlsx` in Weathertek subfolder, `Task Tracker - With Sample Data.gsheet`) are old test/experimentation files and can be removed.
+
+### Export Script
+
+`scripts/export-to-spreadsheet.js` regenerates the master spreadsheet from `data.json`:
+- Outputs to `projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx`
+- Also generates `projects/kitchen-remodel/exports/*.csv`
 
 **Run export**:
 ```bash
@@ -377,4 +390,47 @@ grep -B2 -A5 '"assignee": "vendor:eliseo"' projects/kitchen-remodel/data.json
 
 **Add a dependency**: Add task ID to the `dependencies` array of the dependent task
 
-**Add a GC action item**: Create a note with `"tags": ["gc-action-required", "task:{related-task-id}"]`
+**Add a question**: `npm run task question` (interactive) - auto-detects assignee based on keywords
+
+**List questions**: `npm run task questions` or `npm run task questions --all` (includes resolved)
+
+**Manage a question**: `npm run task question <question-id>` - add response, change assignee/status
+
+### Process Questions Workflow
+
+When you say **"process questions"**, Claude will:
+
+1. **Import responses** from the Google Drive spreadsheet's "Open Questions" sheet
+2. **Show each response** with:
+   - The question and Brandon's response
+   - Proposed changes (task assignments, material updates, dates, status changes)
+   - Impact analysis (schedule conflicts, dependency issues, warnings)
+3. **Ask for approval** - accept all, reject specific ones, or handle individually
+
+**Example output:**
+```
+━━━ New Response ━━━
+Q: Who should install the doors?
+A: "Danny"
+
+Proposed Changes:
+  • Set install-doors.assignee → vendor:danny
+
+Impact: ✅ No conflicts
+
+Accept all? Or review individually?
+```
+
+**Question lifecycle:**
+- `open` → Question waiting for response in spreadsheet
+- `answered` → Response imported, pending review
+- `resolved` → Accepted and changes applied to data.json
+- **Cleanup**: Resolved questions (status='resolved' + reviewStatus='accepted') are automatically removed during export
+
+**Auto-generated questions:** Export (`npm run task export`) automatically creates questions for:
+- Tasks missing dates/assignees based on status (task lifecycle rules)
+- Materials missing required fields based on status (material lifecycle rules)
+
+**Scripts:**
+- `scripts/import-responses.js` - Pulls responses from spreadsheet into data.json
+- `scripts/batch-accept.js` - Accepts all answered questions (use with caution)
