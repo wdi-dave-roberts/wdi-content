@@ -342,7 +342,7 @@ for (const task of data.tasks) {
     taskRequiredFor,
     taskMatDeps,
     task.notes || '',
-    '' // Comments column for collaboration
+    task.comments || '' // Status change history
   ]);
 
   // Add subtasks indented below parent (inherit parent values unless overridden)
@@ -378,7 +378,7 @@ for (const task of data.tasks) {
       subRequiredFor,
       subMatDeps,
       sub.notes || '',
-      '' // Comments column
+      sub.comments || '' // Status change history
     ]);
   }
 }
@@ -419,7 +419,7 @@ for (const task of data.tasks) {
       mat.orderLink || '',
       mat.detail || '',
       mat.notes || '',
-      '' // Comments column
+      mat.comments || '' // Status change history
     ]);
   }
 }

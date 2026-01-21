@@ -1241,6 +1241,198 @@ function getVendorName(data, vendorRef) {
   return vendor ? vendor.name : id;
 }
 
+// ============ STATUS CHANGE HELPERS ============
+
+/**
+ * Append a timestamped comment to a task or material's comments field.
+ * Format: "N. YYYY-MM-DD: Status - Reason"
+ *
+ * @param {Object} entity - Task, subtask, or material object
+ * @param {string} status - The new status being set
+ * @param {string} reason - User-provided reason for the change
+ * @returns {string} The new comment entry that was added
+ */
+function appendComment(entity, status, reason) {
+  const today = new Date().toISOString().split('T')[0];
+  const existing = entity.comments || '';
+  const lines = existing.split('\n').filter(l => l.trim());
+  const nextNum = lines.length + 1;
+  const statusCap = status.charAt(0).toUpperCase() + status.slice(1);
+  const newEntry = `${nextNum}. ${today}: ${statusCap} - ${reason}`;
+
+  entity.comments = existing ? `${existing}\n${newEntry}` : newEntry;
+  return newEntry;
+}
+
+/**
+ * Find all tasks and subtasks that depend on a given task.
+ *
+ * @param {Object} data - The full project data object
+ * @param {string} taskId - The task ID to find dependents for
+ * @returns {Array} Array of { id, name, type } objects for dependent tasks
+ */
+function findDependentTasks(data, taskId) {
+  const dependents = [];
+
+  for (const task of data.tasks) {
+    // Check if this task depends on the given taskId
+    if ((task.dependencies || []).includes(taskId)) {
+      dependents.push({
+        id: task.id,
+        name: task.name,
+        type: 'task',
+      });
+    }
+
+    // Check subtasks
+    for (const sub of (task.subtasks || [])) {
+      if ((sub.dependencies || []).includes(taskId)) {
+        dependents.push({
+          id: sub.id,
+          name: sub.name,
+          type: 'subtask',
+          parent: task.id,
+        });
+      }
+    }
+  }
+
+  return dependents;
+}
+
+/**
+ * Evaluate the impact of changing a task's status on dependent tasks.
+ *
+ * @param {Object} data - The full project data object
+ * @param {string} taskId - The task ID being changed
+ * @param {string} newStatus - The new status being set
+ * @returns {Object} { warnings: string[], unblocked: string[] }
+ */
+function evaluateDependencyImpact(data, taskId, newStatus) {
+  const dependents = findDependentTasks(data, taskId);
+  const warnings = [];
+  const unblocked = [];
+
+  if (dependents.length === 0) {
+    return { warnings, unblocked };
+  }
+
+  // Status changes that might block dependents
+  if (['cancelled', 'blocked'].includes(newStatus)) {
+    const activeNames = dependents
+      .filter(d => {
+        const { task } = findTask(data, d.id);
+        return task && !['cancelled', 'completed'].includes(task.status);
+      })
+      .map(d => d.name);
+
+    if (activeNames.length > 0) {
+      warnings.push(`${activeNames.length} task(s) depend on this: ${activeNames.join(', ')}`);
+    }
+  }
+
+  // Status changes that unblock dependents
+  if (newStatus === 'completed') {
+    const blockedDeps = dependents.filter(d => {
+      const { task } = findTask(data, d.id);
+      return task && task.status === 'blocked';
+    });
+
+    if (blockedDeps.length > 0) {
+      unblocked.push(...blockedDeps.map(d => d.name));
+    }
+  }
+
+  return { warnings, unblocked };
+}
+
+/**
+ * Generate questions for a task or material that just had a status change.
+ * Uses existing question generation logic from the lifecycle rules.
+ *
+ * @param {Object} data - The full project data object
+ * @param {string} entityType - 'task' or 'material'
+ * @param {string} entityId - The entity ID
+ * @param {string} taskId - For materials, the parent task ID
+ * @returns {number} Number of questions generated
+ */
+function triggerQuestionGeneration(data, entityType, entityId, taskId = null) {
+  if (!data.questions) {
+    data.questions = [];
+  }
+
+  let questionsCreated = 0;
+
+  if (entityType === 'task') {
+    const { task, parent } = findTask(data, entityId);
+    if (!task) return 0;
+
+    const questionSpec = getTaskQuestion(task, !!parent);
+    if (questionSpec) {
+      // Check if question already exists
+      const field = questionSpec.field || (questionSpec.fields ? questionSpec.fields.join('-') : 'info');
+      if (!taskQuestionExists(data, entityId, questionSpec.type, field)) {
+        const questionId = generateTaskQuestionId(questionSpec.type, entityId, field);
+        const today = new Date().toISOString().split('T')[0];
+
+        const newQuestion = {
+          id: questionId,
+          type: questionSpec.type,
+          prompt: questionSpec.prompt,
+          assignee: questionSpec.assignee,
+          status: 'open',
+          created: today,
+          relatedTask: entityId,
+        };
+
+        if (questionSpec.autoApply) {
+          newQuestion.autoApply = questionSpec.autoApply.toString();
+        }
+
+        data.questions.push(newQuestion);
+        questionsCreated++;
+      }
+    }
+  } else if (entityType === 'material') {
+    const { task } = findTask(data, taskId);
+    if (!task) return 0;
+
+    const material = (task.materialDependencies || []).find(m =>
+      typeof m === 'object' && m.id === entityId
+    );
+    if (!material) return 0;
+
+    const questionSpec = getMaterialQuestion(material, taskId);
+    if (questionSpec) {
+      const field = questionSpec.field || (questionSpec.fields ? questionSpec.fields.join('-') : 'info');
+      if (!materialQuestionExists(data, entityId, questionSpec.type, field)) {
+        const questionId = generateMaterialQuestionId(questionSpec.type, entityId, field);
+        const today = new Date().toISOString().split('T')[0];
+
+        const newQuestion = {
+          id: questionId,
+          type: questionSpec.type,
+          prompt: questionSpec.prompt,
+          assignee: questionSpec.assignee,
+          status: 'open',
+          created: today,
+          relatedMaterial: entityId,
+          relatedTask: taskId,
+        };
+
+        if (questionSpec.autoApply) {
+          newQuestion.autoApply = questionSpec.autoApply.toString();
+        }
+
+        data.questions.push(newQuestion);
+        questionsCreated++;
+      }
+    }
+  }
+
+  return questionsCreated;
+}
+
 // ============ MATERIAL HELPERS ============
 
 async function promptNewMaterial(data) {
@@ -2683,6 +2875,9 @@ async function cmdStatus(flags = {}) {
   const hasFlags = taskId && flags.status;
   const interactive = flags.interactive || !hasFlags;
 
+  // Statuses that require a reason
+  const requiresReason = ['cancelled', 'blocked'];
+
   if (interactive) {
     // ===== INTERACTIVE MODE =====
     if (!taskId) {
@@ -2718,8 +2913,43 @@ async function cmdStatus(flags = {}) {
       default: task.status || 'needs-scheduled',
     });
 
+    // Prompt for reason
+    const isReasonRequired = requiresReason.includes(newStatus);
+    const reason = await input({
+      message: isReasonRequired
+        ? 'Reason for status change (required):'
+        : 'Reason for status change (optional):',
+      validate: (val) => isReasonRequired && !val.trim() ? 'Reason is required for this status' : true,
+    });
+
+    // Update status
     task.status = newStatus;
+
+    // Append comment if reason provided
+    if (reason.trim()) {
+      const entry = appendComment(task, newStatus, reason.trim());
+      console.log(green(`✓ Comment added: ${entry}`));
+    }
+
+    // Show dependency impact
+    const impact = evaluateDependencyImpact(data, taskId, newStatus);
+    if (impact.warnings.length > 0) {
+      console.log(yellow('\n⚠️  Impact:'));
+      impact.warnings.forEach(w => console.log(yellow(`  - ${w}`)));
+    }
+    if (impact.unblocked.length > 0) {
+      console.log(green('\n✓ Tasks now unblocked:'));
+      impact.unblocked.forEach(t => console.log(green(`  - ${t}`)));
+    }
+
+    // Save and generate questions
     saveData(data);
+    const questionsCreated = triggerQuestionGeneration(data, 'task', taskId);
+    if (questionsCreated > 0) {
+      saveData(data); // Save again with new questions
+      console.log(green(`✓ Created ${questionsCreated} question(s) for task`));
+    }
+
     console.log(green(`✓ Updated ${taskId} status to "${newStatus}"`));
   } else {
     // ===== FLAG-BASED MODE =====
@@ -2735,6 +2965,14 @@ async function cmdStatus(flags = {}) {
       process.exit(1);
     }
 
+    // Validate reason for statuses that require it
+    const isReasonRequired = requiresReason.includes(flags.status);
+    if (isReasonRequired && !flags.reason) {
+      console.error(red(`Reason is required when setting status to "${flags.status}"`));
+      console.log(`${yellow('Usage:')} --reason "Your reason here"`);
+      process.exit(1);
+    }
+
     const { task } = findTask(data, taskId);
     if (!task) {
       console.error(red(`Task "${taskId}" not found`));
@@ -2743,7 +2981,32 @@ async function cmdStatus(flags = {}) {
 
     const oldStatus = task.status;
     task.status = flags.status;
+
+    // Append comment if reason provided
+    if (flags.reason && flags.reason.trim()) {
+      const entry = appendComment(task, flags.status, flags.reason.trim());
+      console.log(green(`✓ Comment added: ${entry}`));
+    }
+
+    // Show dependency impact
+    const impact = evaluateDependencyImpact(data, taskId, flags.status);
+    if (impact.warnings.length > 0) {
+      console.log(yellow('\n⚠️  Impact:'));
+      impact.warnings.forEach(w => console.log(yellow(`  - ${w}`)));
+    }
+    if (impact.unblocked.length > 0) {
+      console.log(green('\n✓ Tasks now unblocked:'));
+      impact.unblocked.forEach(t => console.log(green(`  - ${t}`)));
+    }
+
+    // Save and generate questions
     saveData(data);
+    const questionsCreated = triggerQuestionGeneration(data, 'task', taskId);
+    if (questionsCreated > 0) {
+      saveData(data); // Save again with new questions
+      console.log(green(`✓ Created ${questionsCreated} question(s) for dependent tasks`));
+    }
+
     console.log(green(`✓ Updated ${taskId} status: ${oldStatus} → ${flags.status}`));
   }
 }
@@ -3279,8 +3542,28 @@ async function cmdMaterials(flags = {}) {
           default: material.status,
         });
 
+        // Prompt for reason (optional for materials)
+        const reason = await input({
+          message: 'Reason for status change (optional):',
+        });
+
         material.status = newStatus;
+
+        // Append comment if reason provided
+        if (reason.trim()) {
+          const entry = appendComment(material, newStatus, reason.trim());
+          console.log(green(`  ✓ Comment added: ${entry}`));
+        }
+
         saveData(data);
+
+        // Generate questions for material
+        const questionsCreated = triggerQuestionGeneration(data, 'material', matId, taskId);
+        if (questionsCreated > 0) {
+          saveData(data);
+          console.log(green(`  ✓ Created ${questionsCreated} question(s) for material`));
+        }
+
         console.log(green(`  ✓ Updated "${material.name}" status to "${newStatus}"`));
       }
 
@@ -3418,7 +3701,22 @@ async function cmdMaterials(flags = {}) {
 
       const oldStatus = material.status;
       material.status = flags['mat-status'];
+
+      // Append comment if reason provided
+      if (flags.reason && flags.reason.trim()) {
+        const entry = appendComment(material, flags['mat-status'], flags.reason.trim());
+        console.log(green(`✓ Comment added: ${entry}`));
+      }
+
       saveData(data);
+
+      // Generate questions for material
+      const questionsCreated = triggerQuestionGeneration(data, 'material', flags.material, taskId);
+      if (questionsCreated > 0) {
+        saveData(data);
+        console.log(green(`✓ Created ${questionsCreated} question(s) for material`));
+      }
+
       console.log(green(`✓ Updated "${flags.material}" status: ${oldStatus} → ${flags['mat-status']}`));
       return;
     }
