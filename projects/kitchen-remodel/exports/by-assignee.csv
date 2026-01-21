@@ -49,7 +49,7 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,install-propane-line,  ↳ Install Propane Line for Gas Range,needs-scheduled,2026-01-23,2026-01-23,,,1. Installed in secure box in wall to right of existing stainless steel wall covering. 2. Must be installed before remaining stainless is installed on Friday 1/23.
 ,install-dishwasher,  ↳ Install Dishwasher,needs-scheduled,,,"crest-installation, finish-plumbing",,
 ,,,,,,,,
-▶ Eliseo (16 items),,,,,,,,
+▶ Eliseo (17 items),,,,,,,,
 ,finish-trim,Finish Trim,in-progress,2026-01-21,2026-01-23,hvac-registers,"install-doors, crest-prep, crest-installation, kitchen-baseboard, painting, upper-cabinet-install","Trim joints should be finished with Bondo for wood, not wood filler and definitely not caulk."
 ,trim-passthrough,  ↳ Trim Passthrough,scheduled,2026-01-21,2026-01-23,,,"1. Casing must be same thickness all around for equipment install. 
 2. Inside casing is 3/4"". 
@@ -66,6 +66,7 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,laundry-crown-molding,  ↳ Laundry Crown Molding,scheduled,2026-01-21,2026-01-23,hvac-registers,,
 ,kitchen-main-door-casing,  ↳ Kitchen Main Door Casing,scheduled,2026-01-21,2026-01-23,,,"1. Light switch is so close to casing - need to case around light switch. 2. Need reveal on door casing (currently flush) - reveal should match standard reveal (e.g., match windows reveal)."
 ,baseboard-install-scupernong,  ↳ Install Baseboard in Scupernong,scheduled,2026-01-21,2026-01-23,"finish-drywall-scupernong, paint-scupernong",,Requires Scupernong drywall and paint complete first.
+,triple-window-header-trim,  ↳ Change header trim over triple window to match other window,scheduled,2026-01-21,2026-01-23,,,
 ,painting,Painting,scheduled,2026-01-23,2026-01-23,"finish-trim, finish-drywall",kitchen-baseboard,
 ,paint-kitchen,  ↳ Paint Kitchen,scheduled,2026-01-23,2026-01-23,,,Requires finish-drywall-kitchen complete first.
 ,paint-scupernong,  ↳ Paint Scupernong,scheduled,2026-01-23,2026-01-23,,baseboard-install-scupernong,Requires finish-drywall-scupernong complete first.
@@ -90,7 +91,7 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,siding,Siding,needs-scheduled,,,propane,,
 ,siding-work,  ↳ Siding,needs-scheduled,,,,,
 ,,,,,,,,
-▶ Unassigned (16 items),,,,,,,,
+▶ Unassigned (17 items),,,,,,,,
 ,install-doors,Install Doors,needs-scheduled,,,finish-trim,paint-doors,
 ,main-kitchen-door,  ↳ Main Kitchen Door,needs-scheduled,,,,,1. Hinges to be delivered 1/22. 2. Door is in the garage.
 ,install-back-door,  ↳ Install Back Door,needs-scheduled,,,,,1. Door is in the garage. 2. Install with Antique Bronze hinges. 3. Install existing antique bronze electronic deadbolt and door knob provided by owner.
@@ -100,6 +101,7 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,kitchen-put-back,Kitchen Put-Back,needs-scheduled,,,"crest-installation, finish-plumbing",project-finish,
 ,install-ovens,  ↳ Install Ovens,needs-scheduled,,,,,
 ,move-appliances,"  ↳ Move Range, Freezers and Refrigerators",needs-scheduled,,,,,
+,install-dryer-vents,Install Dryer Vents,needs-scheduled,,,,,Cut holes from laundry room to outside for dryer vents.
 ,misc-equipment-install,Misc Equipment Install,needs-scheduled,,,,,
 ,install-pot-rack,  ↳ Install Pot Rack,needs-scheduled,,,,,
 ,install-retractable-extension-cord,  ↳ Install Retractable Extension Cord,needs-scheduled,,,,,

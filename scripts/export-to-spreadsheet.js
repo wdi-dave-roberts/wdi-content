@@ -41,6 +41,32 @@ function formatDate(dateStr) {
   return dateStr; // Keep as YYYY-MM-DD for spreadsheet sorting
 }
 
+// Get completeness status for a material
+function getMaterialCompleteness(material) {
+  const missing = [];
+  const { status, quantity, detail, expectedDate } = material;
+
+  switch (status) {
+    case 'need-to-order':
+      if (!quantity) missing.push('quantity');
+      if (!detail) missing.push('specs');
+      break;
+    case 'ordered':
+      if (!expectedDate) missing.push('expectedDate');
+      break;
+    case 'on-hand':
+      // Complete
+      break;
+    default:
+      return '❌ Needs attention';
+  }
+
+  if (missing.length === 0) {
+    return '✅ Complete';
+  }
+  return `⚠️ Missing: ${missing.join(', ')}`;
+}
+
 // ============ SCHEDULE TAB (DEPENDENCY ORDER) ============
 
 // Build a flat list of all tasks and subtasks with their info
@@ -333,17 +359,19 @@ for (const task of data.tasks) {
 
 const materialsRows = [];
 materialsRows.push([
-  'Material ID', 'Material Name', 'Status', 'For Task',
+  'Material ID', 'Material Name', 'Status', 'Completeness', 'For Task',
   'Depends On', 'Quantity', 'Expected Date', 'Detail', 'Notes', 'Comments'
 ]);
 
 for (const task of data.tasks) {
   for (const mat of (task.materialDependencies || [])) {
     const dependsOn = (materialDependsOn[mat.id] || []).join(', ');
+    const completeness = getMaterialCompleteness(mat);
     materialsRows.push([
       mat.id,
       mat.name,
       mat.status || '',
+      completeness,
       task.id,
       dependsOn,
       mat.quantity || '',
@@ -373,23 +401,93 @@ for (const vendor of data.vendors) {
   ]);
 }
 
-// ============ GC ACTION NEEDED TAB ============
-const gcActionRows = [];
-gcActionRows.push([
-  'Note ID', 'Created', 'Action Needed', 'Related Task', 'GC Response'
+// ============ OPEN QUESTIONS TAB ============
+const ASSIGNEE_DISPLAY_NAMES = {
+  brandon: 'Brandon',
+  dave: 'Dave',
+  tonia: 'Tonia'
+};
+
+const STATUS_DISPLAY_NAMES = {
+  open: 'Open',
+  answered: 'Answered',
+  resolved: 'Resolved'
+};
+
+const QUESTION_TYPE_DISPLAY = {
+  'assignee': 'Assignee',
+  'date': 'Date',
+  'date-range': 'Date Range',
+  'dependency': 'Dependency',
+  'yes-no': 'Yes/No',
+  'select-one': 'Select One',
+  'material-status': 'Material Status',
+  'notification': 'Notification',
+  'free-text': 'Free Text',
+};
+
+const REVIEW_STATUS_DISPLAY = {
+  pending: 'Pending Review',
+  accepted: 'Accepted',
+  rejected: 'Rejected'
+};
+
+// Helper to format structured response for display
+function formatStructuredResponse(response) {
+  if (!response) return '';
+  if (typeof response === 'string') return response;
+
+  switch (response.type) {
+    case 'yes-no':
+      return response.value ? 'Yes' : 'No';
+    case 'assignee':
+      return getVendorName(response.value) || response.value;
+    case 'date':
+      return response.value || '';
+    case 'date-range':
+      return `${response.start || ''} to ${response.end || ''}`;
+    case 'dependency':
+      return (response.tasks || []).join(', ');
+    case 'select-one':
+    case 'material-status':
+      return response.value || '';
+    case 'notification':
+      return response.acknowledged ? 'Acknowledged' : 'Dismissed';
+    case 'free-text':
+      return response.value || '';
+    default:
+      return JSON.stringify(response);
+  }
+}
+
+const openQuestionsRows = [];
+openQuestionsRows.push([
+  'Question ID', 'Type', 'Created', 'Question', 'Assignee', 'Related Task', 'Related Material',
+  'Response', 'Notes', 'Status', 'Review Status'
 ]);
 
-for (const note of (data.notes || [])) {
-  // Extract task reference from tags
-  const taskTag = (note.tags || []).find(t => t.startsWith('task:'));
-  const relatedTask = taskTag ? taskTag.replace('task:', '') : '';
+for (const question of (data.questions || [])) {
+  // Get question text from prompt (new) or question (legacy) field
+  const questionText = question.prompt || question.question || '';
 
-  gcActionRows.push([
-    note.id,
-    note.created,
-    note.content,
-    relatedTask,
-    '' // GC Response column - editable
+  // Auto-detect type if not set
+  const questionType = question.type || 'free-text';
+
+  // Format response based on type
+  const responseDisplay = formatStructuredResponse(question.response);
+
+  openQuestionsRows.push([
+    question.id,
+    QUESTION_TYPE_DISPLAY[questionType] || questionType,
+    question.created,
+    questionText,
+    ASSIGNEE_DISPLAY_NAMES[question.assignee] || question.assignee,
+    question.relatedTask || '',
+    question.relatedMaterial || '',
+    responseDisplay, // Response column - editable for legacy questions
+    question.responseNotes || '',
+    STATUS_DISPLAY_NAMES[question.status] || question.status,
+    question.reviewStatus ? (REVIEW_STATUS_DISPLAY[question.reviewStatus] || question.reviewStatus) : ''
   ]);
 }
 
@@ -544,23 +642,28 @@ const instructionsRows = [
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
-  ['⚠️  GC ACTION NEEDED  ⚠️'],
+  ['📋  OPEN QUESTIONS  📋'],
   [''],
   ['THIS SHEET REQUIRES YOUR RESPONSE'],
   [''],
-  ['Contains questions and action items that need GC input.'],
-  ['Please fill in the "GC Response" column for each item.'],
+  ['Contains structured questions that need answers from Brandon (GC), Dave, or Tonia.'],
+  ['Questions have types: Assignee, Date, Date Range, Dependency, Yes/No, etc.'],
+  ['Use the CLI (npm run task answer) to provide structured responses.'],
   [''],
-  ['• Yellow highlighted rows need attention'],
-  ['• "Related Task" links to the task in question'],
-  ['• Your responses will be incorporated into the project plan'],
+  ['• Yellow rows = Open questions needing response'],
+  ['• Orange rows = System notifications needing acknowledgment'],
+  ['• Blue rows = Answered (awaiting review)'],
+  ['• Green rows = Resolved'],
+  ['• Filter by "Assignee" or "Type" columns to organize your view'],
+  ['• "Related Task" links to the relevant task'],
+  ['• "Review Status" shows if answer was accepted or rejected'],
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
   ['TIPS'],
   ['• Use column filters (dropdown arrows in headers) to find items'],
   ['• Freeze panes keep headers visible when scrolling'],
-  ['• All sheets except "GC Action Needed" are protected'],
+  ['• All sheets except "Open Questions" are protected'],
   [''],
   ['Last updated: ' + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })],
 ];
@@ -574,7 +677,7 @@ const wsScheduleData = XLSX.utils.aoa_to_sheet(scheduleRows);
 const wsTaskHierarchyData = XLSX.utils.aoa_to_sheet(taskHierarchyRows);
 const wsMaterialsData = XLSX.utils.aoa_to_sheet(materialsRows);
 const wsVendorsData = XLSX.utils.aoa_to_sheet(vendorsRows);
-const wsGCActionData = XLSX.utils.aoa_to_sheet(gcActionRows);
+const wsOpenQuestionsData = XLSX.utils.aoa_to_sheet(openQuestionsRows);
 const wsByAssigneeData = XLSX.utils.aoa_to_sheet(byAssigneeRows);
 
 // Set column widths
@@ -598,6 +701,7 @@ wsMaterialsData['!cols'] = [
   { wch: 30 }, // Material ID
   { wch: 35 }, // Material Name
   { wch: 15 }, // Status
+  { wch: 18 }, // Completeness
   { wch: 30 }, // For Task
   { wch: 35 }, // Depends On
   { wch: 10 }, // Quantity
@@ -617,12 +721,18 @@ wsVendorsData['!cols'] = [
   { wch: 40 }, // Notes
 ];
 
-wsGCActionData['!cols'] = [
-  { wch: 15 }, // Note ID
+wsOpenQuestionsData['!cols'] = [
+  { wch: 25 }, // Question ID
+  { wch: 14 }, // Type
   { wch: 12 }, // Created
-  { wch: 70 }, // Action Needed
-  { wch: 25 }, // Related Task
-  { wch: 50 }, // GC Response
+  { wch: 50 }, // Question
+  { wch: 12 }, // Assignee
+  { wch: 22 }, // Related Task
+  { wch: 22 }, // Related Material
+  { wch: 40 }, // Response
+  { wch: 35 }, // Notes
+  { wch: 12 }, // Status
+  { wch: 15 }, // Review Status
 ];
 
 wsScheduleData['!cols'] = [
@@ -788,11 +898,11 @@ for (let row = 1; row < taskHierarchyRows.length; row++) {
 }
 
 // Apply formatting to Materials sheet
-styleHeaderRow(wsMaterialsData, 10);
+styleHeaderRow(wsMaterialsData, 11);
 setRowHeight(wsMaterialsData, 0, 30);
 
 for (let row = 1; row < materialsRows.length; row++) {
-  for (let col = 0; col < 10; col++) {
+  for (let col = 0; col < 11; col++) {
     const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
     if (wsMaterialsData[cellRef]) {
       applyCellStyle(wsMaterialsData, cellRef, {
@@ -829,16 +939,33 @@ for (let row = 1; row < vendorsRows.length; row++) {
   }
 }
 
-// Apply formatting to GC Action Needed sheet
-styleHeaderRow(wsGCActionData, 5);
-setRowHeight(wsGCActionData, 0, 30);
+// Apply formatting to Open Questions sheet
+styleHeaderRow(wsOpenQuestionsData, 11);
+setRowHeight(wsOpenQuestionsData, 0, 30);
 
-for (let row = 1; row < gcActionRows.length; row++) {
-  for (let col = 0; col < 5; col++) {
+for (let row = 1; row < openQuestionsRows.length; row++) {
+  const rowData = openQuestionsRows[row];
+  const status = rowData[9]; // Status column (index 9 with new columns)
+  const questionType = rowData[1]; // Type column (index 1)
+
+  for (let col = 0; col < 11; col++) {
     const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-    if (wsGCActionData[cellRef]) {
-      applyCellStyle(wsGCActionData, cellRef, {
-        fill: { fgColor: { rgb: row % 2 === 0 ? 'FFFFFF' : 'FFF2CC' } },
+    if (wsOpenQuestionsData[cellRef]) {
+      // Color based on status: Open = yellow, Answered = light blue, Resolved = light green
+      // Notifications get orange when open
+      let fillColor;
+      if (status === 'Resolved') {
+        fillColor = row % 2 === 0 ? 'E2EFDA' : 'D6EAD0'; // Light green
+      } else if (status === 'Answered') {
+        fillColor = row % 2 === 0 ? 'DEEBF7' : 'D0E4F4'; // Light blue
+      } else if (questionType === 'Notification') {
+        fillColor = row % 2 === 0 ? 'FCE4D6' : 'F8CBAD'; // Light orange for notifications
+      } else {
+        fillColor = row % 2 === 0 ? 'FFFFFF' : 'FFF2CC'; // Yellow for Open
+      }
+
+      applyCellStyle(wsOpenQuestionsData, cellRef, {
+        fill: { fgColor: { rgb: fillColor } },
         border: {
           top: { style: 'thin', color: { rgb: 'D9D9D9' } },
           bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
@@ -937,15 +1064,15 @@ wsScheduleData['!freeze'] = { xSplit: 0, ySplit: 1 };
 wsTaskHierarchyData['!freeze'] = { xSplit: 0, ySplit: 1 };
 wsMaterialsData['!freeze'] = { xSplit: 0, ySplit: 1 };
 wsVendorsData['!freeze'] = { xSplit: 0, ySplit: 1 };
-wsGCActionData['!freeze'] = { xSplit: 0, ySplit: 1 };
+wsOpenQuestionsData['!freeze'] = { xSplit: 0, ySplit: 1 };
 wsByAssigneeData['!freeze'] = { xSplit: 0, ySplit: 1 };
 
 // Set auto-filter for data exploration
 wsScheduleData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: scheduleRows.length - 1, c: 10 } }) };
 wsTaskHierarchyData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: taskHierarchyRows.length - 1, c: 12 } }) };
-wsMaterialsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: materialsRows.length - 1, c: 9 } }) };
+wsMaterialsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: materialsRows.length - 1, c: 10 } }) };
 wsVendorsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: vendorsRows.length - 1, c: 6 } }) };
-wsGCActionData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: gcActionRows.length - 1, c: 4 } }) };
+wsOpenQuestionsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: openQuestionsRows.length - 1, c: 10 } }) };
 wsByAssigneeData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: byAssigneeRows.length - 1, c: 8 } }) };
 
 // Add sheet protection to all sheets except GC Action Needed
@@ -955,7 +1082,7 @@ wsTaskHierarchyData['!protect'] = { sheet: true, objects: true, scenarios: true 
 wsMaterialsData['!protect'] = { sheet: true, objects: true, scenarios: true };
 wsVendorsData['!protect'] = { sheet: true, objects: true, scenarios: true };
 wsByAssigneeData['!protect'] = { sheet: true, objects: true, scenarios: true };
-// wsGCActionData is NOT protected - GC can edit
+// wsOpenQuestionsData is NOT protected - users can add responses
 
 // Add Instructions sheet protection
 wsInstructionsData['!protect'] = { sheet: true, objects: true, scenarios: true };
@@ -966,7 +1093,7 @@ XLSX.utils.book_append_sheet(wb, wsByAssigneeData, 'By Assignee');
 XLSX.utils.book_append_sheet(wb, wsTaskHierarchyData, 'Tasks');
 XLSX.utils.book_append_sheet(wb, wsMaterialsData, 'Materials');
 XLSX.utils.book_append_sheet(wb, wsVendorsData, 'Vendors');
-XLSX.utils.book_append_sheet(wb, wsGCActionData, 'GC Action Needed');
+XLSX.utils.book_append_sheet(wb, wsOpenQuestionsData, 'Open Questions');
 
 // Write Excel file
 const xlsxPath = path.join(projectDir, 'Kitchen-Remodel-Tracker.xlsx');
@@ -993,8 +1120,8 @@ fs.writeFileSync(
   XLSX.utils.sheet_to_csv(wsVendorsData, csvOptions)
 );
 fs.writeFileSync(
-  path.join(exportsDir, 'gc-action-needed.csv'),
-  XLSX.utils.sheet_to_csv(wsGCActionData, csvOptions)
+  path.join(exportsDir, 'open-questions.csv'),
+  XLSX.utils.sheet_to_csv(wsOpenQuestionsData, csvOptions)
 );
 fs.writeFileSync(
   path.join(exportsDir, 'by-assignee.csv'),

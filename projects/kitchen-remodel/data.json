@@ -32,7 +32,9 @@
       "category": "trim",
       "assignee": "vendor:eliseo",
       "status": "in-progress",
-      "dependencies": ["hvac-registers"],
+      "dependencies": [
+        "hvac-registers"
+      ],
       "notes": "Trim joints should be finished with Bondo for wood, not wood filler and definitely not caulk.",
       "materialDependencies": [
         {
@@ -61,8 +63,12 @@
           "name": "Kitchen Crown Molding",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "dependencies": ["hvac-registers"],
-          "materialDependencies": ["crown-molding"],
+          "dependencies": [
+            "hvac-registers"
+          ],
+          "materialDependencies": [
+            "crown-molding"
+          ],
           "notes": "1. Need to figure out how to handle the sagging joist (Can handle it by floating the ceiling from chase to the dip over the door.) \n2. Registers in laundry and storage room may be too low for crown molding. \n3. Need to verify once crown is on site. \n4. HVAC can be scheduled for 1/22 or 1/23 - confirmed we cannot adjust the registers ourselves from Joclar & Fields."
         },
         {
@@ -70,10 +76,14 @@
           "name": "Laundry Crown Molding",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "dependencies": ["hvac-registers"],
-          "materialDependencies": ["crown-molding"]
+          "dependencies": [
+            "hvac-registers"
+          ],
+          "materialDependencies": [
+            "crown-molding"
+          ]
         },
-                {
+        {
           "id": "kitchen-main-door-casing",
           "name": "Kitchen Main Door Casing",
           "status": "scheduled",
@@ -85,8 +95,17 @@
           "name": "Install Baseboard in Scupernong",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "dependencies": ["finish-drywall-scupernong", "paint-scupernong"],
+          "dependencies": [
+            "finish-drywall-scupernong",
+            "paint-scupernong"
+          ],
           "notes": "Requires Scupernong drywall and paint complete first."
+        },
+        {
+          "id": "triple-window-header-trim",
+          "name": "Change header trim over triple window to match other window",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo"
         }
       ]
     },
@@ -95,7 +114,9 @@
       "name": "Install Doors",
       "category": "trim",
       "status": "needs-scheduled",
-      "dependencies": ["finish-trim"],
+      "dependencies": [
+        "finish-trim"
+      ],
       "materialDependencies": [
         {
           "id": "door-main-kitchen",
@@ -161,21 +182,32 @@
           "id": "main-kitchen-door",
           "name": "Main Kitchen Door",
           "status": "needs-scheduled",
-          "materialDependencies": ["door-main-kitchen", "hinges-main-kitchen-door"],
+          "materialDependencies": [
+            "door-main-kitchen",
+            "hinges-main-kitchen-door"
+          ],
           "notes": "1. Hinges to be delivered 1/22. 2. Door is in the garage."
         },
         {
           "id": "install-back-door",
           "name": "Install Back Door",
           "status": "needs-scheduled",
-          "materialDependencies": ["door-back", "hinges-back-door", "doorknob-back-door", "deadbolt-back-door"],
+          "materialDependencies": [
+            "door-back",
+            "hinges-back-door",
+            "doorknob-back-door",
+            "deadbolt-back-door"
+          ],
           "notes": "1. Door is in the garage. 2. Install with Antique Bronze hinges. 3. Install existing antique bronze electronic deadbolt and door knob provided by owner."
         },
         {
           "id": "hvac-door",
           "name": "HVAC Door",
           "status": "needs-scheduled",
-          "materialDependencies": ["door-hvac", "doorknob-hinges-hvac"],
+          "materialDependencies": [
+            "door-hvac",
+            "doorknob-hinges-hvac"
+          ],
           "notes": "1. Install existing 32\" door with jamb. 2. Same casing as main kitchen door."
         }
       ]
@@ -186,7 +218,9 @@
       "category": "framing",
       "assignee": "vendor:danny",
       "status": "needs-scheduled",
-      "dependencies": ["remove-old-porch"],
+      "dependencies": [
+        "remove-old-porch"
+      ],
       "notes": "Need to sort out details for dimensions, rail system vs. no rail system, etc. REQUEST: GC meet with owner to plan.",
       "subtasks": []
     },
@@ -217,7 +251,11 @@
       "category": "clean",
       "status": "needs-scheduled",
       "notes": "Clean and prep kitchen area before Crest arrives. Clear tools and materials, protect flooring.",
-      "dependencies": ["kitchen-baseboard", "upper-cabinet-install", "finish-trim"],
+      "dependencies": [
+        "kitchen-baseboard",
+        "upper-cabinet-install",
+        "finish-trim"
+      ],
       "subtasks": []
     },
     {
@@ -229,7 +267,15 @@
       "status": "scheduled",
       "assignee": "vendor:crest",
       "notes": "Need to confirm exact delivery time and duration for install.",
-      "dependencies": ["finish-trim", "kitchen-baseboard", "finish-electrical", "propane", "install-stainless-wall", "upper-cabinet-install", "crest-prep"],
+      "dependencies": [
+        "finish-trim",
+        "kitchen-baseboard",
+        "finish-electrical",
+        "propane",
+        "install-stainless-wall",
+        "upper-cabinet-install",
+        "crest-prep"
+      ],
       "subtasks": [
         {
           "id": "verify-install-time",
@@ -245,7 +291,9 @@
       "category": "plumbing",
       "assignee": "vendor:chris-bland",
       "status": "needs-scheduled",
-      "dependencies": ["crest-installation"],
+      "dependencies": [
+        "crest-installation"
+      ],
       "subtasks": [
         {
           "id": "schedule-finish-plumbing",
@@ -277,7 +325,10 @@
       "assignee": "vendor:jerum",
       "status": "scheduled",
       "notes": "Must be complete before Crest install on 1/27.",
-      "dependencies": ["finish-trim", "painting"],
+      "dependencies": [
+        "finish-trim",
+        "painting"
+      ],
       "subtasks": [
         {
           "id": "schedule-baseboard-install",
@@ -331,7 +382,9 @@
           "end": "2026-01-26",
           "status": "needs-scheduled",
           "assignee": "vendor:dion-cahoon",
-          "materialDependencies": ["coach-lamp"]
+          "materialDependencies": [
+            "coach-lamp"
+          ]
         },
         {
           "id": "install-light-string-receptacle",
@@ -372,7 +425,9 @@
           "name": "Connect Passthrough Heat Lamp",
           "status": "needs-scheduled",
           "assignee": "vendor:dion-cahoon",
-          "dependencies": ["crest-installation"],
+          "dependencies": [
+            "crest-installation"
+          ],
           "notes": "Must be done after Crest installation. Heat lamp is part of passthrough equipment."
         }
       ]
@@ -411,7 +466,9 @@
       "assignee": "vendor:jd-fletcher",
       "status": "scheduled",
       "notes": "Cannot be before Dion finishes range propane install.",
-      "dependencies": ["propane"],
+      "dependencies": [
+        "propane"
+      ],
       "subtasks": []
     },
     {
@@ -422,7 +479,10 @@
       "category": "paint",
       "assignee": "vendor:eliseo",
       "status": "scheduled",
-      "dependencies": ["finish-trim", "finish-drywall"],
+      "dependencies": [
+        "finish-trim",
+        "finish-drywall"
+      ],
       "subtasks": [
         {
           "id": "paint-kitchen",
@@ -449,7 +509,9 @@
           "name": "Paint Doors (Kitchen Main, Back, HVAC)",
           "status": "needs-scheduled",
           "assignee": "vendor:eliseo",
-          "dependencies": ["install-doors"],
+          "dependencies": [
+            "install-doors"
+          ],
           "notes": "Paint after door installation (1/24). 3 doors total."
         },
         {
@@ -487,7 +549,10 @@
       "id": "kitchen-put-back",
       "name": "Kitchen Put-Back",
       "status": "needs-scheduled",
-      "dependencies": ["crest-installation", "finish-plumbing"],
+      "dependencies": [
+        "crest-installation",
+        "finish-plumbing"
+      ],
       "subtasks": [
         {
           "id": "install-dishwasher",
@@ -495,7 +560,10 @@
           "category": "electrical",
           "status": "needs-scheduled",
           "assignee": "vendor:dion-cahoon",
-          "dependencies": ["crest-installation", "finish-plumbing"]
+          "dependencies": [
+            "crest-installation",
+            "finish-plumbing"
+          ]
         },
         {
           "id": "install-ovens",
@@ -510,12 +578,22 @@
       ]
     },
     {
+      "id": "install-dryer-vents",
+      "name": "Install Dryer Vents",
+      "category": "mechanical",
+      "status": "needs-scheduled",
+      "notes": "Cut holes from laundry room to outside for dryer vents.",
+      "subtasks": []
+    },
+    {
       "id": "siding",
       "name": "Siding",
       "category": "framing",
       "assignee": "vendor:sergio",
       "status": "needs-scheduled",
-      "dependencies": ["propane"],
+      "dependencies": [
+        "propane"
+      ],
       "subtasks": [
         {
           "id": "schedule-siding",
@@ -586,13 +664,17 @@
           "id": "install-pot-rack",
           "name": "Install Pot Rack",
           "status": "needs-scheduled",
-          "materialDependencies": ["pot-rack"]
+          "materialDependencies": [
+            "pot-rack"
+          ]
         },
         {
           "id": "install-retractable-extension-cord",
           "name": "Install Retractable Extension Cord",
           "status": "needs-scheduled",
-          "materialDependencies": ["retractable-extension-cord"]
+          "materialDependencies": [
+            "retractable-extension-cord"
+          ]
         }
       ]
     },
@@ -603,7 +685,9 @@
       "end": "2026-01-26",
       "category": "fixtures",
       "status": "scheduled",
-      "dependencies": ["finish-trim"],
+      "dependencies": [
+        "finish-trim"
+      ],
       "materialDependencies": [
         {
           "id": "upper-cabinets",
@@ -637,7 +721,10 @@
           "id": "install-upper-cabinets",
           "name": "Install Upper Cabinets",
           "status": "needs-scheduled",
-          "materialDependencies": ["upper-cabinets", "upper-cabinet-handles"]
+          "materialDependencies": [
+            "upper-cabinets",
+            "upper-cabinet-handles"
+          ]
         }
       ]
     },
@@ -646,14 +733,21 @@
       "name": "Close Building Permit",
       "status": "needs-scheduled",
       "assignee": "vendor:brandon",
-      "dependencies": ["inspection"],
+      "dependencies": [
+        "inspection"
+      ],
       "subtasks": []
     },
     {
       "id": "project-finish",
       "name": "Project Finish",
       "status": "needs-scheduled",
-      "dependencies": ["inspection", "crest-installation", "kitchen-put-back", "close-permit"],
+      "dependencies": [
+        "inspection",
+        "crest-installation",
+        "kitchen-put-back",
+        "close-permit"
+      ],
       "notes": "Final punch acceptance criteria: All work complete per contract scope, all inspections passed, all equipment operational, no safety hazards, cosmetic defects documented and remediated.",
       "subtasks": [
         {
@@ -682,7 +776,9 @@
           "name": "Final Clean",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon",
-          "dependencies": ["punch-remediation"]
+          "dependencies": [
+            "punch-remediation"
+          ]
         },
         {
           "id": "final-acceptance",
@@ -808,60 +904,230 @@
   ],
   "receipts": [],
   "changeOrders": [],
-  "notes": [
+  "notes": [],
+  "questions": [
     {
-      "id": "gc-note-1",
+      "id": "sq-assignee-install-doors",
       "created": "2026-01-20",
-      "content": "Who installs the doors? Need assignee for Install Doors task.",
-      "tags": ["gc-action-required", "task:install-doors"]
+      "type": "assignee",
+      "prompt": "Who should install the doors?",
+      "question": "Who installs the doors? Need assignee for Install Doors task.",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-doors"
     },
     {
-      "id": "gc-note-2",
+      "id": "sq-dependency-inspection",
       "created": "2026-01-20",
-      "content": "What are the dependencies for Inspection? What needs to be complete before inspections can be scheduled?",
-      "tags": ["gc-action-required", "task:inspection"]
+      "type": "dependency",
+      "prompt": "What tasks must complete before inspections can be scheduled?",
+      "question": "What are the dependencies for Inspection? What needs to be complete before inspections can be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "inspection"
     },
     {
-      "id": "gc-note-3",
+      "id": "sq-daterange-back-deck",
       "created": "2026-01-20",
-      "content": "Request schedule for back deck work. Also need meeting with owner to plan - need dimensions, rail system decision, materials.",
-      "tags": ["gc-action-required", "task:build-back-deck"]
+      "type": "date-range",
+      "prompt": "What are the start and end dates for back deck construction?",
+      "question": "Request schedule for back deck work. Also need meeting with owner to plan - need dimensions, rail system decision, materials.",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "build-back-deck"
     },
     {
-      "id": "gc-note-5",
+      "id": "sq-assignee-move-appliances",
       "created": "2026-01-20",
-      "content": "Who moves range, freezers and refrigerators for Kitchen Put-Back?",
-      "tags": ["gc-action-required", "task:kitchen-put-back"]
+      "type": "assignee",
+      "prompt": "Who moves range, freezers and refrigerators for Kitchen Put-Back?",
+      "question": "Who moves range, freezers and refrigerators for Kitchen Put-Back?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "kitchen-put-back"
     },
     {
-      "id": "gc-note-6",
+      "id": "sq-assignee-install-ovens",
       "created": "2026-01-20",
-      "content": "Who installs ovens?",
-      "tags": ["gc-action-required", "task:kitchen-put-back"]
+      "type": "assignee",
+      "prompt": "Who should install the ovens?",
+      "question": "Who installs ovens?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "kitchen-put-back"
     },
     {
-      "id": "gc-note-7",
+      "id": "sq-assignee-pot-rack",
       "created": "2026-01-20",
-      "content": "Who installs pot rack?",
-      "tags": ["gc-action-required", "task:misc-equipment-install"]
+      "type": "assignee",
+      "prompt": "Who should install the pot rack?",
+      "question": "Who installs pot rack?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "misc-equipment-install"
     },
     {
-      "id": "gc-note-8",
+      "id": "sq-assignee-upper-cabinets",
       "created": "2026-01-20",
-      "content": "Who installs upper cabinets? Need assignee for Upper Cabinet Install task.",
-      "tags": ["gc-action-required", "task:upper-cabinet-install"]
+      "type": "assignee",
+      "prompt": "Who should install the upper cabinets?",
+      "question": "Who installs upper cabinets? Need assignee for Upper Cabinet Install task.",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "upper-cabinet-install"
     },
     {
-      "id": "gc-note-9",
+      "id": "sq-assignee-crest-prep",
       "created": "2026-01-20",
-      "content": "Who is responsible for cleaning/prep before Crest arrives on 1/27?",
-      "tags": ["gc-action-required", "task:crest-prep"]
+      "type": "assignee",
+      "prompt": "Who is responsible for cleaning/prep before Crest arrives on 1/27?",
+      "question": "Who is responsible for cleaning/prep before Crest arrives on 1/27?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "crest-prep"
     },
     {
-      "id": "gc-note-10",
+      "id": "sq-yesno-mep-meeting",
       "created": "2026-01-20",
-      "content": "Should we schedule an MEP coordination meeting before Crest install on 1/27?",
-      "tags": ["gc-action-required", "task:crest-installation"]
+      "type": "yes-no",
+      "prompt": "Should we schedule an MEP coordination meeting before Crest install on 1/27?",
+      "question": "Should we schedule an MEP coordination meeting before Crest install on 1/27?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "crest-installation"
+    },
+    {
+      "id": "sq-assignee-dryer-vents",
+      "created": "2026-01-21",
+      "type": "assignee",
+      "prompt": "Who should be assigned to install dryer vents?",
+      "question": "1. Who should be assigned to install dryer vents? 2. Does siding need to wait for dryer vents to be complete (dependency)?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-dryer-vents"
+    },
+    {
+      "id": "sq-yesno-dryer-vents-dependency",
+      "created": "2026-01-21",
+      "type": "yes-no",
+      "prompt": "Does siding need to wait for dryer vents to be complete?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "siding"
+    },
+    {
+      "id": "sq-daterange-remove-old-porch",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should the old porch steps and posts be removed? (prerequisite for back deck)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "remove-old-porch"
+    },
+    {
+      "id": "sq-daterange-finish-plumbing",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should finish plumbing be scheduled? (after Crest installation 1/27)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-plumbing"
+    },
+    {
+      "id": "sq-assignee-extension-cord",
+      "created": "2026-01-21",
+      "type": "assignee",
+      "prompt": "Who should install the retractable extension cord?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-retractable-extension-cord"
+    },
+    {
+      "id": "sq-yesno-order-receptacle-covers",
+      "created": "2026-01-21",
+      "type": "yes-no",
+      "prompt": "Should Dave/Tonia order the receptacle and light switch covers, or will GC handle?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-electrical",
+      "relatedMaterial": "receptacle-light-switch-covers"
+    },
+    {
+      "id": "sq-daterange-close-permit",
+      "created": "2026-01-21",
+      "type": "date-range",
+      "prompt": "When should the building permit be closed? (after all inspections pass)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "close-permit"
+    },
+    {
+      "id": "sq-assignee-propane-coordinator",
+      "created": "2026-01-21",
+      "type": "assignee",
+      "prompt": "Who is overall coordinator for propane work? (Dion does line install, Beach Gas does remediation)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "propane"
+    },
+    {
+      "id": "sq-date-project-finish-target",
+      "created": "2026-01-21",
+      "type": "date",
+      "prompt": "What is the target date for project completion?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "project-finish"
+    },
+    {
+      "id": "sq-date-hinges-back-door-expectedDate",
+      "created": "2026-01-21",
+      "type": "date",
+      "prompt": "When is \"Hinges (Back Door)\" expected to arrive?",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "hinges-back-door"
+    },
+    {
+      "id": "sq-date-doorknob-back-door-expectedDate",
+      "created": "2026-01-21",
+      "type": "date",
+      "prompt": "When is \"Doorknob (Back Door)\" expected to arrive?",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "doorknob-back-door"
+    },
+    {
+      "id": "sq-date-doorknob-hinges-hvac-expectedDate",
+      "created": "2026-01-21",
+      "type": "date",
+      "prompt": "When is \"Doorknob & Hinges (HVAC)\" expected to arrive?",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "doorknob-hinges-hvac"
+    },
+    {
+      "id": "sq-free-text-receptacle-light-switch-covers-quantity-detail",
+      "created": "2026-01-21",
+      "type": "free-text",
+      "prompt": "How many \"Receptacle and Light Switch Covers\" are needed, and what are the specifications? (Answer 'N/A' for specs if not applicable)",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "finish-electrical",
+      "relatedMaterial": "receptacle-light-switch-covers"
+    },
+    {
+      "id": "sq-date-upper-cabinet-handles-expectedDate",
+      "created": "2026-01-21",
+      "type": "date",
+      "prompt": "When is \"Upper Cabinet Handles\" expected to arrive?",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "upper-cabinet-install",
+      "relatedMaterial": "upper-cabinet-handles"
     }
   ],
   "budget": {
