@@ -1,0 +1,10 @@
+Note ID,Created,Content,Tags
+gc-note-1,2026-01-20,Who installs the doors? Need assignee for Install Doors task.,"gc-action-required, task:install-doors"
+gc-note-2,2026-01-20,What are the dependencies for Inspection? What needs to be complete before inspections can be scheduled?,"gc-action-required, task:inspection"
+gc-note-3,2026-01-20,"Request schedule for back deck work. Also need meeting with owner to plan - need dimensions, rail system decision, materials.","gc-action-required, task:build-back-deck"
+gc-note-5,2026-01-20,"Who moves range, freezers and refrigerators for Kitchen Put-Back?","gc-action-required, task:kitchen-put-back"
+gc-note-6,2026-01-20,Who installs ovens?,"gc-action-required, task:kitchen-put-back"
+gc-note-7,2026-01-20,Who installs pot rack?,"gc-action-required, task:misc-equipment-install"
+gc-note-8,2026-01-20,Who installs upper cabinets? Need assignee for Upper Cabinet Install task.,"gc-action-required, task:upper-cabinet-install"
+gc-note-9,2026-01-20,Who is responsible for cleaning/prep before Crest arrives on 1/27?,"gc-action-required, task:crest-prep"
+gc-note-10,2026-01-20,Should we schedule an MEP coordination meeting before Crest install on 1/27?,"gc-action-required, task:crest-installation"

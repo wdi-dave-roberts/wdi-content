@@ -17,626 +17,856 @@
       "lodging": 0
     },
     "parties": {
-      "owner": "vendor:inspired-manteo",
-      "contractor": "vendor:weathertek"
+      "owner": "vendor:dave",
+      "contractor": "vendor:brandon"
     },
     "startDate": "2025-12-15",
-    "completionDate": "2026-01-16",
     "href": "reference/contract/Cost-Plus Addendum to White Doe Inn Kitchen Remodel Contract.pdf"
   },
   "tasks": [
     {
-      "id": "site-prep",
-      "name": "Site Preparation",
-      "start": "2025-12-15",
-      "end": "2025-12-15",
-      "progress": 100,
-      "status": "completed",
-      "category": "demolition",
-      "assignee": "vendor:weathertek",
-      "description": "Dumpster delivery, protection setup, material staging"
+      "id": "finish-trim",
+      "name": "Finish Trim",
+      "start": "2026-01-21",
+      "end": "2026-01-23",
+      "category": "trim",
+      "assignee": "vendor:eliseo",
+      "status": "in-progress",
+      "dependencies": ["hvac-registers"],
+      "notes": "Trim joints should be finished with Bondo for wood, not wood filler and definitely not caulk.",
+      "materialDependencies": [
+        {
+          "id": "crown-molding",
+          "name": "Crown Molding",
+          "status": "on-hand"
+        }
+      ],
+      "subtasks": [
+        {
+          "id": "trim-passthrough",
+          "name": "Trim Passthrough",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "notes": "1. Casing must be same thickness all around for equipment install. \n2. Inside casing is 3/4\". \n3. Outside casing is 1/2\" - need to plane 3/4\" to 1/2\" (Dave to provide planer). \n4. Trim height is 35 7/8\" - can be cut to 30\" to fit opening. Kat to reach out to Crest Mechanical. \n5. Opening width is 47 3/4\" - can be trimmed for tighter fit (site opening is 49\")."
+        },
+        {
+          "id": "adjust-hallway-openings",
+          "name": "Adjust Hallway Opening Heights",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "notes": "1. Kitchen to storage: 4 1/2\" from ceiling in small storage room to finished opening height. \n2. Storage to back door: 4 1/2\" from ceiling from pantry side to finished opening height. \n3. Locations marked in pencil on openings, left side at top."
+        },
+        {
+          "id": "kitchen-crown-molding",
+          "name": "Kitchen Crown Molding",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "dependencies": ["hvac-registers"],
+          "materialDependencies": ["crown-molding"],
+          "notes": "1. Need to figure out how to handle the sagging joist (Can handle it by floating the ceiling from chase to the dip over the door.) \n2. Registers in laundry and storage room may be too low for crown molding. \n3. Need to verify once crown is on site. \n4. HVAC can be scheduled for 1/22 or 1/23 - confirmed we cannot adjust the registers ourselves from Joclar & Fields."
+        },
+        {
+          "id": "laundry-crown-molding",
+          "name": "Laundry Crown Molding",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "dependencies": ["hvac-registers"],
+          "materialDependencies": ["crown-molding"]
+        },
+                {
+          "id": "kitchen-main-door-casing",
+          "name": "Kitchen Main Door Casing",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "notes": "1. Light switch is so close to casing - need to case around light switch. 2. Need reveal on door casing (currently flush) - reveal should match standard reveal (e.g., match windows reveal)."
+        },
+        {
+          "id": "baseboard-install-scupernong",
+          "name": "Install Baseboard in Scupernong",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "dependencies": ["finish-drywall-scupernong", "paint-scupernong"],
+          "notes": "Requires Scupernong drywall and paint complete first."
+        }
+      ]
     },
     {
-      "id": "demolition",
-      "name": "Demolition",
-      "start": "2025-12-16",
-      "end": "2025-12-19",
-      "progress": 100,
-      "dependencies": ["site-prep"],
-      "status": "completed",
-      "category": "demolition",
-      "assignee": "vendor:danny-dd",
-      "description": "Remove existing cabinets, countertops, flooring, and fixtures"
+      "id": "install-doors",
+      "name": "Install Doors",
+      "category": "trim",
+      "status": "needs-scheduled",
+      "dependencies": ["finish-trim"],
+      "materialDependencies": [
+        {
+          "id": "door-main-kitchen",
+          "name": "Door (Main Kitchen)",
+          "status": "on-hand",
+          "quantity": 1,
+          "notes": "In garage."
+        },
+        {
+          "id": "door-back",
+          "name": "Door (Back)",
+          "status": "on-hand",
+          "quantity": 1,
+          "notes": "In garage."
+        },
+        {
+          "id": "door-hvac",
+          "name": "Door (HVAC)",
+          "status": "on-hand",
+          "quantity": 1,
+          "notes": "Existing 32\" door."
+        },
+        {
+          "id": "hinges-main-kitchen-door",
+          "name": "Hinges (Main Kitchen Door)",
+          "status": "ordered",
+          "quantity": 4,
+          "expectedDate": "2026-01-22"
+        },
+        {
+          "id": "hinges-back-door",
+          "name": "Hinges (Back Door)",
+          "status": "ordered",
+          "quantity": 3,
+          "detail": "4\" Antique Bronze"
+        },
+        {
+          "id": "doorknob-back-door",
+          "name": "Doorknob (Back Door)",
+          "status": "ordered",
+          "quantity": 1,
+          "detail": "Antique Bronze",
+          "purchasingTask": "doorknob-back-door"
+        },
+        {
+          "id": "deadbolt-back-door",
+          "name": "Electronic Deadbolt (Back Door)",
+          "status": "on-hand",
+          "quantity": 1,
+          "detail": "Antique Bronze"
+        },
+        {
+          "id": "doorknob-hinges-hvac",
+          "name": "Doorknob & Hinges (HVAC)",
+          "status": "ordered",
+          "quantity": 2,
+          "detail": "Antique Bronze",
+          "purchasingTask": "doorknob-hinges-hvac"
+        }
+      ],
+      "subtasks": [
+        {
+          "id": "main-kitchen-door",
+          "name": "Main Kitchen Door",
+          "status": "needs-scheduled",
+          "materialDependencies": ["door-main-kitchen", "hinges-main-kitchen-door"],
+          "notes": "1. Hinges to be delivered 1/22. 2. Door is in the garage."
+        },
+        {
+          "id": "install-back-door",
+          "name": "Install Back Door",
+          "status": "needs-scheduled",
+          "materialDependencies": ["door-back", "hinges-back-door", "doorknob-back-door", "deadbolt-back-door"],
+          "notes": "1. Door is in the garage. 2. Install with Antique Bronze hinges. 3. Install existing antique bronze electronic deadbolt and door knob provided by owner."
+        },
+        {
+          "id": "hvac-door",
+          "name": "HVAC Door",
+          "status": "needs-scheduled",
+          "materialDependencies": ["door-hvac", "doorknob-hinges-hvac"],
+          "notes": "1. Install existing 32\" door with jamb. 2. Same casing as main kitchen door."
+        }
+      ]
     },
     {
-      "id": "rough-in-plumbing",
-      "name": "Plumbing Rough-In",
-      "start": "2025-12-20",
-      "end": "2025-12-24",
-      "progress": 100,
-      "dependencies": ["demolition"],
-      "status": "completed",
-      "category": "plumbing",
-      "assignee": "vendor:big-d-plumbing",
-      "description": "Relocate water lines, drain, gas line for range"
+      "id": "build-back-deck",
+      "name": "Build Back Deck with Ramp",
+      "category": "framing",
+      "assignee": "vendor:danny",
+      "status": "needs-scheduled",
+      "dependencies": ["remove-old-porch"],
+      "notes": "Need to sort out details for dimensions, rail system vs. no rail system, etc. REQUEST: GC meet with owner to plan.",
+      "subtasks": []
     },
     {
-      "id": "rough-in-electrical",
-      "name": "Electrical Rough-In",
-      "start": "2025-12-20",
-      "end": "2025-12-24",
-      "progress": 100,
-      "dependencies": ["demolition"],
-      "status": "completed",
-      "category": "electrical",
-      "assignee": "vendor:weathertek",
-      "description": "New circuits for appliances, lighting, outlets"
+      "id": "remove-old-porch",
+      "name": "Remove Old Porch Steps and Posts",
+      "category": "framing",
+      "assignee": "vendor:danny",
+      "status": "needs-scheduled",
+      "subtasks": []
     },
     {
-      "id": "rough-in-hvac",
-      "name": "HVAC Rough-In",
-      "start": "2025-12-20",
-      "end": "2025-12-26",
-      "progress": 100,
-      "dependencies": ["demolition"],
-      "status": "completed",
+      "id": "hvac-registers",
+      "name": "HVAC Lower Registers",
+      "start": "2026-01-22",
+      "end": "2026-01-22",
       "category": "mechanical",
       "assignee": "vendor:joclar-fields",
-      "description": "Ductwork modifications for new layout"
-    },
-    {
-      "id": "framing",
-      "name": "Framing & Structural",
-      "start": "2025-12-20",
-      "end": "2025-12-24",
-      "progress": 100,
-      "dependencies": ["demolition"],
-      "status": "completed",
-      "category": "structural",
-      "assignee": "vendor:weathertek",
-      "description": "Header for removed wall, island framing"
-    },
-    {
-      "id": "rough-in-inspection",
-      "name": "Rough-In Inspection",
-      "start": "2026-01-02",
-      "end": "2026-01-02",
-      "progress": 100,
-      "dependencies": ["rough-in-plumbing", "rough-in-electrical", "rough-in-hvac", "framing"],
-      "status": "completed",
-      "category": "inspection",
-      "assignee": "vendor:town-of-manteo",
-      "description": "Mechanical, electrical, plumbing inspection"
-    },
-    {
-      "id": "drywall",
-      "name": "Drywall",
-      "start": "2026-01-03",
-      "end": "2026-01-05",
-      "progress": 80,
-      "dependencies": ["rough-in-inspection"],
-      "status": "in_progress",
-      "category": "finish",
-      "assignee": "vendor:weathertek",
-      "description": "Hang, tape, mud, and sand drywall"
-    },
-    {
-      "id": "cabinets",
-      "name": "Cabinet Installation",
-      "start": "2026-01-06",
-      "end": "2026-01-07",
-      "progress": 0,
-      "dependencies": ["drywall"],
       "status": "scheduled",
-      "category": "fixtures",
-      "assignee": "vendor:ck-flooring",
-      "description": "Install base and wall cabinets"
+      "notes": "Registers in laundry and storage room may be too low for crown molding. Also available 1/23 if needed.",
+      "subtasks": []
     },
     {
-      "id": "countertops",
-      "name": "Countertop Installation",
-      "start": "2026-01-08",
-      "end": "2026-01-08",
-      "progress": 0,
-      "dependencies": ["cabinets"],
-      "status": "scheduled",
-      "category": "fixtures",
-      "description": "Template and install quartz countertops"
+      "id": "crest-prep",
+      "name": "Crest Prep / Cleaning",
+      "start": "2026-01-26",
+      "end": "2026-01-26",
+      "category": "clean",
+      "status": "needs-scheduled",
+      "notes": "Clean and prep kitchen area before Crest arrives. Clear tools and materials, protect flooring.",
+      "dependencies": ["kitchen-baseboard", "upper-cabinet-install", "finish-trim"],
+      "subtasks": []
     },
     {
-      "id": "flooring",
-      "name": "Flooring Installation",
-      "start": "2026-01-06",
-      "end": "2026-01-07",
-      "progress": 0,
-      "dependencies": ["drywall"],
+      "id": "crest-installation",
+      "name": "Crest Installation",
+      "start": "2026-01-27",
+      "end": "2026-01-27",
+      "category": "mechanical",
       "status": "scheduled",
-      "category": "finish",
-      "assignee": "vendor:ck-flooring",
-      "description": "Install Protect All commercial flooring"
+      "assignee": "vendor:crest",
+      "notes": "Need to confirm exact delivery time and duration for install.",
+      "dependencies": ["finish-trim", "kitchen-baseboard", "finish-electrical", "propane", "install-stainless-wall", "upper-cabinet-install", "crest-prep"],
+      "subtasks": [
+        {
+          "id": "verify-install-time",
+          "name": "Verify Install Time",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        }
+      ]
     },
     {
-      "id": "paint",
-      "name": "Painting",
-      "start": "2026-01-05",
-      "end": "2026-01-06",
-      "progress": 0,
-      "dependencies": ["drywall"],
-      "status": "scheduled",
-      "category": "finish",
-      "assignee": "vendor:weathertek",
-      "description": "Prime and paint walls and ceiling"
-    },
-    {
-      "id": "plumbing-trim",
-      "name": "Plumbing Trim",
-      "start": "2026-01-09",
-      "end": "2026-01-09",
-      "progress": 0,
-      "dependencies": ["countertops"],
-      "status": "scheduled",
+      "id": "finish-plumbing",
+      "name": "Finish Plumbing",
       "category": "plumbing",
-      "assignee": "vendor:big-d-plumbing",
-      "description": "Install sink, faucet, disposal, dishwasher connection"
+      "assignee": "vendor:chris-bland",
+      "status": "needs-scheduled",
+      "dependencies": ["crest-installation"],
+      "subtasks": [
+        {
+          "id": "schedule-finish-plumbing",
+          "name": "Schedule Finish Plumbing",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        },
+        {
+          "id": "finish-plumbing-work",
+          "name": "Finish Plumbing",
+          "status": "needs-scheduled",
+          "assignee": "vendor:chris-bland"
+        },
+        {
+          "id": "install-handsink-laundry",
+          "name": "Install Existing Handsink in Laundry Room",
+          "status": "needs-scheduled",
+          "assignee": "vendor:chris-bland",
+          "notes": "Not part of Crest order."
+        }
+      ]
     },
     {
-      "id": "electrical-trim",
-      "name": "Electrical Trim",
-      "start": "2026-01-09",
-      "end": "2026-01-09",
-      "progress": 0,
-      "dependencies": ["paint", "cabinets"],
+      "id": "kitchen-baseboard",
+      "name": "Kitchen Baseboard",
+      "start": "2026-01-26",
+      "end": "2026-01-26",
+      "category": "trim",
+      "assignee": "vendor:jerum",
       "status": "scheduled",
+      "notes": "Must be complete before Crest install on 1/27.",
+      "dependencies": ["finish-trim", "painting"],
+      "subtasks": [
+        {
+          "id": "schedule-baseboard-install",
+          "name": "Schedule Baseboard Install",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        },
+        {
+          "id": "baseboard-install",
+          "name": "Baseboard Install",
+          "status": "needs-scheduled",
+          "assignee": "vendor:jerum"
+        }
+      ]
+    },
+    {
+      "id": "finish-electrical",
+      "name": "Finish Electrical",
+      "start": "2026-01-26",
+      "end": "2026-01-26",
       "category": "electrical",
-      "assignee": "vendor:weathertek",
-      "description": "Install outlets, switches, light fixtures"
+      "assignee": "vendor:craig-davenport",
+      "status": "scheduled",
+      "materialDependencies": [
+        {
+          "id": "coach-lamp",
+          "name": "Coach Lamp",
+          "status": "on-hand",
+          "quantity": 1
+        },
+        {
+          "id": "receptacle-light-switch-covers",
+          "name": "Receptacle and Light Switch Covers",
+          "status": "need-to-order",
+          "notes": "Get count.",
+          "purchasingTask": "receptacle-light-switch-covers"
+        }
+      ],
+      "subtasks": [
+        {
+          "id": "move-mop-sink-receptacle",
+          "name": "Move Receptacle Over Mop Sink",
+          "end": "2026-01-26",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon",
+          "notes": "Move to left of hand sink."
+        },
+        {
+          "id": "install-coach-lamp",
+          "name": "Install Coach Lamp",
+          "end": "2026-01-26",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon",
+          "materialDependencies": ["coach-lamp"]
+        },
+        {
+          "id": "install-light-string-receptacle",
+          "name": "Install Receptacle for Light Strings",
+          "end": "2026-01-26",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon",
+          "notes": "For light strings that criss-cross to firepit."
+        },
+        {
+          "id": "add-tv-receptacle",
+          "name": "Add Receptacle for TV Over Passthrough",
+          "end": "2026-01-26",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon"
+        },
+        {
+          "id": "finish-lighting-install",
+          "name": "Finish Lighting Install",
+          "end": "2026-01-26",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon"
+        },
+        {
+          "id": "schedule-electrical-signoff",
+          "name": "Schedule Electrical Sign-off",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        },
+        {
+          "id": "electrical-signoff",
+          "name": "Electrical Sign-off",
+          "status": "needs-scheduled",
+          "assignee": "vendor:craig-davenport"
+        },
+        {
+          "id": "connect-passthrough-heat-lamp",
+          "name": "Connect Passthrough Heat Lamp",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon",
+          "dependencies": ["crest-installation"],
+          "notes": "Must be done after Crest installation. Heat lamp is part of passthrough equipment."
+        }
+      ]
     },
     {
-      "id": "appliances",
-      "name": "Appliance Installation",
-      "start": "2026-01-10",
-      "end": "2026-01-10",
-      "progress": 0,
-      "dependencies": ["plumbing-trim", "electrical-trim"],
+      "id": "propane",
+      "name": "Propane",
+      "category": "plumbing",
       "status": "scheduled",
+      "start": "2026-01-23",
+      "end": "2026-01-23",
+      "notes": "Dave coordinating and responsible. Dependency for siding install.",
+      "subtasks": [
+        {
+          "id": "install-propane-line",
+          "name": "Install Propane Line for Gas Range",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon",
+          "notes": "1. Installed in secure box in wall to right of existing stainless steel wall covering. 2. Must be installed before remaining stainless is installed on Friday 1/23."
+        },
+        {
+          "id": "propane-line-remediation",
+          "name": "Propane Line Remediation",
+          "status": "scheduled",
+          "assignee": "vendor:beach-gas",
+          "notes": "Dave coordinating and responsible. Dependency for siding install."
+        }
+      ]
+    },
+    {
+      "id": "install-stainless-wall",
+      "name": "Install Stainless Wall Covering (Right of Range)",
+      "start": "2026-01-23",
+      "end": "2026-01-23",
+      "category": "trim",
+      "assignee": "vendor:jd-fletcher",
+      "status": "scheduled",
+      "notes": "Cannot be before Dion finishes range propane install.",
+      "dependencies": ["propane"],
+      "subtasks": []
+    },
+    {
+      "id": "painting",
+      "name": "Painting",
+      "start": "2026-01-23",
+      "end": "2026-01-23",
+      "category": "paint",
+      "assignee": "vendor:eliseo",
+      "status": "scheduled",
+      "dependencies": ["finish-trim", "finish-drywall"],
+      "subtasks": [
+        {
+          "id": "paint-kitchen",
+          "name": "Paint Kitchen",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "notes": "Requires finish-drywall-kitchen complete first."
+        },
+        {
+          "id": "paint-scupernong",
+          "name": "Paint Scupernong",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "notes": "Requires finish-drywall-scupernong complete first."
+        },
+        {
+          "id": "paint-lobby-passthrough",
+          "name": "Paint Lobby Passthrough Wall",
+          "status": "needs-scheduled",
+          "assignee": "vendor:eliseo"
+        },
+        {
+          "id": "paint-doors",
+          "name": "Paint Doors (Kitchen Main, Back, HVAC)",
+          "status": "needs-scheduled",
+          "assignee": "vendor:eliseo",
+          "dependencies": ["install-doors"],
+          "notes": "Paint after door installation (1/24). 3 doors total."
+        },
+        {
+          "id": "touch-up-ceiling",
+          "name": "Touch Up Ceiling Damage (as needed)",
+          "status": "needs-scheduled",
+          "assignee": "vendor:eliseo"
+        }
+      ]
+    },
+    {
+      "id": "finish-drywall",
+      "name": "Finish Drywall",
+      "start": "2026-01-23",
+      "end": "2026-01-23",
+      "category": "trim",
+      "assignee": "vendor:eliseo",
+      "status": "scheduled",
+      "subtasks": [
+        {
+          "id": "finish-drywall-kitchen",
+          "name": "Finish Drywall Kitchen",
+          "status": "needs-scheduled",
+          "assignee": "vendor:eliseo"
+        },
+        {
+          "id": "finish-drywall-scupernong",
+          "name": "Finish Drywall Scupernong",
+          "status": "needs-scheduled",
+          "assignee": "vendor:eliseo"
+        }
+      ]
+    },
+    {
+      "id": "kitchen-put-back",
+      "name": "Kitchen Put-Back",
+      "status": "needs-scheduled",
+      "dependencies": ["crest-installation", "finish-plumbing"],
+      "subtasks": [
+        {
+          "id": "install-dishwasher",
+          "name": "Install Dishwasher",
+          "category": "electrical",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dion-cahoon",
+          "dependencies": ["crest-installation", "finish-plumbing"]
+        },
+        {
+          "id": "install-ovens",
+          "name": "Install Ovens",
+          "status": "needs-scheduled"
+        },
+        {
+          "id": "move-appliances",
+          "name": "Move Range, Freezers and Refrigerators",
+          "status": "needs-scheduled"
+        }
+      ]
+    },
+    {
+      "id": "siding",
+      "name": "Siding",
+      "category": "framing",
+      "assignee": "vendor:sergio",
+      "status": "needs-scheduled",
+      "dependencies": ["propane"],
+      "subtasks": [
+        {
+          "id": "schedule-siding",
+          "name": "Schedule Siding",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        },
+        {
+          "id": "siding-work",
+          "name": "Siding",
+          "status": "needs-scheduled",
+          "assignee": "vendor:sergio"
+        }
+      ]
+    },
+    {
+      "id": "inspection",
+      "name": "Inspection",
+      "status": "needs-scheduled",
+      "assignee": "vendor:brandon",
+      "subtasks": [
+        {
+          "id": "schedule-town-manteo",
+          "name": "Schedule Town of Manteo",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        },
+        {
+          "id": "schedule-dare-county-health",
+          "name": "Schedule Dare County Health",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        },
+        {
+          "id": "town-manteo-inspection",
+          "name": "Town of Manteo",
+          "status": "needs-scheduled"
+        },
+        {
+          "id": "dare-county-health-inspection",
+          "name": "Dare County Health",
+          "status": "needs-scheduled"
+        }
+      ]
+    },
+    {
+      "id": "misc-equipment-install",
+      "name": "Misc Equipment Install",
+      "status": "needs-scheduled",
+      "materialDependencies": [
+        {
+          "id": "pot-rack",
+          "name": "Pot Rack",
+          "status": "on-hand",
+          "quantity": 1
+        },
+        {
+          "id": "retractable-extension-cord",
+          "name": "Retractable Extension Cord",
+          "status": "ordered",
+          "quantity": 1,
+          "expectedDate": "2026-01-26",
+          "purchasingTask": "retractable-extension-cord"
+        }
+      ],
+      "subtasks": [
+        {
+          "id": "install-pot-rack",
+          "name": "Install Pot Rack",
+          "status": "needs-scheduled",
+          "materialDependencies": ["pot-rack"]
+        },
+        {
+          "id": "install-retractable-extension-cord",
+          "name": "Install Retractable Extension Cord",
+          "status": "needs-scheduled",
+          "materialDependencies": ["retractable-extension-cord"]
+        }
+      ]
+    },
+    {
+      "id": "upper-cabinet-install",
+      "name": "Upper Cabinet Install",
+      "start": "2026-01-26",
+      "end": "2026-01-26",
       "category": "fixtures",
-      "description": "Install range, refrigerator, dishwasher, microwave"
+      "status": "scheduled",
+      "dependencies": ["finish-trim"],
+      "materialDependencies": [
+        {
+          "id": "upper-cabinets",
+          "name": "Upper Cabinets",
+          "status": "ordered",
+          "quantity": 4,
+          "expectedDate": "2026-01-22"
+        },
+        {
+          "id": "upper-cabinet-handles",
+          "name": "Upper Cabinet Handles",
+          "status": "ordered",
+          "purchasingTask": "upper-cabinet-handles"
+        }
+      ],
+      "notes": "Requires cabinet crown installation.",
+      "subtasks": [
+        {
+          "id": "upper-cabinet-delivery",
+          "name": "Upper Cabinet Delivery",
+          "start": "2026-01-22",
+          "status": "confirmed"
+        },
+        {
+          "id": "schedule-upper-cabinet-install",
+          "name": "Schedule Installation",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon"
+        },
+        {
+          "id": "install-upper-cabinets",
+          "name": "Install Upper Cabinets",
+          "status": "needs-scheduled",
+          "materialDependencies": ["upper-cabinets", "upper-cabinet-handles"]
+        }
+      ]
     },
     {
-      "id": "final-inspection",
-      "name": "Final Inspection",
-      "start": "2026-01-13",
-      "end": "2026-01-13",
-      "progress": 0,
-      "dependencies": ["appliances"],
-      "status": "scheduled",
-      "category": "inspection",
-      "assignee": "vendor:town-of-manteo",
-      "description": "Final building inspection and CO"
+      "id": "close-permit",
+      "name": "Close Building Permit",
+      "status": "needs-scheduled",
+      "assignee": "vendor:brandon",
+      "dependencies": ["inspection"],
+      "subtasks": []
     },
     {
-      "id": "punch-list",
-      "name": "Punch List & Cleanup",
-      "start": "2026-01-14",
-      "end": "2026-01-16",
-      "progress": 0,
-      "dependencies": ["final-inspection"],
-      "status": "scheduled",
-      "category": "cleanup",
-      "assignee": "vendor:weathertek",
-      "description": "Address any deficiencies, final cleaning"
+      "id": "project-finish",
+      "name": "Project Finish",
+      "status": "needs-scheduled",
+      "dependencies": ["inspection", "crest-installation", "kitchen-put-back", "close-permit"],
+      "notes": "Final punch acceptance criteria: All work complete per contract scope, all inspections passed, all equipment operational, no safety hazards, cosmetic defects documented and remediated.",
+      "subtasks": [
+        {
+          "id": "schedule-final-punch",
+          "name": "Schedule Final Punch Walkthrough",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon",
+          "notes": "Coordinate with owner for walkthrough date/time."
+        },
+        {
+          "id": "final-punch-walkthrough",
+          "name": "Final Punch Walkthrough",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dave",
+          "notes": "Owner walks job with GC to identify any remaining items. Document all punch items."
+        },
+        {
+          "id": "punch-remediation",
+          "name": "Punch List Remediation",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon",
+          "notes": "GC addresses all documented punch items."
+        },
+        {
+          "id": "final-clean",
+          "name": "Final Clean",
+          "status": "needs-scheduled",
+          "assignee": "vendor:brandon",
+          "dependencies": ["punch-remediation"]
+        },
+        {
+          "id": "final-acceptance",
+          "name": "Final Acceptance",
+          "status": "needs-scheduled",
+          "assignee": "vendor:dave",
+          "notes": "Owner confirms all punch items resolved. Project complete."
+        }
+      ]
     }
   ],
-  "milestones": [
-    {
-      "id": "site-prep-complete",
-      "name": "Site Preparation Complete",
-      "date": "2025-12-15",
-      "status": "reached",
-      "tasks": ["site-prep"]
-    },
-    {
-      "id": "demo-complete",
-      "name": "Demolition Complete",
-      "date": "2025-12-19",
-      "status": "reached",
-      "tasks": ["demolition"]
-    },
-    {
-      "id": "rough-in-complete",
-      "name": "Rough-In Complete",
-      "date": "2025-12-26",
-      "description": "All rough-in work complete, ready for inspection",
-      "status": "reached",
-      "tasks": ["rough-in-plumbing", "rough-in-electrical", "rough-in-hvac", "framing"]
-    },
-    {
-      "id": "rough-in-inspection-passed",
-      "name": "Rough-In Inspection Passed",
-      "date": "2026-01-02",
-      "description": "Draw 1 payment trigger",
-      "status": "reached",
-      "tasks": ["rough-in-inspection"]
-    },
-    {
-      "id": "substantial-completion",
-      "name": "Substantial Completion",
-      "date": "2026-01-09",
-      "description": "Kitchen functional and usable",
-      "status": "upcoming",
-      "tasks": ["cabinets", "countertops", "flooring", "plumbing-trim", "electrical-trim"]
-    },
-    {
-      "id": "final-completion",
-      "name": "Final Completion",
-      "date": "2026-01-16",
-      "description": "Final payment trigger - all work complete",
-      "status": "upcoming",
-      "tasks": ["final-inspection", "punch-list"]
-    }
-  ],
-  "payments": [
-    {
-      "id": "deposit",
-      "name": "Deposit",
-      "amount": 60000,
-      "scheduledDate": "2025-12-14",
-      "receivedDate": "2025-12-14",
-      "status": "received",
-      "method": "check",
-      "notes": "Due at contract signing"
-    },
-    {
-      "id": "draw-1",
-      "name": "Draw 1 - Rough-In",
-      "amount": 25000,
-      "scheduledDate": "2026-01-02",
-      "milestone": "milestone:rough-in-inspection-passed",
-      "status": "awaiting-request",
-      "notes": "Milestone reached 01/02 - GC has not yet submitted draw request"
-    },
-    {
-      "id": "final",
-      "name": "Final Draw",
-      "amount": 0,
-      "milestone": "milestone:final-completion",
-      "status": "scheduled",
-      "notes": "Balance due at final completion. Amount = total costs + markup - deposit - draw 1"
-    }
-  ],
+  "milestones": [],
   "vendors": [
     {
-      "id": "inspired-manteo",
-      "name": "Inspired Manteo Moments, Inc.",
-      "type": "other",
-      "trade": "general",
-      "status": "active",
-      "contact": {
-        "name": "David Roberts"
-      },
-      "folder": "Owner"
-    },
-    {
-      "id": "weathertek",
-      "name": "Weathertek Construction & Restoration LLC",
-      "type": "general-contractor",
-      "trade": "general",
-      "status": "active",
-      "paymentTerms": "draws",
-      "folder": "Weathertek"
-    },
-    {
-      "id": "danny-dd",
-      "name": "D&D Construction (Danny)",
+      "id": "danny",
+      "name": "Danny",
       "type": "subcontractor",
-      "trade": "demolition",
-      "status": "active",
-      "paymentTerms": "draws",
-      "folder": "D&D (Danny)"
+      "trade": "framing",
+      "status": "active"
     },
     {
-      "id": "big-d-plumbing",
-      "name": "Big D Plumbing (Bland)",
+      "id": "eliseo",
+      "name": "Eliseo",
+      "type": "subcontractor",
+      "trade": "trim-paint",
+      "status": "active"
+    },
+    {
+      "id": "chris-bland",
+      "name": "Chris Bland",
       "type": "subcontractor",
       "trade": "plumbing",
-      "status": "active",
-      "folder": "Bland (Big D Plumbing)"
+      "status": "active"
+    },
+    {
+      "id": "craig-davenport",
+      "name": "Craig Davenport",
+      "type": "subcontractor",
+      "trade": "electrical",
+      "status": "active"
+    },
+    {
+      "id": "dion-cahoon",
+      "name": "Dion Cahoon",
+      "type": "subcontractor",
+      "trade": "electrical",
+      "status": "active"
+    },
+    {
+      "id": "sergio",
+      "name": "Sergio",
+      "type": "subcontractor",
+      "trade": "siding",
+      "status": "active"
+    },
+    {
+      "id": "dave",
+      "name": "Dave",
+      "type": "owner",
+      "status": "active"
+    },
+    {
+      "id": "brandon",
+      "name": "Brandon",
+      "type": "gc",
+      "status": "active"
+    },
+    {
+      "id": "tonia",
+      "name": "Tonia",
+      "type": "owner",
+      "status": "active"
+    },
+    {
+      "id": "jd-fletcher",
+      "name": "JD Fletcher",
+      "type": "subcontractor",
+      "trade": "stainless",
+      "status": "active"
+    },
+    {
+      "id": "beach-gas",
+      "name": "Beach Gas Appliance and Propane",
+      "type": "subcontractor",
+      "trade": "propane",
+      "status": "active"
+    },
+    {
+      "id": "crest",
+      "name": "Crest Mechanical",
+      "type": "subcontractor",
+      "trade": "kitchen-equipment",
+      "status": "active"
+    },
+    {
+      "id": "jerum",
+      "name": "Jerum",
+      "type": "subcontractor",
+      "trade": "trim",
+      "status": "active"
     },
     {
       "id": "joclar-fields",
-      "name": "Joclar and Fields LLC",
+      "name": "Joclar & Fields",
       "type": "subcontractor",
       "trade": "hvac",
-      "status": "active",
-      "paymentTerms": "net-30",
-      "contact": {
-        "phone": "252-599-1572",
-        "email": "joclarandfields@gmail.com",
-        "address": {
-          "street": "108 Roanoke Dr",
-          "city": "Kill Devil Hills",
-          "state": "NC",
-          "zip": "27948"
-        }
-      },
-      "folder": "Joclar & Fields"
-    },
-    {
-      "id": "ck-flooring",
-      "name": "CK Custom Kitchens & Flooring Inc",
-      "type": "subcontractor",
-      "trade": "flooring",
-      "status": "active",
-      "paymentTerms": "milestone",
-      "contact": {
-        "phone": "252-441-5638",
-        "address": {
-          "street": "2017 S Croatan Hwy",
-          "city": "Kill Devil Hills",
-          "state": "NC",
-          "zip": "27948"
-        }
-      },
-      "folder": "CK Kitchen Flooring"
-    },
-    {
-      "id": "i-obx-disposal",
-      "name": "I-OBX Disposal LLC",
-      "type": "subcontractor",
-      "trade": "hauling",
-      "status": "active",
-      "paymentTerms": "net-30",
-      "contact": {
-        "phone": "252-202-9408",
-        "email": "info@i-obxdisposal.com",
-        "address": {
-          "city": "Manteo",
-          "state": "NC",
-          "zip": "27954"
-        }
-      },
-      "folder": "I-OBX Disposal"
-    },
-    {
-      "id": "kempsville",
-      "name": "Kempsville Building Materials",
-      "type": "supplier",
-      "trade": "carpentry",
-      "status": "active",
-      "paymentTerms": "net-30",
-      "contact": {
-        "phone": "757-366-9171",
-        "address": {
-          "street": "4552 Princess Anne Rd",
-          "city": "Virginia Beach",
-          "state": "VA",
-          "zip": "23462"
-        }
-      },
-      "folder": "Kempsville"
-    },
-    {
-      "id": "kellogg",
-      "name": "Kellogg Supply Company",
-      "type": "supplier",
-      "trade": "carpentry",
-      "status": "active",
-      "folder": "Kellogg"
-    },
-    {
-      "id": "lowes",
-      "name": "Lowe's Home Improvement",
-      "type": "materials",
-      "trade": "multiple",
-      "status": "active",
-      "folder": "Lowes"
-    },
-    {
-      "id": "town-of-manteo",
-      "name": "Town of Manteo",
-      "type": "government",
-      "trade": "general",
-      "status": "active",
-      "folder": "Permits -Town of Manteo-Dare"
-    },
-    {
-      "id": "dare-county-health",
-      "name": "Dare County Health Department",
-      "type": "government",
-      "trade": "general",
-      "status": "active",
-      "folder": "Permits -Town of Manteo-Dare"
-    },
-    {
-      "id": "airbnb",
-      "name": "Airbnb",
-      "type": "other",
-      "trade": "general",
-      "status": "active",
-      "folder": "Airbnb"
+      "status": "active"
     }
   ],
-  "receipts": [
-    {
-      "id": "ck-flooring-inv-001",
-      "vendor": "vendor:ck-flooring",
-      "href": "reference/receipts/CK Kitchen Flooring/CK Kitchen Flooring Invoice #MY3182WhiteD-0001.pdf",
-      "date": "2025-11-25",
-      "amount": 28661.31,
-      "tax": 1812.31,
-      "description": "Protect All 1/4\" commercial flooring - 50% deposit",
-      "type": "invoice",
-      "category": "subcontractor",
-      "task": "task:flooring",
-      "status": "pending",
-      "paidBy": "project",
-      "markupPercent": 20,
-      "invoiceNumber": "MY3182WhiteD-0001",
-      "lineItems": [
-        {
-          "description": "Protect All 1/4\" - White Doe",
-          "quantity": 1,
-          "unitPrice": 26849.00,
-          "total": 26849.00
-        }
-      ]
-    },
-    {
-      "id": "i-obx-inv-1533",
-      "vendor": "vendor:i-obx-disposal",
-      "href": "reference/receipts/I-OBX Disposal/I-OBX Disposal Invoice #1533.pdf",
-      "date": "2025-12-31",
-      "dueDate": "2026-01-30",
-      "amount": 750.00,
-      "description": "40 cyd dumpster Pull & Return",
-      "type": "invoice",
-      "category": "site-support",
-      "task": "task:site-prep",
-      "status": "pending",
-      "paidBy": "project",
-      "markupPercent": 0,
-      "invoiceNumber": "1533"
-    },
-    {
-      "id": "joclar-est-2588",
-      "vendor": "vendor:joclar-fields",
-      "href": "reference/receipts/Joclar & Fields/Joclar and Fields Estimate #2025-2588.pdf",
-      "date": "2025-12-17",
-      "amount": 5500.00,
-      "description": "White Doe Kitchen Remodel - new duct system",
-      "type": "estimate",
-      "category": "subcontractor",
-      "task": "task:rough-in-hvac",
-      "status": "approved",
-      "paidBy": "project",
-      "markupPercent": 20,
-      "invoiceNumber": "2025-2588",
-      "lineItems": [
-        {
-          "description": "New 8\" insulated duct",
-          "total": 5500.00
-        }
-      ]
-    },
-    {
-      "id": "joclar-inv-2972",
-      "vendor": "vendor:joclar-fields",
-      "href": "reference/receipts/Joclar & Fields/Joclar and Fields Invoice #2025-2972.pdf",
-      "date": "2026-01-05",
-      "amount": 2750.00,
-      "description": "White Doe Kitchen Remodel - 50% payment",
-      "type": "invoice",
-      "category": "subcontractor",
-      "task": "task:rough-in-hvac",
-      "status": "paid",
-      "paidBy": "project",
-      "markupPercent": 20,
-      "paymentMethod": "check",
-      "invoiceNumber": "2025-2972"
-    },
-    {
-      "id": "kempsville-inv-482810",
-      "vendor": "vendor:kempsville",
-      "href": "reference/receipts/Kempsville/Kempsville Invoice #48000482810.pdf",
-      "date": "2025-12-15",
-      "amount": 3123.33,
-      "description": "Lumber and structural materials",
-      "type": "invoice",
-      "category": "materials",
-      "task": "task:framing",
-      "status": "paid",
-      "paidBy": "project",
-      "markupPercent": 20,
-      "invoiceNumber": "48000482810",
-      "lineItems": [
-        {
-          "description": "2x4x8 KD SPF #2",
-          "quantity": 20,
-          "unitPrice": 4.09,
-          "total": 81.80
-        },
-        {
-          "description": "2x6x12 KD SPF #2",
-          "quantity": 10,
-          "unitPrice": 9.29,
-          "total": 92.90
-        },
-        {
-          "description": "1-3/4x11-7/8x20 LVL",
-          "quantity": 2,
-          "unitPrice": 134.75,
-          "total": 269.50
-        },
-        {
-          "description": "7/16x4x8 OSB Sheathing",
-          "quantity": 10,
-          "unitPrice": 12.99,
-          "total": 129.90
-        }
-      ]
-    }
+  "categories": [
+    "paint",
+    "trim",
+    "framing",
+    "electrical",
+    "plumbing"
   ],
+  "statuses": [
+    "needs-scheduled",
+    "scheduled",
+    "in-progress",
+    "completed",
+    "blocked"
+  ],
+  "receipts": [],
   "changeOrders": [],
   "notes": [
     {
-      "id": "note-001",
-      "created": "2025-12-14T10:00:00Z",
-      "author": "David",
-      "content": "Contract signed with Weathertek. Deposit of $60,000 paid. Work to begin Monday 12/15.",
-      "tags": ["project", "vendor:weathertek"],
-      "type": "general",
-      "pinned": true
+      "id": "gc-note-1",
+      "created": "2026-01-20",
+      "content": "Who installs the doors? Need assignee for Install Doors task.",
+      "tags": ["gc-action-required", "task:install-doors"]
     },
     {
-      "id": "note-002",
-      "created": "2025-12-19T16:00:00Z",
-      "author": "David",
-      "content": "Demolition complete. Danny and crew did excellent work. Kitchen gutted and ready for rough-in.",
-      "tags": ["task:demolition", "vendor:danny-dd"],
-      "type": "general"
+      "id": "gc-note-2",
+      "created": "2026-01-20",
+      "content": "What are the dependencies for Inspection? What needs to be complete before inspections can be scheduled?",
+      "tags": ["gc-action-required", "task:inspection"]
     },
     {
-      "id": "note-003",
-      "created": "2026-01-02T14:30:00Z",
-      "author": "David",
-      "content": "Rough-in inspection passed! All mechanical, electrical, and plumbing approved. Draw 1 now due.",
-      "tags": ["milestone:rough-in-inspection-passed", "task:rough-in-inspection"],
-      "type": "decision",
-      "priority": "high"
+      "id": "gc-note-3",
+      "created": "2026-01-20",
+      "content": "Request schedule for back deck work. Also need meeting with owner to plan - need dimensions, rail system decision, materials.",
+      "tags": ["gc-action-required", "task:build-back-deck"]
     },
     {
-      "id": "note-004",
-      "created": "2025-12-17T09:00:00Z",
-      "author": "David",
-      "content": "Joclar and Fields provided HVAC estimate at $5,500 for new duct system. Approved to proceed.",
-      "tags": ["vendor:joclar-fields", "task:rough-in-hvac"],
-      "type": "decision"
+      "id": "gc-note-5",
+      "created": "2026-01-20",
+      "content": "Who moves range, freezers and refrigerators for Kitchen Put-Back?",
+      "tags": ["gc-action-required", "task:kitchen-put-back"]
+    },
+    {
+      "id": "gc-note-6",
+      "created": "2026-01-20",
+      "content": "Who installs ovens?",
+      "tags": ["gc-action-required", "task:kitchen-put-back"]
+    },
+    {
+      "id": "gc-note-7",
+      "created": "2026-01-20",
+      "content": "Who installs pot rack?",
+      "tags": ["gc-action-required", "task:misc-equipment-install"]
+    },
+    {
+      "id": "gc-note-8",
+      "created": "2026-01-20",
+      "content": "Who installs upper cabinets? Need assignee for Upper Cabinet Install task.",
+      "tags": ["gc-action-required", "task:upper-cabinet-install"]
+    },
+    {
+      "id": "gc-note-9",
+      "created": "2026-01-20",
+      "content": "Who is responsible for cleaning/prep before Crest arrives on 1/27?",
+      "tags": ["gc-action-required", "task:crest-prep"]
+    },
+    {
+      "id": "gc-note-10",
+      "created": "2026-01-20",
+      "content": "Should we schedule an MEP coordination meeting before Crest install on 1/27?",
+      "tags": ["gc-action-required", "task:crest-installation"]
     }
   ],
   "budget": {
     "total": 100311.07,
     "contingency": 15046.66,
-    "categories": {
-      "subcontractor": {
-        "budgeted": 45000,
-        "spent": 36911.31
-      },
-      "materials": {
-        "budgeted": 25000,
-        "spent": 3123.33
-      },
-      "labor": {
-        "budgeted": 15000,
-        "spent": 0
-      },
-      "permit": {
-        "budgeted": 2000,
-        "spent": 0
-      },
-      "site-support": {
-        "budgeted": 3000,
-        "spent": 750
-      }
-    }
+    "categories": {}
   }
 }

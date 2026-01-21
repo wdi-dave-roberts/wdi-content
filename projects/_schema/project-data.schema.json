@@ -39,12 +39,109 @@
       "description": "Contract change orders with approval workflow"
     },
     "budget": { "$ref": "#/$defs/Budget" },
-    "contract": { "$ref": "#/$defs/Contract" }
+    "contract": { "$ref": "#/$defs/Contract" },
+    "categories": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Project-specific work categories (extends schema enum)"
+    },
+    "statuses": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Project-specific status values (extends schema enum)"
+    }
   },
   "$defs": {
     "Task": {
       "type": "object",
-      "required": ["id", "name", "start", "end"],
+      "required": ["id", "name"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique identifier (slug format)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name"
+        },
+        "start": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date YYYY-MM-DD (optional until scheduled)"
+        },
+        "end": {
+          "type": "string",
+          "format": "date",
+          "description": "End date YYYY-MM-DD (optional until scheduled)"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Completion percentage"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of task IDs that must complete first"
+        },
+        "assignee": {
+          "type": "string",
+          "pattern": "^vendor:[a-z0-9-]+$",
+          "description": "Tag reference to vendor"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "needs-scheduled", "scheduled", "confirmed", "in-progress", "completed", "blocked", "cancelled"],
+          "description": "Current status"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "critical"],
+          "description": "Task priority level"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["demolition", "rough-in", "structural", "mechanical", "electrical", "plumbing", "finish", "fixtures", "cleanup", "inspection", "trim", "paint", "framing", "milestone"],
+          "description": "Work category"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes about the task"
+        },
+        "estimatedCost": {
+          "type": "number",
+          "description": "Estimated cost for this task"
+        },
+        "actualCost": {
+          "type": "number",
+          "description": "Actual cost incurred"
+        },
+        "location": {
+          "type": "string",
+          "description": "Specific location within project (e.g., 'north wall', 'island')"
+        },
+        "materialDependencies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/MaterialDependency" },
+          "description": "Materials required for this task"
+        },
+        "subtasks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Subtask" },
+          "description": "Child tasks"
+        }
+      }
+    },
+    "Subtask": {
+      "type": "object",
+      "required": ["id", "name"],
+      "description": "Child task within a parent task",
       "properties": {
         "id": {
           "type": "string",
@@ -65,53 +162,90 @@
           "format": "date",
           "description": "End date YYYY-MM-DD"
         },
-        "progress": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 100,
-          "description": "Completion percentage"
-        },
-        "dependencies": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Array of task IDs that must complete first"
+        "status": {
+          "type": "string",
+          "enum": ["pending", "needs-scheduled", "scheduled", "confirmed", "in-progress", "completed", "blocked", "cancelled"],
+          "description": "Current status"
         },
         "assignee": {
           "type": "string",
           "pattern": "^vendor:[a-z0-9-]+$",
           "description": "Tag reference to vendor"
         },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of subtask IDs that must complete first"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes"
+        },
+        "materialDependencies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/MaterialDependency" },
+          "description": "Materials required for this subtask"
+        }
+      }
+    },
+    "MaterialDependency": {
+      "type": "object",
+      "required": ["id", "name", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Material name"
+        },
         "status": {
           "type": "string",
-          "enum": ["pending", "scheduled", "in_progress", "completed", "blocked", "cancelled"],
-          "description": "Current status"
+          "enum": ["need-to-select", "selected", "need-to-order", "ordered", "on-hand"],
+          "description": "Material procurement status"
         },
-        "priority": {
+        "vendor": {
           "type": "string",
-          "enum": ["low", "normal", "high", "critical"],
-          "description": "Task priority level"
+          "pattern": "^vendor:[a-z0-9-]+$",
+          "description": "Vendor supplying this material"
         },
-        "category": {
+        "expectedDate": {
           "type": "string",
-          "enum": ["demolition", "rough-in", "structural", "mechanical", "electrical", "plumbing", "finish", "fixtures", "cleanup", "inspection"],
-          "description": "Work category"
+          "format": "date",
+          "description": "Expected delivery date"
         },
-        "description": {
-          "type": "string",
-          "description": "Detailed description"
-        },
-        "estimatedCost": {
+        "cost": {
           "type": "number",
-          "description": "Estimated cost for this task"
+          "description": "Material cost"
         },
-        "actualCost": {
+        "quantity": {
           "type": "number",
-          "description": "Actual cost incurred"
+          "minimum": 1,
+          "description": "Number of items needed"
         },
-        "location": {
+        "notes": {
           "type": "string",
-          "description": "Specific location within project (e.g., 'north wall', 'island')"
+          "description": "Additional notes"
+        },
+        "detail": {
+          "type": "string",
+          "description": "Specification details (size, finish, model, etc.)"
+        },
+        "purchasingTask": {
+          "type": "string",
+          "description": "Reference to purchasing subtask ID if tracked there"
         }
+      }
+    },
+    "LienWaiverEntry": {
+      "type": "object",
+      "description": "Individual lien waiver record",
+      "properties": {
+        "received": { "type": "boolean" },
+        "date": { "type": "string", "format": "date" },
+        "href": { "type": "string", "description": "Path to lien waiver document" }
       }
     },
     "Vendor": {
@@ -131,6 +265,7 @@
           "type": "string",
           "enum": [
             "general-contractor",
+            "gc",
             "subcontractor",
             "specialty-contractor",
             "supplier",
@@ -141,6 +276,7 @@
             "inspector",
             "designer",
             "consultant",
+            "owner",
             "other"
           ],
           "description": "Type of vendor"
@@ -157,14 +293,20 @@
             "painting",
             "carpentry",
             "trim",
+            "trim-paint",
             "cabinetry",
             "countertops",
             "tile",
             "roofing",
+            "siding",
+            "framing",
             "demolition",
             "hauling",
             "appliances",
             "fixtures",
+            "stainless",
+            "propane",
+            "kitchen-equipment",
             "multiple"
           ],
           "description": "Primary trade or specialty"
@@ -353,22 +495,8 @@
         "lienWaiver": {
           "type": "object",
           "properties": {
-            "conditional": {
-              "type": "object",
-              "properties": {
-                "received": { "type": "boolean" },
-                "date": { "type": "string", "format": "date" },
-                "href": { "type": "string" }
-              }
-            },
-            "unconditional": {
-              "type": "object",
-              "properties": {
-                "received": { "type": "boolean" },
-                "date": { "type": "string", "format": "date" },
-                "href": { "type": "string" }
-              }
-            }
+            "conditional": { "$ref": "#/$defs/LienWaiverEntry" },
+            "unconditional": { "$ref": "#/$defs/LienWaiverEntry" }
           },
           "description": "Lien waiver status for this receipt"
         },
@@ -396,13 +524,13 @@
         },
         "created": {
           "type": "string",
-          "format": "date-time",
-          "description": "Creation timestamp"
+          "format": "date",
+          "description": "Creation date YYYY-MM-DD"
         },
         "updated": {
           "type": "string",
-          "format": "date-time",
-          "description": "Last modified timestamp"
+          "format": "date",
+          "description": "Last modified date YYYY-MM-DD"
         },
         "author": {
           "type": "string",
