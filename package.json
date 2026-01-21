@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "alpinejs": "^3.15.3",
-    "frappe-gantt": "^1.0.4"
+    "frappe-gantt": "^1.0.4",
+    "xlsx-js-style": "^1.2.0"
   },
   "devDependencies": {
     "@inquirer/prompts": "^8.1.0",
