@@ -19,6 +19,9 @@ dist/
 # Claude Code local settings (machine-specific)
 .claude/
 
+# Exception: Project settings (plugin enablement)
+!.claude/settings.json
+
 # Exception: Committed plan files
 !.claude/plans/
 !.claude/plans/*.md
