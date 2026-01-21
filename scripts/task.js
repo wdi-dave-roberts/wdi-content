@@ -1506,6 +1506,50 @@ function findMaterial(data, materialId) {
 }
 
 /**
+ * Generate missing material questions (used by both materials-check and export)
+ * Returns the number of questions created
+ */
+function generateMaterialQuestions(data) {
+  if (!data.questions) {
+    data.questions = [];
+  }
+
+  const materials = getAllMaterials(data);
+  const today = new Date().toISOString().split('T')[0];
+  let created = 0;
+
+  for (const { material, taskId } of materials) {
+    const rule = getMaterialQuestion(material, taskId);
+    if (!rule) continue;
+
+    // Check if question already exists
+    const existingQuestion = materialQuestionExists(data, material.id, rule.type, rule.field || rule.fields?.[0]);
+    if (existingQuestion) continue;
+
+    // Generate question ID
+    const fieldSuffix = rule.field || (rule.fields ? rule.fields.join('-') : 'info');
+    const id = generateMaterialQuestionId(rule.type, material.id, fieldSuffix);
+
+    // Create the question
+    const newQuestion = {
+      id,
+      created: today,
+      type: rule.type,
+      prompt: rule.prompt,
+      assignee: rule.assignee,
+      status: 'open',
+      relatedTask: taskId,
+      relatedMaterial: material.id,
+    };
+
+    data.questions.push(newQuestion);
+    created++;
+  }
+
+  return created;
+}
+
+/**
  * Get completeness status for a material
  * Returns: '✅ Complete', '⚠️ Missing: X', or '❌ Needs attention'
  */
@@ -3517,14 +3561,26 @@ async function cmdReview(questionId) {
 }
 
 async function cmdExport() {
-  const data = loadData();
+  let data = loadData();
   const xlsxPath = path.join(projectDir, 'Kitchen-Remodel-Tracker.xlsx');
   const googleDrivePath = path.join(
     process.env.HOME,
     'Google Drive/Shared drives/White Doe Inn/Operations/Building and Maintenance /Kitchen Remodel/Kitchen-Remodel-Tracker.xlsx'
   );
 
-  // Step 1: Validate first
+  // Step 0: Generate material questions
+  console.log('Checking materials for missing questions...');
+  const materialQuestionsCreated = generateMaterialQuestions(data);
+  if (materialQuestionsCreated > 0) {
+    saveData(data);
+    console.log(green(`✓ Created ${materialQuestionsCreated} material question(s)`));
+    // Reload data after saving
+    data = loadData();
+  } else {
+    console.log(green('✓ All materials have questions'));
+  }
+
+  // Step 1: Validate
   console.log('Validating data...');
   const errors = validate(data);
   if (errors.length > 0) {
