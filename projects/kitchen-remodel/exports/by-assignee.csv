@@ -31,7 +31,11 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ▶ Crest Mechanical (1 items),,,,,,,,
 ,crest-installation,Crest Installation,scheduled,2026-01-27,2026-01-27,"finish-trim, kitchen-baseboard, finish-electrical, propane, install-stainless-wall, upper-cabinet-install, crest-prep","finish-plumbing, connect-passthrough-heat-lamp, kitchen-put-back, install-dishwasher, project-finish",Need to confirm exact delivery time and duration for install.
 ,,,,,,,,
-▶ Danny (2 items),,,,,,,,
+▶ Danny (6 items),,,,,,,,
+,install-doors,Install Doors,needs-scheduled,,,finish-trim,paint-doors,
+,main-kitchen-door,  ↳ Main Kitchen Door,needs-scheduled,,,,,1. Hinges to be delivered 1/22. 2. Door is in the garage.
+,install-back-door,  ↳ Install Back Door,needs-scheduled,,,,,1. Door is in the garage. 2. Install with Antique Bronze hinges. 3. Install existing antique bronze electronic deadbolt and door knob provided by owner.
+,hvac-door,  ↳ HVAC Door,needs-scheduled,,,,,"1. Install existing 32"" door with jamb. 2. Same casing as main kitchen door."
 ,build-back-deck,Build Back Deck with Ramp,needs-scheduled,,,remove-old-porch,,"Need to sort out details for dimensions, rail system vs. no rail system, etc. REQUEST: GC meet with owner to plan."
 ,remove-old-porch,Remove Old Porch Steps and Posts,needs-scheduled,,,,build-back-deck,
 ,,,,,,,,
@@ -91,11 +95,7 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,siding,Siding,needs-scheduled,,,propane,,
 ,siding-work,  ↳ Siding,needs-scheduled,,,,,
 ,,,,,,,,
-▶ Unassigned (17 items),,,,,,,,
-,install-doors,Install Doors,needs-scheduled,,,finish-trim,paint-doors,
-,main-kitchen-door,  ↳ Main Kitchen Door,needs-scheduled,,,,,1. Hinges to be delivered 1/22. 2. Door is in the garage.
-,install-back-door,  ↳ Install Back Door,needs-scheduled,,,,,1. Door is in the garage. 2. Install with Antique Bronze hinges. 3. Install existing antique bronze electronic deadbolt and door knob provided by owner.
-,hvac-door,  ↳ HVAC Door,needs-scheduled,,,,,"1. Install existing 32"" door with jamb. 2. Same casing as main kitchen door."
+▶ Unassigned (13 items),,,,,,,,
 ,crest-prep,Crest Prep / Cleaning,needs-scheduled,2026-01-26,2026-01-26,"kitchen-baseboard, upper-cabinet-install, finish-trim",crest-installation,"Clean and prep kitchen area before Crest arrives. Clear tools and materials, protect flooring."
 ,propane,Propane,scheduled,2026-01-23,2026-01-23,,"crest-installation, install-stainless-wall, siding",Dave coordinating and responsible. Dependency for siding install.
 ,kitchen-put-back,Kitchen Put-Back,needs-scheduled,,,"crest-installation, finish-plumbing",project-finish,

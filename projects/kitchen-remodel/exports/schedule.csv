@@ -10,10 +10,10 @@ Order,Type,Task ID,Name,Status,Current Start,Current End,Proposed Start,Assignee
 9,subtask,paint-scupernong,  Paint Scupernong,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,,
 10,subtask,baseboard-install-scupernong,  Install Baseboard in Scupernong,scheduled,2026-01-21,2026-01-23,2026-01-24,Eliseo,"finish-drywall-scupernong, paint-scupernong",Scheduled before finish-drywall-scupernong ends (2026-01-23); Scheduled before paint-scupernong ends (2026-01-23)
 11,subtask,triple-window-header-trim,  Change header trim over triple window to match other window,scheduled,2026-01-21,2026-01-23,2026-01-21,Eliseo,,
-12,TASK,install-doors,Install Doors,needs-scheduled,,,2026-01-24,Needs Assignment,finish-trim,No assignee; No date set but blocks other tasks
-13,subtask,main-kitchen-door,  Main Kitchen Door,needs-scheduled,,,2026-01-21,Needs Assignment,,No assignee
-14,subtask,install-back-door,  Install Back Door,needs-scheduled,,,2026-01-21,Needs Assignment,,No assignee
-15,subtask,hvac-door,  HVAC Door,needs-scheduled,,,2026-01-21,Needs Assignment,,No assignee
+12,TASK,install-doors,Install Doors,needs-scheduled,,,2026-01-24,Danny,finish-trim,No date set but blocks other tasks
+13,subtask,main-kitchen-door,  Main Kitchen Door,needs-scheduled,,,2026-01-21,Danny,,
+14,subtask,install-back-door,  Install Back Door,needs-scheduled,,,2026-01-21,Danny,,
+15,subtask,hvac-door,  HVAC Door,needs-scheduled,,,2026-01-21,Danny,,
 16,TASK,remove-old-porch,Remove Old Porch Steps and Posts,needs-scheduled,,,2026-01-21,Danny,,No date set but blocks other tasks
 17,TASK,build-back-deck,Build Back Deck with Ramp,needs-scheduled,,,2026-01-22,Danny,remove-old-porch,
 18,TASK,finish-drywall,Finish Drywall,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,,

@@ -47,6 +47,15 @@ function getMaterialCompleteness(material) {
   const { status, quantity, detail, expectedDate, orderLink } = material;
 
   switch (status) {
+    case 'need-to-select':
+      // Early stage - need to decide what to buy
+      if (!detail) missing.push('specs');
+      break;
+    case 'selected':
+      // Selected but not ready to order yet
+      if (!quantity) missing.push('quantity');
+      if (!detail) missing.push('specs');
+      break;
     case 'need-to-order':
       if (!quantity) missing.push('quantity');
       if (!detail) missing.push('specs');
@@ -56,14 +65,32 @@ function getMaterialCompleteness(material) {
       if (!orderLink) missing.push('orderLink');
       break;
     case 'on-hand':
-      // Complete
+      // Ready - has all needed info
       break;
-    default:
-      return '❌ Needs attention';
   }
 
   if (missing.length === 0) {
-    return '✅ Complete';
+    return '✅ Yes';
+  }
+  return `⚠️ Missing: ${missing.join(', ')}`;
+}
+
+// Get ready status for a task (do we have all needed information?)
+function getTaskCompleteness(task) {
+  const missing = [];
+  const { status, start, end, assignee } = task;
+
+  // Terminal statuses - no more info needed
+  if (status === 'completed' || status === 'cancelled' || status === 'confirmed') {
+    return '✅ Yes';
+  }
+
+  // For all other statuses, check required fields
+  if (!start || !end) missing.push('dates');
+  if (!assignee) missing.push('assignee');
+
+  if (missing.length === 0) {
+    return '✅ Yes';
   }
   return `⚠️ Missing: ${missing.join(', ')}`;
 }
@@ -283,7 +310,7 @@ for (const task of data.tasks) {
 
 const taskHierarchyRows = [];
 taskHierarchyRows.push([
-  'Type', 'Task ID', 'Name', 'Status', 'Start Date', 'End Date',
+  'Type', 'Task ID', 'Name', 'Status', 'Ready', 'Start Date', 'End Date',
   'Assignee', 'Category', 'Dependencies', 'Required For', 'Material Deps', 'Notes', 'Comments'
 ]);
 
@@ -299,12 +326,14 @@ for (const task of data.tasks) {
   const taskAssignee = getVendorName(task.assignee);
   const taskMatDeps = getMaterialDeps(task.materialDependencies);
   const taskRequiredFor = (requiredFor[task.id] || []).join(', ');
+  const taskCompleteness = getTaskCompleteness(task);
   // Add parent task row
   taskHierarchyRows.push([
     'TASK',
     task.id,
     task.name,
     task.status || '',
+    taskCompleteness,
     formatDate(task.start),
     formatDate(task.end),
     taskAssignee || 'Needs Assignment',
@@ -324,6 +353,15 @@ for (const task of data.tasks) {
     const subEnd = sub.end || sub.start || task.end;
     const subDeps = (sub.dependencies || []).join(', ');
     const subMatDeps = getMaterialDeps(sub.materialDependencies);
+    // Build effective subtask object for completeness check (with inherited values)
+    const effectiveSub = {
+      ...sub,
+      status: subStatus,
+      start: subStart,
+      end: subEnd,
+      assignee: sub.assignee || task.assignee
+    };
+    const subCompleteness = getTaskCompleteness(effectiveSub);
 
     const subRequiredFor = (requiredFor[sub.id] || []).join(', ');
     taskHierarchyRows.push([
@@ -331,6 +369,7 @@ for (const task of data.tasks) {
       sub.id,
       `    ${sub.name}`,
       subStatus,
+      subCompleteness,
       formatDate(subStart),
       formatDate(subEnd),
       subAssignee || 'Needs Assignment',
@@ -360,7 +399,7 @@ for (const task of data.tasks) {
 
 const materialsRows = [];
 materialsRows.push([
-  'Material ID', 'Material Name', 'Status', 'Completeness', 'For Task',
+  'Material ID', 'Material Name', 'Status', 'Ready', 'For Task',
   'Depends On', 'Quantity', 'Expected Date', 'Order Link', 'Detail', 'Notes', 'Comments'
 ]);
 
@@ -597,75 +636,76 @@ for (const assignee of sortedAssignees) {
 const instructionsRows = [
   ['Kitchen Remodel Project Tracker'],
   [''],
-  ['HOW TO USE THIS WORKBOOK'],
-  [''],
-  ['This workbook contains 7 sheets to help manage the kitchen remodel project.'],
-  ['Use the tabs at the bottom to navigate between sheets.'],
+  ['This spreadsheet tracks all tasks and materials for the kitchen remodel.'],
+  ['It updates automatically - you don\'t need to maintain it.'],
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
-  ['📋 SCHEDULE (Proposed Order)'],
-  ['Shows all tasks sorted by dependency order - what needs to happen first.'],
-  ['• Green rows = Parent tasks'],
-  ['• White/gray rows = Subtasks'],
-  ['• Red text in Issues column = Problems that need attention'],
-  ['• Orange "Needs Assignment" = Task needs someone assigned'],
-  ['• "Proposed Start" shows when task should start based on dependencies'],
+  ['📋 OPEN QUESTIONS'],
+  [''],
+  ['Questions that need your input. Find your name in the Assignee column'],
+  ['and type your answer in the Response column.'],
+  [''],
+  ['Once answered, Dave reviews and updates the tracker - then your'],
+  ['question disappears from this list.'],
+  [''],
+  ['  • Yellow rows = Waiting for your answer'],
+  [''],
+  ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
+  [''],
+  ['📅 SCHEDULE'],
+  [''],
+  ['Shows tasks in the order they can be done - what needs to finish'],
+  ['before something else can start.'],
+  [''],
+  ['Use this to see what\'s next and what\'s blocking progress.'],
+  ['Check the Issues column (in red) for problems that need attention.'],
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
   ['👤 BY ASSIGNEE'],
-  ['Tasks grouped by who is responsible for them.'],
-  ['• Blue header rows show each assignee with task count'],
-  ['• Shows dependencies and what other tasks are waiting'],
-  ['• Easy to see each person\'s workload at a glance'],
+  [''],
+  ['Tasks grouped by who\'s responsible.'],
+  ['See your workload at a glance, or check what others are working on.'],
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
-  ['📝 TASKS (Full Details)'],
-  ['Complete task list with all details, notes, and relationships.'],
-  ['• Shows dependencies (what must finish first)'],
-  ['• Shows "Required For" (what tasks are waiting on this one)'],
-  ['• Shows material dependencies'],
-  ['• Use filters to find specific tasks'],
+  ['📝 TASKS'],
+  [''],
+  ['The master list of all tasks with full details - dates, dependencies,'],
+  ['notes, and materials needed.'],
+  [''],
+  ['Look here when you need the complete picture on any task.'],
+  [''],
+  ['Ready column shows if we have all needed info:'],
+  ['  • ✅ Yes = Has dates and assignee'],
+  ['  • ⚠️ Missing: dates = Needs start/end dates'],
+  ['  • ⚠️ Missing: assignee = Needs someone assigned'],
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
   ['📦 MATERIALS'],
-  ['List of all materials needed for the project.'],
-  ['• Shows which task each material is for'],
-  ['• Shows which subtasks depend on the material'],
-  ['• Tracks status (on-hand, ordered, need-to-order)'],
+  [''],
+  ['All materials needed for the project - what\'s on-hand, what\'s ordered,'],
+  ['what still needs to be purchased.'],
+  [''],
+  ['Check expected delivery dates and order links here.'],
+  [''],
+  ['Ready column shows if we have all needed info for that status:'],
+  ['  • ✅ Yes = Has everything needed'],
+  ['  • ⚠️ Missing: specs = Needs specs/details'],
+  ['  • ⚠️ Missing: quantity = Needs quantity'],
+  ['  • ⚠️ Missing: expectedDate = Needs delivery date'],
+  ['  • ⚠️ Missing: orderLink = Needs order link'],
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
-  ['👷 VENDORS'],
-  ['Contact list for all contractors and suppliers.'],
+  ['NOTES'],
   [''],
-  ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
-  [''],
-  ['📋  OPEN QUESTIONS  📋'],
-  [''],
-  ['THIS SHEET REQUIRES YOUR RESPONSE'],
-  [''],
-  ['Contains structured questions that need answers from Brandon (GC), Dave, or Tonia.'],
-  ['Questions have types: Assignee, Date, Date Range, Dependency, Yes/No, etc.'],
-  ['Use the CLI (npm run task answer) to provide structured responses.'],
-  [''],
-  ['• Yellow rows = Open questions needing response'],
-  ['• Orange rows = System notifications needing acknowledgment'],
-  ['• Blue rows = Answered (awaiting review)'],
-  ['• Green rows = Resolved'],
-  ['• Filter by "Assignee" or "Type" columns to organize your view'],
-  ['• "Related Task" links to the relevant task'],
-  ['• "Review Status" shows if answer was accepted or rejected'],
-  [''],
-  ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
-  [''],
-  ['TIPS'],
-  ['• Use column filters (dropdown arrows in headers) to find items'],
-  ['• Freeze panes keep headers visible when scrolling'],
-  ['• All sheets except "Open Questions" are protected'],
+  ['• You can\'t break anything - other tabs are protected'],
+  ['• After you answer, changes appear in the next update'],
+  ['• View this on a computer - it\'s too complex for mobile'],
+  ['• Questions? Contact Dave'],
   [''],
   ['Last updated: ' + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })],
 ];
@@ -703,7 +743,7 @@ wsMaterialsData['!cols'] = [
   { wch: 30 }, // Material ID
   { wch: 35 }, // Material Name
   { wch: 15 }, // Status
-  { wch: 22 }, // Completeness
+  { wch: 22 }, // Ready
   { wch: 30 }, // For Task
   { wch: 35 }, // Depends On
   { wch: 10 }, // Quantity
@@ -1028,36 +1068,13 @@ applyCellStyle(wsInstructionsData, 'A1', {
 });
 setRowHeight(wsInstructionsData, 0, 35);
 
-// Section headers
-const sectionRows = [2, 9, 17, 26, 34, 39, 52]; // "HOW TO USE", section dividers
-for (const row of sectionRows) {
-  const cellRef = XLSX.utils.encode_cell({ r: row, c: 0 });
-  if (wsInstructionsData[cellRef]) {
-    applyCellStyle(wsInstructionsData, cellRef, {
-      font: { bold: true, sz: 14, color: { rgb: '1F4E79' } }
-    });
-  }
-}
-
-// Sheet name headers (📋 SCHEDULE, etc.)
-const sheetNameRows = [9, 17, 26, 34, 39];
+// Sheet section headers (📋 OPEN QUESTIONS, 📅 SCHEDULE, etc.)
+const sheetNameRows = [7, 19, 29, 36, 49, 65]; // Row indices for section headers
 for (const row of sheetNameRows) {
   const cellRef = XLSX.utils.encode_cell({ r: row, c: 0 });
   if (wsInstructionsData[cellRef]) {
     applyCellStyle(wsInstructionsData, cellRef, {
       font: { bold: true, sz: 13, color: { rgb: '2E75B6' } }
-    });
-  }
-}
-
-// GC Action Needed section - highlighted
-const gcActionInstructionRows = [41, 43, 44];
-for (const row of gcActionInstructionRows) {
-  const cellRef = XLSX.utils.encode_cell({ r: row, c: 0 });
-  if (wsInstructionsData[cellRef]) {
-    applyCellStyle(wsInstructionsData, cellRef, {
-      font: { bold: true, sz: 14, color: { rgb: 'C00000' } },
-      fill: { fgColor: { rgb: 'FFF2CC' } }
     });
   }
 }
@@ -1089,6 +1106,9 @@ wsByAssigneeData['!protect'] = { sheet: true, objects: true, scenarios: true };
 
 // Add Instructions sheet protection
 wsInstructionsData['!protect'] = { sheet: true, objects: true, scenarios: true };
+
+// Hide Vendors sheet (internal reference data)
+wsVendorsData['!hidden'] = true;
 
 XLSX.utils.book_append_sheet(wb, wsInstructionsData, 'Instructions');
 XLSX.utils.book_append_sheet(wb, wsScheduleData, 'Schedule');
