@@ -314,3 +314,67 @@ From code review feedback:
 - **Add pausepoints**: Show confirmation prompts between workflow steps
 - **Include error handling**: Table of errors, causes, and resolutions
 - **Expand examples**: Show full interactive flow, not just command invocation
+
+## Kitchen Remodel Project
+
+### Data Location
+Main data file: `projects/kitchen-remodel/data.json`
+
+### Data Structure
+- **tasks**: Parent tasks with subtasks, dependencies, assignees, dates, materials
+- **vendors**: Contractor/supplier contacts (referenced as `vendor:{id}`)
+- **receipts**: Financial records with links to source files in `reference/`
+- **notes**: Journal entries; tag with `gc-action-required` for GC responses
+- **milestones**: Project milestones
+- **budget**: Budget totals and tracking
+
+### Key Relationships
+- Tasks reference vendors via `assignee: "vendor:{id}"`
+- Subtasks inherit parent task's assignee/dates/status unless overridden
+- `dependencies`: array of task/subtask IDs that must complete first
+- `materialDependencies`: links tasks to required materials (inline or by ID)
+- Notes with `gc-action-required` tag appear in GC Action Needed sheet
+
+### Task Statuses
+- `scheduled` - Has dates, ready to work
+- `in-progress` - Currently being worked on
+- `complete` - Finished
+- `needs-scheduled` - Needs dates assigned
+
+### Export Script
+`scripts/export-to-spreadsheet.js` generates:
+- `projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx` (7 sheets)
+- `projects/kitchen-remodel/exports/*.csv` (for Google Sheets import)
+
+**Sheets**: Instructions, Schedule (dependency order), By Assignee, Tasks, Materials, Vendors, GC Action Needed (unprotected for GC input)
+
+**Run export**:
+```bash
+node scripts/export-to-spreadsheet.js
+```
+
+**Copy to Google Drive**:
+```bash
+cp projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx ~/Google\ Drive/Shared\ drives/White\ Doe\ Inn/Operations/Building\ and\ Maintenance\ /Kitchen\ Remodel/
+```
+
+### Common Operations
+
+**View a task**:
+```bash
+grep -A50 '"id": "task-id"' projects/kitchen-remodel/data.json
+```
+
+**List all tasks with status**:
+```bash
+grep -E '"(id|name|status)"' projects/kitchen-remodel/data.json | head -60
+```
+
+**Find tasks by assignee**:
+```bash
+grep -B2 -A5 '"assignee": "vendor:eliseo"' projects/kitchen-remodel/data.json
+```
+
+**Add a dependency**: Add task ID to the `dependencies` array of the dependent task
+
+**Add a GC action item**: Create a note with `"tags": ["gc-action-required", "task:{related-task-id}"]`
