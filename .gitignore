@@ -27,5 +27,9 @@ dist/
 !.claude/plans/*.md
 !.claude/plans/.gitkeep
 
+# Exception: Project-specific commands (workflows for this codebase)
+!.claude/commands/
+!.claude/commands/*.md
+
 # Generated files
 *.xlsx
