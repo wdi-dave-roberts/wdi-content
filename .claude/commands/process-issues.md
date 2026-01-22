@@ -59,8 +59,10 @@ For accepted responses, apply changes directly by:
 After all responses are processed:
 
 ```bash
-node scripts/export-to-spreadsheet.js && cp projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx ~/Google\ Drive/Shared\ drives/White\ Doe\ Inn/Operations/Building\ and\ Maintenance\ /Kitchen\ Remodel/
+npm run task export
 ```
+
+This exports the spreadsheet and automatically copies to Google Drive (cross-platform path detection).
 
 ## Action Categories
 

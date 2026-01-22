@@ -2,9 +2,10 @@ import XLSX from "xlsx-js-style";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getKitchenRemodelSpreadsheet } from "./google-drive.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const googleDrivePath = path.join(process.env.HOME, "Google Drive/Shared drives/White Doe Inn/Operations/Building and Maintenance /Kitchen Remodel/Kitchen-Remodel-Tracker.xlsx");
+const googleDrivePath = getKitchenRemodelSpreadsheet();
 const dataPath = path.join(__dirname, "..", "projects/kitchen-remodel/data.json");
 
 // Read spreadsheet

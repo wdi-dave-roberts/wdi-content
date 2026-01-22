@@ -40,6 +40,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
+import { getKitchenRemodelSpreadsheet } from './google-drive.js';
 
 // Import pure functions from task-lib for testability
 import {
@@ -4761,10 +4762,7 @@ async function cmdReview(questionId) {
 async function cmdExport() {
   let data = loadData();
   const xlsxPath = path.join(projectDir, 'Kitchen-Remodel-Tracker.xlsx');
-  const googleDrivePath = path.join(
-    process.env.HOME,
-    'Google Drive/Shared drives/White Doe Inn/Operations/Building and Maintenance /Kitchen Remodel/Kitchen-Remodel-Tracker.xlsx'
-  );
+  const googleDrivePath = getKitchenRemodelSpreadsheet();
 
   // Step 0a: Generate material questions
   console.log('Checking materials for missing questions...');

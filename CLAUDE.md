@@ -404,15 +404,17 @@ Main data file: `projects/kitchen-remodel/data.json`
 - Outputs to `projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx`
 - Also generates `projects/kitchen-remodel/exports/*.csv`
 
-**Run export**:
+**Run export** (includes auto-copy to Google Drive):
 ```bash
-node scripts/export-to-spreadsheet.js
+npm run task export
 ```
 
-**Copy to Google Drive**:
+**Copy to Google Drive only** (if export already done):
 ```bash
-cp projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx ~/Google\ Drive/Shared\ drives/White\ Doe\ Inn/Operations/Building\ and\ Maintenance\ /Kitchen\ Remodel/
+node scripts/copy-to-gdrive.js
 ```
+
+Both commands auto-detect the correct Google Drive path for the current platform (Mac, Linux, WSL).
 
 ### Common Operations
 

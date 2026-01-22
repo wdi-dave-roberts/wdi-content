@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "create-project": "node scripts/create-project.js",
     "task": "node scripts/task.js",
+    "copy-to-gdrive": "node scripts/copy-to-gdrive.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },

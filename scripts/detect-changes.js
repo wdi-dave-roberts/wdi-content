@@ -2,11 +2,12 @@ import XLSX from 'xlsx-js-style';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getKitchenRemodelSpreadsheet } from './google-drive.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectDir = path.join(__dirname, '..', 'projects', 'kitchen-remodel');
 
-const xlsxPath = path.join(process.env.HOME, 'Google Drive/Shared drives/White Doe Inn/Operations/Building and Maintenance /Kitchen Remodel/Kitchen-Remodel-Tracker.xlsx');
+const xlsxPath = getKitchenRemodelSpreadsheet();
 const localXlsxPath = path.join(projectDir, 'Kitchen-Remodel-Tracker.xlsx');
 
 // Compare Google Drive version to local version

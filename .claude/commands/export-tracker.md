@@ -84,16 +84,14 @@ Show summary of what was generated:
 
 ### Step 5: Copy to Google Drive
 
-Unless `--skip-copy` flag was provided:
+The `npm run task export` command automatically attempts to copy to Google Drive.
 
-Use AskUserQuestion to ask if user wants to copy to Google Drive.
-
-If yes:
+If the copy failed (Google Drive not mounted), and user wants to retry:
 ```bash
-cp projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx ~/Google\ Drive/Shared\ drives/White\ Doe\ Inn/Operations/Building\ and\ Maintenance\ /Kitchen\ Remodel/
+node scripts/copy-to-gdrive.js
 ```
 
-Confirm success.
+This script auto-detects the correct Google Drive path for the current platform (Mac, Linux, or WSL).
 
 ## Example Run
 

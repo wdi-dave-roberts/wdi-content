@@ -2,11 +2,12 @@
 
 import ExcelJS from 'exceljs';
 import path from 'path';
-import os from 'os';
+import { getKitchenRemodelFolder } from './google-drive.js';
 
 const filePath = path.join(
-  os.homedir(),
-  'Google Drive/Shared drives/White Doe Inn/Operations/Building and Maintenance /Kitchen Remodel/Weathertek Construction & Restoration/task-tracker-sample.xlsx'
+  getKitchenRemodelFolder(),
+  'Weathertek Construction & Restoration',
+  'task-tracker-sample.xlsx'
 );
 
 async function inspect() {
