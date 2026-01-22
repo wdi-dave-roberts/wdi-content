@@ -871,23 +871,30 @@
     {
       "id": "framing",
       "name": "Framing",
+      "start": "2026-01-22",
+      "end": "2026-01-22",
       "category": "framing",
-      "status": "needs-scheduled",
-      "assignee": "vendor:danny",
+      "status": "scheduled",
+      "assignee": "vendor:dion-cahoon",
       "subtasks": [
         {
           "id": "framing-1",
           "name": "Adjust kitchen to pantry hallway opening",
-          "status": "needs-scheduled",
-          "assignee": "vendor:danny"
+          "status": "scheduled",
+          "start": "2026-01-22",
+          "end": "2026-01-22",
+          "assignee": "vendor:dion-cahoon"
         },
         {
           "id": "framing-2",
           "name": "Adjust pantry to back door hallway opening",
-          "status": "needs-scheduled",
-          "assignee": "vendor:danny"
+          "status": "scheduled",
+          "start": "2026-01-22",
+          "end": "2026-01-22",
+          "assignee": "vendor:dion-cahoon"
         }
-      ]
+      ],
+      "notes": "Hallway opening height: 89 1/2\" for both openings (kitchen-to-pantry and pantry-to-back-door)"
     },
     {
       "id": "hvac-finish",
@@ -1683,8 +1690,14 @@
       "prompt": "Dave to specify hallway height",
       "question": "What is the desired finished height for the hallway openings? (kitchen-to-pantry and pantry-to-back-door)",
       "assignee": "dave",
-      "status": "open",
-      "relatedTask": "framing"
+      "status": "resolved",
+      "relatedTask": "framing",
+      "response": {
+        "type": "free-text",
+        "value": "89 1/2\" - same for both openings"
+      },
+      "respondedAt": "2026-01-22",
+      "resolvedAt": "2026-01-22"
     },
     {
       "id": "id-unscheduled-blocker-install-doors",
@@ -1938,9 +1951,11 @@
       "priority": "high",
       "category": "SCHEDULE",
       "source": "auto-detection",
-      "status": "open",
+      "status": "resolved",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-22",
+      "resolvedAt": "2026-01-22",
+      "resolvedBy": "auto"
     }
   ]
 }

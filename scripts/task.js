@@ -356,10 +356,12 @@ function loadData() {
 }
 
 function saveData(data) {
-  // Ensure we're using 'issues' not 'questions'
-  if (data.issues) {
-    data.issues = data.issues;
-    delete data.issues;
+  // Migrate 'questions' to 'issues' if needed (legacy support)
+  if (data.questions && !data.issues) {
+    data.issues = data.questions;
+  }
+  if (data.questions) {
+    delete data.questions;
   }
   const errors = validate(data);
   if (errors.length > 0) {
