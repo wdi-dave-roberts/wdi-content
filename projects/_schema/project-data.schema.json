@@ -208,7 +208,7 @@
         },
         "status": {
           "type": "string",
-          "enum": ["need-to-select", "selected", "need-to-order", "ordered", "on-hand"],
+          "enum": ["need-to-select", "selected", "need-to-order", "ordered", "vendor-provided", "on-hand"],
           "description": "Material procurement status"
         },
         "vendor": {

@@ -888,6 +888,30 @@
           "assignee": "vendor:danny"
         }
       ]
+    },
+    {
+      "id": "hvac-finish",
+      "name": "Schedule HVAC Finish",
+      "category": "mechanical",
+      "status": "needs-scheduled",
+      "assignee": "vendor:joclar-fields",
+      "materialDependencies": [
+        {
+          "id": "hvac-registers",
+          "name": "HVAC Registers",
+          "quantity": 8,
+          "detail": "White",
+          "status": "vendor-provided"
+        },
+        {
+          "id": "hvac-cold-air-return",
+          "name": "HVAC Cold Air Return Cover",
+          "quantity": 1,
+          "detail": "White",
+          "status": "vendor-provided"
+        }
+      ],
+      "subtasks": []
     }
   ],
   "milestones": [],

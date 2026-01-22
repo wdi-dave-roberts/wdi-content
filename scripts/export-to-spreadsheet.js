@@ -64,6 +64,11 @@ function getMaterialCompleteness(material) {
       if (!expectedDate) missing.push('expectedDate');
       if (!orderLink) missing.push('orderLink');
       break;
+    case 'vendor-provided':
+      // Vendor provides as part of work scope - only need basic info
+      if (!quantity) missing.push('quantity');
+      if (!detail) missing.push('specs');
+      break;
     case 'on-hand':
       // Ready - has all needed info
       break;

@@ -57,7 +57,7 @@ const bold = (text) => `\x1b[1m${text}\x1b[0m`;
 const VALID_STATUSES = ['pending', 'needs-scheduled', 'scheduled', 'confirmed', 'in-progress', 'completed', 'blocked', 'cancelled'];
 const VALID_CATEGORIES = ['demolition', 'rough-in', 'structural', 'mechanical', 'electrical', 'plumbing', 'finish', 'fixtures', 'cleanup', 'inspection', 'trim', 'paint', 'framing', 'milestone', 'clean'];
 const VALID_PRIORITIES = ['low', 'normal', 'high', 'critical'];
-const VALID_MATERIAL_STATUSES = ['need-to-select', 'selected', 'need-to-order', 'ordered', 'on-hand'];
+const VALID_MATERIAL_STATUSES = ['need-to-select', 'selected', 'need-to-order', 'ordered', 'vendor-provided', 'on-hand'];
 
 // Question assignees and statuses (unified issues system)
 const VALID_ASSIGNEES = ['brandon', 'dave', 'tonia', 'system'];
@@ -2000,6 +2000,10 @@ function getMaterialQuestion(material, taskId) {
       }
       return null; // Waiting for delivery date
 
+    case 'vendor-provided':
+      // No tracking needed - vendor provides as part of their work scope
+      return null;
+
     case 'on-hand':
       return null; // Material complete
 
@@ -2156,6 +2160,11 @@ function getMaterialCompleteness(material) {
     case 'ordered':
       if (!expectedDate) missing.push('expectedDate');
       if (!orderLink) missing.push('orderLink');
+      break;
+    case 'vendor-provided':
+      // Vendor provides as part of work scope - only need basic info
+      if (!quantity) missing.push('quantity');
+      if (!detail) missing.push('specs');
       break;
     case 'on-hand':
       // Ready - has all needed info

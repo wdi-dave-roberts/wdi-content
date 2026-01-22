@@ -57,6 +57,15 @@ export type VendorTrade =
 export type VendorStatus = 'active' | 'inactive' | 'preferred' | 'blacklisted'
 export type PaymentTerms = 'cod' | 'net-15' | 'net-30' | 'draws' | 'milestone'
 
+// Material procurement status
+// - need-to-select: Haven't decided what to get
+// - selected: Decided, not ordered
+// - need-to-order: Ready to order (has quantity, specs)
+// - ordered: We ordered it, waiting for delivery
+// - vendor-provided: Vendor provides as part of their work scope (no tracking needed)
+// - on-hand: We have it
+export type MaterialStatus = 'need-to-select' | 'selected' | 'need-to-order' | 'ordered' | 'vendor-provided' | 'on-hand'
+
 export type ReceiptType =
   | 'estimate'
   | 'quote'
