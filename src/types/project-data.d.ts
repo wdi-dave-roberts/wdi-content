@@ -17,7 +17,8 @@ export type TaskCategory =
   | 'equipment'
   | 'windowsAndDoors'
 
-export type IssueStatus = 'open' | 'inProgress' | 'blocked' | 'resolved'
+// IssueStatus is now aliased to QuestionStatus (see below)
+// Kept for backward compatibility with any code using the old type name
 
 export type VendorType =
   | 'general-contractor'
@@ -86,10 +87,26 @@ export type PaymentMethod = 'cash' | 'check' | 'credit-card' | 'debit' | 'wire' 
 export type NoteType = 'general' | 'issue' | 'decision' | 'question' | 'reminder' | 'change-request'
 export type NotePriority = 'low' | 'normal' | 'high' | 'urgent'
 
-// Question types for Open Questions system
+// Issue/Question types (unified issues system)
+// Note: "Question" and "Issue" are now synonyms - the system has been unified
 export type QuestionAssignee = 'brandon' | 'dave' | 'tonia'
-export type QuestionStatus = 'open' | 'answered' | 'resolved'
+export type IssueAssignee = QuestionAssignee | 'system'  // system for auto-detected
+export type QuestionStatus = 'open' | 'answered' | 'resolved' | 'dismissed'
+export type IssueStatus = QuestionStatus  // Alias for unified naming
 export type QuestionReviewStatus = 'pending' | 'accepted' | 'rejected'
+export type IssueReviewStatus = QuestionReviewStatus  // Alias
+
+// Action-oriented categories for issues
+// - ASSIGN: "What do I need to assign?" (Brandon)
+// - SCHEDULE: "What do I need to schedule?" (Brandon)
+// - ORDER: "What do I need to order?" (Tonia - materials ready to buy)
+// - SPECIFY: "What needs specs/quantity?" (Tonia - materials needing details)
+// - TRACK: "What needs delivery info?" (Tonia - materials ordered, tracking needed)
+// - DECIDE: "What decisions are needed?" (Varies - binary decisions, dependencies)
+export type ActionCategory = 'ASSIGN' | 'SCHEDULE' | 'ORDER' | 'SPECIFY' | 'TRACK' | 'DECIDE'
+
+// Issue source - where the issue came from
+export type IssueSource = 'manual' | 'auto-lifecycle' | 'auto-detection'
 
 // Structured question types
 export type QuestionType =
@@ -102,6 +119,11 @@ export type QuestionType =
   | 'material-status'
   | 'notification'
   | 'free-text'
+  | 'schedule-conflict'
+  | 'missing-assignee'
+  | 'past-due'
+  | 'unscheduled-blocker'
+  | 'material-overdue'
 
 // Structured response types (type-safe union)
 export type StructuredResponse =
@@ -362,34 +384,34 @@ export interface ChangeOrder {
   href?: string
 }
 
-export interface Issue {
-  id: string // Auto-generated: I1, I2, I3...
-  title: string
-  description?: string
-  status: IssueStatus
-  priority: TaskPriority
-  affectedTasks: string[] // Task IDs impacted by this issue
-  created?: string // ISO 8601 - auto-generated
-  resolved?: string // ISO 8601 - when resolved
-  comments?: string
-}
+// Note: The old Issue interface (I1, I2, I3...) has been replaced by the unified
+// issues system which uses the Question interface renamed as Issue.
+// See the Issue type alias after the Question interface.
 
 export interface Question {
-  id: string // Auto-generated: sq-{type}-{slug} for structured, q-{slug} for legacy
+  id: string // Auto-generated: i-{type}-{slug}, il-{type}-{task}, id-{type}-{task}
   created: string // YYYY-MM-DD
+
+  // Classification (new fields for unified issues system)
+  category?: ActionCategory     // What action is needed? (ASSIGN, SCHEDULE, ORDER, SPECIFY, TRACK, DECIDE)
+  source?: IssueSource          // Where this came from (manual, auto-lifecycle, auto-detection)
+  title?: string                // Short summary for display
+  priority?: 'low' | 'normal' | 'high' | 'critical'
 
   // Question definition
   type?: QuestionType           // Structured question type (undefined = legacy free-text)
-  prompt?: string               // New field for structured questions
+  prompt?: string               // Question text for structured questions
   question?: string             // Legacy field (kept for backward compatibility)
+  description?: string          // Additional context
   config?: QuestionConfig       // Type-specific options
 
   // Context
   relatedTask?: string          // Task ID (without task: prefix)
+  relatedTasks?: string[]       // For cross-task issues (schedule conflicts)
   relatedMaterial?: string      // Material ID from task's materialDependencies
 
   // Assignment
-  assignee: QuestionAssignee
+  assignee: QuestionAssignee | 'system'
   status: QuestionStatus
 
   // Response
@@ -405,7 +427,16 @@ export interface Question {
   // Resolution
   resolvedAt?: string           // YYYY-MM-DD when resolved (replaces resolvedDate)
   resolvedDate?: string         // Legacy field (kept for backward compatibility)
+  resolvedBy?: 'manual' | 'auto' // How this was resolved
+
+  // Auto-detection tracking
+  detectionRule?: string        // Rule that created this issue
+  lastChecked?: string          // When condition was last verified
 }
+
+// Issue is the new name for Question (unified issues system)
+// Using the same interface - the rename happens at the array level (questions → issues)
+export type Issue = Question
 
 export interface ContractParties {
   owner?: string // vendor:{id}
@@ -433,11 +464,13 @@ export interface ProjectData {
   vendors: Vendor[]
   receipts: Receipt[]
   notes: Note[]
+  // questions is the legacy name, will be migrated to issues
   questions?: Question[]
+  // issues is the new unified system (includes questions + auto-detected issues)
+  issues?: Issue[]
   milestones?: Milestone[]
   payments?: Payment[]
   changeOrders?: ChangeOrder[]
-  issues?: Issue[]
   budget?: Budget
   contract?: Contract
 }

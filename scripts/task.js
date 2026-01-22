@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Task Management CLI for Kitchen Remodel Project
+ * Unified Issues System v2
  *
  * Usage: npm run task <command> [options]
  *
@@ -12,20 +13,26 @@
  *   assign <task-id>     Assign task to vendor
  *   deps <task-id>       Manage dependencies
  *   materials [task-id]  Manage material dependencies
- *   materials-check      Scan materials and create missing questions
+ *   materials-check      Scan materials and create missing issues
  *   note <task-id>       Add a note to task
- *   question [id]        Add new structured question or manage existing
- *   questions [--all]    List open questions (--all includes resolved)
- *   answer [id]          Answer a question with structured response
- *   review [id]          Review answered questions with impact analysis
+ *   issues [--action]    List issues by action category
+ *   issue [id]           Add new issue or manage existing
+ *   respond [id]         Answer an issue with structured response
+ *   review [id]          Review answered issues with impact analysis
+ *   detect               Run auto-detection rules
+ *   dismiss [id]         Dismiss an auto-detected issue
  *   list                 List all tasks
  *   show <task-id>       Show task details
  *   validate             Validate data.json
  *   export               Export to spreadsheet with guardrails
  *
- * Question Types:
+ * Action Categories (--action filter):
+ *   ASSIGN, SCHEDULE, ORDER, SPECIFY, TRACK, DECIDE
+ *
+ * Issue Types:
  *   assignee, date, date-range, dependency, yes-no, select-one,
- *   material-status, notification, free-text
+ *   material-status, notification, free-text, schedule-conflict,
+ *   past-due, unscheduled-blocker, material-overdue
  */
 
 import { input, select, confirm, search } from '@inquirer/prompts';
@@ -52,10 +59,11 @@ const VALID_CATEGORIES = ['demolition', 'rough-in', 'structural', 'mechanical', 
 const VALID_PRIORITIES = ['low', 'normal', 'high', 'critical'];
 const VALID_MATERIAL_STATUSES = ['need-to-select', 'selected', 'need-to-order', 'ordered', 'on-hand'];
 
-// Question assignees and statuses
-const VALID_ASSIGNEES = ['brandon', 'dave', 'tonia'];
-const VALID_QUESTION_STATUSES = ['open', 'answered', 'resolved'];
+// Question assignees and statuses (unified issues system)
+const VALID_ASSIGNEES = ['brandon', 'dave', 'tonia', 'system'];
+const VALID_QUESTION_STATUSES = ['open', 'answered', 'resolved', 'dismissed'];
 const VALID_REVIEW_STATUSES = ['pending', 'accepted', 'rejected'];
+const VALID_ISSUE_SOURCES = ['manual', 'auto-lifecycle', 'auto-detection'];
 const ASSIGNEE_DISPLAY_NAMES = {
   brandon: 'Brandon (GC)',
   dave: 'Dave',
@@ -95,6 +103,193 @@ const TONIA_KEYWORDS = [
   'cabinet', 'handle', 'knob', 'fixture', 'light', 'lamp',
   'hardware', 'screw', 'nail', 'bracket', 'shelf'
 ];
+
+// ============ ACTION CATEGORIES (UNIFIED ISSUES SYSTEM) ============
+
+// Action-oriented categories: "What do I need to DO?"
+const ACTION_CATEGORIES = ['ASSIGN', 'SCHEDULE', 'ORDER', 'SPECIFY', 'TRACK', 'DECIDE'];
+
+// Display names for action categories
+const CATEGORY_DISPLAY_NAMES = {
+  'ASSIGN': 'Assign',
+  'SCHEDULE': 'Schedule',
+  'ORDER': 'Order',
+  'SPECIFY': 'Specify',
+  'TRACK': 'Track',
+  'DECIDE': 'Decide'
+};
+
+// Row colors for action categories in spreadsheet (light pastels)
+const CATEGORY_COLORS = {
+  'ASSIGN': 'DEEBF7',    // Light blue
+  'SCHEDULE': 'FCE4D6',  // Light orange
+  'ORDER': 'E2EFDA',     // Light green
+  'SPECIFY': 'FFF2CC',   // Light yellow
+  'TRACK': 'E4DFEC',     // Light purple
+  'DECIDE': 'FFFFFF'     // White/default
+};
+
+/**
+ * Determine the ActionCategory for a question/issue based on its type and context.
+ *
+ * Category mapping:
+ * - ASSIGN: assignee questions, missing-assignee auto-detection
+ * - SCHEDULE: date/date-range (task), schedule-conflict, unscheduled-blocker, past-due
+ * - ORDER: yes-no "Has X been ordered?" (material ready to order)
+ * - SPECIFY: free-text for qty/specs (material missing details)
+ * - TRACK: date (material delivery), material-status, material-overdue
+ * - DECIDE: yes-no (task decisions), dependency, notification
+ *
+ * @param {Object} question - The question/issue object
+ * @returns {string} ActionCategory: ASSIGN, SCHEDULE, ORDER, SPECIFY, TRACK, or DECIDE
+ */
+function getActionCategory(question) {
+  const { type, relatedMaterial, relatedTask, prompt = '', question: legacyPrompt = '' } = question;
+  const promptText = (prompt || legacyPrompt).toLowerCase();
+
+  // Assignee questions are always ASSIGN
+  if (type === 'assignee' || type === 'missing-assignee') {
+    return 'ASSIGN';
+  }
+
+  // Schedule-related types for tasks
+  if (type === 'schedule-conflict' || type === 'unscheduled-blocker' || type === 'past-due') {
+    return 'SCHEDULE';
+  }
+
+  // Material-related questions
+  if (relatedMaterial) {
+    // Ordered materials needing tracking → TRACK
+    if (type === 'material-overdue') {
+      return 'TRACK';
+    }
+    if (type === 'date' || (type === 'free-text' && (promptText.includes('delivery') || promptText.includes('expected')))) {
+      return 'TRACK';
+    }
+    if (type === 'material-status') {
+      return 'TRACK';
+    }
+    // Yes/no about ordering → ORDER
+    if (type === 'yes-no' && (promptText.includes('order') || promptText.includes('purchase') || promptText.includes('buy'))) {
+      return 'ORDER';
+    }
+    // Free-text for specs/quantity → SPECIFY
+    if (type === 'free-text') {
+      return 'SPECIFY';
+    }
+  }
+
+  // Task date questions → SCHEDULE
+  if ((type === 'date' || type === 'date-range') && relatedTask) {
+    return 'SCHEDULE';
+  }
+
+  // Dependency questions → DECIDE
+  if (type === 'dependency') {
+    return 'DECIDE';
+  }
+
+  // Notifications → DECIDE (need acknowledgment)
+  if (type === 'notification') {
+    return 'DECIDE';
+  }
+
+  // Yes/no questions are typically decisions
+  if (type === 'yes-no') {
+    return 'DECIDE';
+  }
+
+  // Free-text task questions that combine dates + assignee → SCHEDULE (primary action)
+  if (type === 'free-text' && relatedTask && !relatedMaterial) {
+    if (promptText.includes('schedul') || promptText.includes('date') || promptText.includes('when')) {
+      return 'SCHEDULE';
+    }
+    if (promptText.includes('assign') || promptText.includes('who')) {
+      return 'ASSIGN';
+    }
+  }
+
+  // Default to DECIDE for anything else
+  return 'DECIDE';
+}
+
+/**
+ * Generate a short title for an issue based on its type and context
+ * @param {Object} question - The question/issue object
+ * @returns {string} Short title (max ~40 chars)
+ */
+function generateIssueTitle(question) {
+  const { type, relatedTask, relatedMaterial, prompt = '', question: legacyPrompt = '' } = question;
+  const promptText = prompt || legacyPrompt;
+
+  // For material-related issues, include material name
+  if (relatedMaterial) {
+    const materialName = relatedMaterial.replace(/-/g, ' ');
+    switch (type) {
+      case 'free-text':
+        if (promptText.toLowerCase().includes('quantity')) return `Qty needed: ${materialName}`;
+        if (promptText.toLowerCase().includes('spec')) return `Specs needed: ${materialName}`;
+        return `Info needed: ${materialName}`;
+      case 'yes-no':
+        if (promptText.toLowerCase().includes('order')) return `Order ready? ${materialName}`;
+        return `Confirm: ${materialName}`;
+      case 'date':
+        return `Delivery date: ${materialName}`;
+      case 'material-status':
+        return `Status: ${materialName}`;
+      case 'material-overdue':
+        return `Overdue: ${materialName}`;
+      default:
+        return `Material: ${materialName}`;
+    }
+  }
+
+  // For task-related issues
+  if (relatedTask) {
+    const taskName = relatedTask.replace(/-/g, ' ');
+    switch (type) {
+      case 'assignee':
+      case 'missing-assignee':
+        return `Assign: ${taskName}`;
+      case 'date':
+      case 'date-range':
+        return `Schedule: ${taskName}`;
+      case 'free-text':
+        // Combined date+assignee questions
+        if (promptText.toLowerCase().includes('schedul') && promptText.toLowerCase().includes('who')) {
+          return `Schedule+Assign: ${taskName}`;
+        }
+        return `Info: ${taskName}`;
+      case 'dependency':
+        return `Dependencies: ${taskName}`;
+      case 'yes-no':
+        if (promptText.toLowerCase().includes('complete')) return `Complete? ${taskName}`;
+        if (promptText.toLowerCase().includes('start')) return `Started? ${taskName}`;
+        return `Decide: ${taskName}`;
+      case 'schedule-conflict':
+        return `Conflict: ${taskName}`;
+      case 'past-due':
+        return `Past due: ${taskName}`;
+      case 'unscheduled-blocker':
+        return `Blocking: ${taskName}`;
+      default:
+        return `Task: ${taskName}`;
+    }
+  }
+
+  // Fallback: use first 40 chars of prompt
+  if (promptText.length > 40) {
+    return promptText.substring(0, 37) + '...';
+  }
+  return promptText || 'Issue';
+}
+
+// Command aliases for backward compatibility (questions → issues)
+const COMMAND_ALIASES = {
+  'question': 'issue',
+  'questions': 'issues',
+  'answer': 'respond',
+};
 
 // ============ FLAG PARSING ============
 
@@ -185,7 +380,12 @@ function validate(data) {
   }
 
   // Validate questions
-  const validQuestionTypes = ['assignee', 'date', 'date-range', 'dependency', 'yes-no', 'select-one', 'material-status', 'notification', 'free-text'];
+  const validQuestionTypes = [
+    'assignee', 'date', 'date-range', 'dependency', 'yes-no', 'select-one',
+    'material-status', 'notification', 'free-text',
+    // Auto-detection types
+    'schedule-conflict', 'missing-assignee', 'past-due', 'unscheduled-blocker', 'material-overdue'
+  ];
 
   for (const question of (data.questions || [])) {
     // Duplicate ID check
@@ -1347,6 +1547,42 @@ function evaluateDependencyImpact(data, taskId, newStatus) {
 }
 
 /**
+ * Remove a cancelled task from all dependency arrays in the project.
+ * When a task is cancelled, other tasks should no longer depend on it.
+ *
+ * @param {Object} data - The full project data object
+ * @param {string} cancelledTaskId - The ID of the cancelled task
+ * @returns {string[]} List of task names that had their dependencies updated
+ */
+function removeCancelledTaskFromDependencies(data, cancelledTaskId) {
+  const updated = [];
+
+  for (const task of data.tasks) {
+    // Check parent task dependencies
+    if (task.dependencies && task.dependencies.includes(cancelledTaskId)) {
+      task.dependencies = task.dependencies.filter(d => d !== cancelledTaskId);
+      if (task.dependencies.length === 0) {
+        delete task.dependencies;
+      }
+      updated.push(task.name);
+    }
+
+    // Check subtask dependencies
+    for (const subtask of (task.subtasks || [])) {
+      if (subtask.dependencies && subtask.dependencies.includes(cancelledTaskId)) {
+        subtask.dependencies = subtask.dependencies.filter(d => d !== cancelledTaskId);
+        if (subtask.dependencies.length === 0) {
+          delete subtask.dependencies;
+        }
+        updated.push(subtask.name);
+      }
+    }
+  }
+
+  return updated;
+}
+
+/**
  * Generate questions for a task or material that just had a status change.
  * Uses existing question generation logic from the lifecycle rules.
  *
@@ -1383,11 +1619,16 @@ function triggerQuestionGeneration(data, entityType, entityId, taskId = null) {
           status: 'open',
           created: today,
           relatedTask: entityId,
+          source: 'auto-lifecycle',
         };
 
         if (questionSpec.autoApply) {
           newQuestion.autoApply = questionSpec.autoApply.toString();
         }
+
+        // Add category and title (unified issues system)
+        newQuestion.category = getActionCategory(newQuestion);
+        newQuestion.title = generateIssueTitle(newQuestion);
 
         data.questions.push(newQuestion);
         questionsCreated++;
@@ -1418,11 +1659,16 @@ function triggerQuestionGeneration(data, entityType, entityId, taskId = null) {
           created: today,
           relatedMaterial: entityId,
           relatedTask: taskId,
+          source: 'auto-lifecycle',
         };
 
         if (questionSpec.autoApply) {
           newQuestion.autoApply = questionSpec.autoApply.toString();
         }
+
+        // Add category and title (unified issues system)
+        newQuestion.category = getActionCategory(newQuestion);
+        newQuestion.title = generateIssueTitle(newQuestion);
 
         data.questions.push(newQuestion);
         questionsCreated++;
@@ -1857,7 +2103,12 @@ function generateMaterialQuestions(data) {
       status: 'open',
       relatedTask: taskId,
       relatedMaterial: material.id,
+      source: 'auto-lifecycle',
     };
+
+    // Add category and title (unified issues system)
+    newQuestion.category = getActionCategory(newQuestion);
+    newQuestion.title = generateIssueTitle(newQuestion);
 
     data.questions.push(newQuestion);
     created++;
@@ -2142,7 +2393,12 @@ function generateTaskQuestions(data) {
             assignee: rule.assignee,
             status: 'open',
             relatedTask: task.id,
+            source: 'auto-lifecycle',
           };
+
+          // Add category and title (unified issues system)
+          newQuestion.category = getActionCategory(newQuestion);
+          newQuestion.title = generateIssueTitle(newQuestion);
 
           data.questions.push(newQuestion);
           created++;
@@ -2170,7 +2426,12 @@ function generateTaskQuestions(data) {
               assignee: subRule.assignee,
               status: 'open',
               relatedTask: sub.id,
+              source: 'auto-lifecycle',
             };
+
+            // Add category and title (unified issues system)
+            newQuestion.category = getActionCategory(newQuestion);
+            newQuestion.title = generateIssueTitle(newQuestion);
 
             data.questions.push(newQuestion);
             created++;
@@ -2273,6 +2534,289 @@ function getTaskCompleteness(task) {
     return '✅ Yes';
   }
   return `⚠️ Missing: ${missing.join(', ')}`;
+}
+
+// ============ AUTO-DETECTION RULES (UNIFIED ISSUES SYSTEM) ============
+
+/**
+ * Detection rules for auto-generated issues.
+ * Each rule detects a specific condition and creates an issue.
+ */
+const DETECTION_RULES = {
+  'schedule-conflict': {
+    description: 'Task scheduled before its dependency ends',
+    category: 'SCHEDULE',
+    detect: (data, task, parent) => {
+      if (!task.start || !task.dependencies || task.dependencies.length === 0) return null;
+      if (task.status === 'completed' || task.status === 'cancelled') return null;
+
+      const conflicts = [];
+      for (const depId of task.dependencies) {
+        const { task: depTask } = findTask(data, depId);
+        if (depTask && depTask.end && task.start < depTask.end) {
+          conflicts.push({ depId, depEnd: depTask.end });
+        }
+      }
+
+      if (conflicts.length === 0) return null;
+
+      return {
+        type: 'schedule-conflict',
+        title: `Conflict: ${task.name}`,
+        prompt: `"${task.name}" starts ${task.start} but depends on tasks that end later: ${conflicts.map(c => `${c.depId} (ends ${c.depEnd})`).join(', ')}`,
+        relatedTask: task.id,
+        relatedTasks: conflicts.map(c => c.depId),
+        assignee: 'brandon',
+        priority: 'high',
+      };
+    }
+  },
+
+  'past-due': {
+    description: 'Task past its end date but not completed',
+    category: 'SCHEDULE',
+    detect: (data, task, parent) => {
+      const today = new Date().toISOString().split('T')[0];
+      if (!task.end || task.end >= today) return null;
+      if (task.status === 'completed' || task.status === 'cancelled') return null;
+
+      return {
+        type: 'past-due',
+        title: `Past due: ${task.name}`,
+        prompt: `"${task.name}" was scheduled to end ${task.end} but is still ${task.status || 'pending'}`,
+        relatedTask: task.id,
+        assignee: 'brandon',
+        priority: 'high',
+      };
+    }
+  },
+
+  'unscheduled-blocker': {
+    description: 'Task that blocks others but has no scheduled dates',
+    category: 'SCHEDULE',
+    detect: (data, task, parent) => {
+      if (task.start && task.end) return null; // Already scheduled
+      if (task.status === 'completed' || task.status === 'cancelled') return null;
+
+      // Check if any other task depends on this one
+      const blockedTasks = [];
+      for (const t of data.tasks) {
+        if ((t.dependencies || []).includes(task.id)) {
+          blockedTasks.push(t.id);
+        }
+        for (const sub of (t.subtasks || [])) {
+          if ((sub.dependencies || []).includes(task.id)) {
+            blockedTasks.push(sub.id);
+          }
+        }
+      }
+
+      if (blockedTasks.length === 0) return null;
+
+      return {
+        type: 'unscheduled-blocker',
+        title: `Blocking: ${task.name}`,
+        prompt: `"${task.name}" has no scheduled dates but blocks ${blockedTasks.length} task(s): ${blockedTasks.slice(0, 3).join(', ')}${blockedTasks.length > 3 ? '...' : ''}`,
+        relatedTask: task.id,
+        relatedTasks: blockedTasks,
+        assignee: 'brandon',
+        priority: 'high',
+      };
+    }
+  },
+
+  'material-overdue': {
+    description: 'Material past expected delivery date but not on-hand',
+    category: 'TRACK',
+    detect: (data, material, taskId) => {
+      const today = new Date().toISOString().split('T')[0];
+      if (material.status === 'on-hand') return null;
+      if (!material.expectedDate || material.expectedDate >= today) return null;
+
+      return {
+        type: 'material-overdue',
+        title: `Overdue: ${material.name || material.id}`,
+        prompt: `"${material.name || material.id}" was expected ${material.expectedDate} but status is still "${material.status}"`,
+        relatedTask: taskId,
+        relatedMaterial: material.id,
+        assignee: 'tonia',
+        priority: 'high',
+      };
+    }
+  },
+};
+
+/**
+ * Run all auto-detection rules and create/update issues.
+ * - Creates new issues for detected conditions
+ * - Auto-resolves issues when condition clears
+ * Returns { created: number, resolved: number }
+ */
+function runAutoDetection(data) {
+  if (!data.questions) {
+    data.questions = [];
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+  let created = 0;
+  let resolved = 0;
+
+  // Track which detection issues are still valid
+  const validDetectionIds = new Set();
+
+  // Run task-level detection rules
+  for (const task of data.tasks) {
+    // Check parent task
+    for (const [ruleName, rule] of Object.entries(DETECTION_RULES)) {
+      if (ruleName === 'material-overdue') continue; // Material rule handled separately
+
+      const detection = rule.detect(data, task, null);
+      if (detection) {
+        const issueId = `id-${detection.type}-${task.id}`;
+        validDetectionIds.add(issueId);
+
+        // Check if issue already exists
+        const existing = data.questions.find(q => q.id === issueId);
+        if (!existing) {
+          const newIssue = {
+            id: issueId,
+            created: today,
+            ...detection,
+            category: rule.category,
+            source: 'auto-detection',
+            status: 'open',
+            detectionRule: ruleName,
+            lastChecked: today,
+          };
+          data.questions.push(newIssue);
+          created++;
+        } else {
+          // Update lastChecked
+          existing.lastChecked = today;
+        }
+      }
+    }
+
+    // Check subtasks
+    for (const sub of (task.subtasks || [])) {
+      for (const [ruleName, rule] of Object.entries(DETECTION_RULES)) {
+        if (ruleName === 'material-overdue') continue;
+
+        const detection = rule.detect(data, sub, task);
+        if (detection) {
+          const issueId = `id-${detection.type}-${sub.id}`;
+          validDetectionIds.add(issueId);
+
+          const existing = data.questions.find(q => q.id === issueId);
+          if (!existing) {
+            const newIssue = {
+              id: issueId,
+              created: today,
+              ...detection,
+              category: rule.category,
+              source: 'auto-detection',
+              status: 'open',
+              detectionRule: ruleName,
+              lastChecked: today,
+            };
+            data.questions.push(newIssue);
+            created++;
+          } else {
+            existing.lastChecked = today;
+          }
+        }
+      }
+    }
+
+    // Check materials for material-overdue rule
+    for (const mat of (task.materialDependencies || [])) {
+      if (typeof mat !== 'object') continue;
+
+      const materialRule = DETECTION_RULES['material-overdue'];
+      const detection = materialRule.detect(data, mat, task.id);
+      if (detection) {
+        const issueId = `id-${detection.type}-${mat.id}`;
+        validDetectionIds.add(issueId);
+
+        const existing = data.questions.find(q => q.id === issueId);
+        if (!existing) {
+          const newIssue = {
+            id: issueId,
+            created: today,
+            ...detection,
+            category: materialRule.category,
+            source: 'auto-detection',
+            status: 'open',
+            detectionRule: 'material-overdue',
+            lastChecked: today,
+          };
+          data.questions.push(newIssue);
+          created++;
+        } else {
+          existing.lastChecked = today;
+        }
+      }
+    }
+
+    // Check subtask materials
+    for (const sub of (task.subtasks || [])) {
+      for (const mat of (sub.materialDependencies || [])) {
+        if (typeof mat !== 'object') continue;
+
+        const materialRule = DETECTION_RULES['material-overdue'];
+        const detection = materialRule.detect(data, mat, sub.id);
+        if (detection) {
+          const issueId = `id-${detection.type}-${mat.id}`;
+          validDetectionIds.add(issueId);
+
+          const existing = data.questions.find(q => q.id === issueId);
+          if (!existing) {
+            const newIssue = {
+              id: issueId,
+              created: today,
+              ...detection,
+              category: materialRule.category,
+              source: 'auto-detection',
+              status: 'open',
+              detectionRule: 'material-overdue',
+              lastChecked: today,
+            };
+            data.questions.push(newIssue);
+            created++;
+          } else {
+            existing.lastChecked = today;
+          }
+        }
+      }
+    }
+  }
+
+  // Auto-resolve detection issues that are no longer valid
+  for (const question of data.questions) {
+    if (question.source !== 'auto-detection') continue;
+    if (question.status === 'resolved' || question.status === 'dismissed') continue;
+
+    if (!validDetectionIds.has(question.id)) {
+      question.status = 'resolved';
+      question.resolvedAt = today;
+      question.resolvedBy = 'auto';
+      resolved++;
+    }
+  }
+
+  return { created, resolved };
+}
+
+/**
+ * Dismiss an auto-detected issue (user acknowledges but doesn't want to see it)
+ */
+function dismissIssue(data, issueId) {
+  const issue = data.questions.find(q => q.id === issueId);
+  if (!issue) return null;
+
+  issue.status = 'dismissed';
+  issue.resolvedAt = new Date().toISOString().split('T')[0];
+  return issue;
 }
 
 function detectManualChanges(wb, data, XLSX) {
@@ -2824,11 +3368,12 @@ async function cmdAddSubtask(flags = {}) {
     }
   }
 
-  // Auto-generate ID
-  let id = slugify(name);
-  let counter = 1;
+  // Auto-generate ID: {parent}-{n}
+  const existingSubtaskCount = (parentTask.subtasks || []).length;
+  let nextNum = existingSubtaskCount + 1;
+  let id = `${parentId}-${nextNum}`;
   while (existingIds.has(id)) {
-    id = `${slugify(name)}-${counter++}`;
+    id = `${parentId}-${++nextNum}`;
   }
 
   // Build subtask object
@@ -2942,6 +3487,14 @@ async function cmdStatus(flags = {}) {
       impact.unblocked.forEach(t => console.log(green(`  - ${t}`)));
     }
 
+    // Remove cancelled task from other tasks' dependencies
+    if (newStatus === 'cancelled') {
+      const updatedTasks = removeCancelledTaskFromDependencies(data, taskId);
+      if (updatedTasks.length > 0) {
+        console.log(green(`\n✓ Removed from dependencies of: ${updatedTasks.join(', ')}`));
+      }
+    }
+
     // Save and generate questions
     saveData(data);
     const questionsCreated = triggerQuestionGeneration(data, 'task', taskId);
@@ -2997,6 +3550,14 @@ async function cmdStatus(flags = {}) {
     if (impact.unblocked.length > 0) {
       console.log(green('\n✓ Tasks now unblocked:'));
       impact.unblocked.forEach(t => console.log(green(`  - ${t}`)));
+    }
+
+    // Remove cancelled task from other tasks' dependencies
+    if (flags.status === 'cancelled') {
+      const updatedTasks = removeCancelledTaskFromDependencies(data, taskId);
+      if (updatedTasks.length > 0) {
+        console.log(green(`\n✓ Removed from dependencies of: ${updatedTasks.join(', ')}`));
+      }
     }
 
     // Save and generate questions
@@ -3235,97 +3796,191 @@ async function cmdAssign(flags = {}) {
   }
 }
 
-async function cmdDeps(taskId) {
+/**
+ * Manage task dependencies
+ *
+ * Flag-based usage:
+ *   node scripts/task.js deps --id framing --add demolition
+ *   node scripts/task.js deps --id framing --remove old-task
+ *
+ * Interactive usage:
+ *   node scripts/task.js deps
+ *   node scripts/task.js deps framing
+ */
+async function cmdDeps(flags = {}) {
   const data = loadData();
 
-  if (!taskId) {
+  // Support legacy positional arg (when flags is a string)
+  let taskId = typeof flags === 'string' ? flags : flags.id;
+
+  // Determine mode: flag-based if we have taskId AND (add or remove)
+  const hasActionFlag = typeof flags === 'object' && (flags.add || flags.remove);
+  const interactive = flags.interactive || !hasActionFlag;
+
+  if (interactive) {
+    // ===== INTERACTIVE MODE =====
+    if (!taskId) {
+      const items = getAllTaskItems(data);
+      const choices = items.map(t => ({
+        name: `${t.name} ${dim(`[${t.id}]`)}`,
+        value: t.id,
+      }));
+
+      taskId = await search({
+        message: 'Select task:',
+        source: async (term) => {
+          if (!term) return choices;
+          const lower = term.toLowerCase();
+          return choices.filter(c =>
+            c.name.toLowerCase().includes(lower) || c.value.toLowerCase().includes(lower)
+          );
+        },
+      });
+    }
+
+    const { task } = findTask(data, taskId);
+    if (!task) {
+      console.error(red(`Task "${taskId}" not found`));
+      process.exit(1);
+    }
+
+    const currentDeps = task.dependencies || [];
+    console.log(`\nCurrent dependencies: ${currentDeps.length > 0 ? currentDeps.join(', ') : '(none)'}`);
+
+    const action = await select({
+      message: 'Action:',
+      choices: [
+        { name: 'Add dependency', value: 'add' },
+        { name: 'Remove dependency', value: 'remove' },
+        { name: 'Cancel', value: 'cancel' },
+      ],
+    });
+
+    if (action === 'cancel') return;
+
     const items = getAllTaskItems(data);
-    const choices = items.map(t => ({
-      name: `${t.name} ${dim(`[${t.id}]`)}`,
-      value: t.id,
-    }));
 
-    taskId = await search({
-      message: 'Select task:',
-      source: async (term) => {
-        if (!term) return choices;
-        const lower = term.toLowerCase();
-        return choices.filter(c =>
-          c.name.toLowerCase().includes(lower) || c.value.toLowerCase().includes(lower)
-        );
-      },
+    if (action === 'add') {
+      // Filter out self and existing dependencies
+      const available = items.filter(t => t.id !== taskId && !currentDeps.includes(t.id));
+
+      if (available.length === 0) {
+        console.log(yellow('No tasks available to add as dependency'));
+        return;
+      }
+
+      const choices = available.map(t => ({
+        name: `${t.name} ${dim(`[${t.id}]`)}`,
+        value: t.id,
+      }));
+
+      const depId = await search({
+        message: 'Select task to add as dependency:',
+        source: async (term) => {
+          if (!term) return choices;
+          const lower = term.toLowerCase();
+          return choices.filter(c =>
+            c.name.toLowerCase().includes(lower) || c.value.toLowerCase().includes(lower)
+          );
+        },
+      });
+
+      if (!task.dependencies) task.dependencies = [];
+      task.dependencies.push(depId);
+
+      saveData(data);
+      console.log(green(`\n✓ Added dependency "${depId}" to "${taskId}"`));
+
+    } else if (action === 'remove') {
+      if (currentDeps.length === 0) {
+        console.log(yellow('No dependencies to remove'));
+        return;
+      }
+
+      const depId = await select({
+        message: 'Select dependency to remove:',
+        choices: currentDeps.map(d => ({ name: d, value: d })),
+      });
+
+      task.dependencies = task.dependencies.filter(d => d !== depId);
+      if (task.dependencies.length === 0) delete task.dependencies;
+
+      saveData(data);
+      console.log(green(`\n✓ Removed dependency "${depId}" from "${taskId}"`));
+    }
+  } else {
+    // ===== FLAG-BASED MODE =====
+    const validationErrors = validateFlags(flags, {
+      id: { required: true },
     });
-  }
 
-  const { task } = findTask(data, taskId);
-  if (!task) {
-    console.error(red(`Task "${taskId}" not found`));
-    process.exit(1);
-  }
-
-  const currentDeps = task.dependencies || [];
-  console.log(`\nCurrent dependencies: ${currentDeps.length > 0 ? currentDeps.join(', ') : '(none)'}`);
-
-  const action = await select({
-    message: 'Action:',
-    choices: [
-      { name: 'Add dependency', value: 'add' },
-      { name: 'Remove dependency', value: 'remove' },
-      { name: 'Cancel', value: 'cancel' },
-    ],
-  });
-
-  if (action === 'cancel') return;
-
-  const items = getAllTaskItems(data);
-
-  if (action === 'add') {
-    // Filter out self and existing dependencies
-    const available = items.filter(t => t.id !== taskId && !currentDeps.includes(t.id));
-
-    if (available.length === 0) {
-      console.log(yellow('No tasks available to add as dependency'));
-      return;
+    if (validationErrors.length > 0) {
+      console.error(red('Validation errors:'));
+      validationErrors.forEach(e => console.error(red(`  - ${e}`)));
+      process.exit(1);
     }
 
-    const choices = available.map(t => ({
-      name: `${t.name} ${dim(`[${t.id}]`)}`,
-      value: t.id,
-    }));
+    // Find the task
+    const { task } = findTask(data, taskId);
+    if (!task) {
+      console.error(red(`Task "${taskId}" not found`));
+      process.exit(1);
+    }
 
-    const depId = await search({
-      message: 'Select task to add as dependency:',
-      source: async (term) => {
-        if (!term) return choices;
-        const lower = term.toLowerCase();
-        return choices.filter(c =>
-          c.name.toLowerCase().includes(lower) || c.value.toLowerCase().includes(lower)
-        );
-      },
-    });
-
+    // Initialize dependencies array if needed
     if (!task.dependencies) task.dependencies = [];
-    task.dependencies.push(depId);
 
-    saveData(data);
-    console.log(green(`\n✓ Added dependency "${depId}" to "${taskId}"`));
+    // Handle --add
+    if (flags.add) {
+      // Validate dependency exists
+      const { task: depTask } = findTask(data, flags.add);
+      if (!depTask) {
+        console.error(red(`Dependency "${flags.add}" not found`));
+        const items = getAllTaskItems(data);
+        console.log(`${yellow('Available tasks:')} ${items.slice(0, 10).map(t => t.id).join(', ')}...`);
+        process.exit(1);
+      }
 
-  } else if (action === 'remove') {
-    if (currentDeps.length === 0) {
-      console.log(yellow('No dependencies to remove'));
-      return;
+      // Check if already exists
+      if (task.dependencies.includes(flags.add)) {
+        console.log(yellow(`"${flags.add}" is already a dependency of "${taskId}"`));
+        return;
+      }
+
+      // Check for circular dependency and show impact
+      const impacts = analyzeDependencyImpact(data, taskId, [flags.add]);
+      const errors = impacts.filter(i => i.type === 'error');
+
+      if (errors.length > 0) {
+        console.error(red('Cannot add dependency:'));
+        errors.forEach(i => console.error(red(`  - ${i.message}`)));
+        process.exit(1);
+      }
+
+      // Show warnings/info
+      impacts.filter(i => i.type === 'warning').forEach(i => console.log(yellow(`⚠️  ${i.message}`)));
+      impacts.filter(i => i.type === 'info').forEach(i => console.log(cyan(`ℹ️  ${i.message}`)));
+
+      // Add the dependency
+      task.dependencies.push(flags.add);
+      saveData(data);
+      console.log(green(`✓ Added "${flags.add}" as dependency of "${taskId}"`));
     }
 
-    const depId = await select({
-      message: 'Select dependency to remove:',
-      choices: currentDeps.map(d => ({ name: d, value: d })),
-    });
+    // Handle --remove
+    if (flags.remove) {
+      const idx = task.dependencies.indexOf(flags.remove);
+      if (idx === -1) {
+        console.error(red(`"${flags.remove}" is not a dependency of "${taskId}"`));
+        console.log(`${yellow('Current dependencies:')} ${task.dependencies.join(', ') || '(none)'}`);
+        process.exit(1);
+      }
 
-    task.dependencies = task.dependencies.filter(d => d !== depId);
-    if (task.dependencies.length === 0) delete task.dependencies;
-
-    saveData(data);
-    console.log(green(`\n✓ Removed dependency "${depId}" from "${taskId}"`));
+      task.dependencies.splice(idx, 1);
+      if (task.dependencies.length === 0) delete task.dependencies;
+      saveData(data);
+      console.log(green(`✓ Removed "${flags.remove}" from dependencies of "${taskId}"`));
+    }
   }
 }
 
@@ -3885,7 +4540,8 @@ function cmdShow(taskId) {
     console.log(`  Questions:   ${relatedQuestions.length} (${statusSummary})`);
     for (const q of relatedQuestions) {
       const statusIcon = q.status === 'open' ? '?' : q.status === 'answered' ? '!' : '✓';
-      const preview = q.question.substring(0, 40) + (q.question.length > 40 ? '...' : '');
+      const questionText = q.question || '(no question text)';
+      const preview = questionText.substring(0, 40) + (questionText.length > 40 ? '...' : '');
       console.log(`               ${statusIcon} ${preview} (${ASSIGNEE_DISPLAY_NAMES[q.assignee]}) [${q.status}]`);
     }
   }
@@ -4234,62 +4890,132 @@ async function cmdQuestion(questionId) {
   console.log(green(`\n✓ Created ${QUESTION_TYPE_DISPLAY[questionType]} question "${id}" assigned to ${ASSIGNEE_DISPLAY_NAMES[assignee]}${materialSuffix}`));
 }
 
-function cmdQuestions(showAll = false) {
+async function cmdQuestions(flags = {}) {
   const data = loadData();
   const questions = data.questions || [];
+  const showAll = flags.all;
+  const filterAction = flags.action?.toUpperCase();
+  const filterAssignee = flags.assignee?.toLowerCase();
 
   if (questions.length === 0) {
-    console.log(dim('\nNo questions found.'));
-    console.log(dim('Add one with: npm run task question'));
+    console.log(dim('\nNo issues found.'));
+    console.log(dim('Add one with: npm run task issue'));
     return;
   }
 
-  // Filter based on --all flag
-  const filtered = showAll ? questions : questions.filter(q => q.status !== 'resolved');
+  // Apply filters
+  let filtered = questions;
+
+  // Filter by status (unless --all)
+  if (!showAll) {
+    filtered = filtered.filter(q => q.status !== 'resolved' && q.status !== 'dismissed');
+  }
+
+  // Filter by action category
+  if (filterAction && ACTION_CATEGORIES.includes(filterAction)) {
+    filtered = filtered.filter(q => {
+      const cat = q.category || getActionCategory(q);
+      return cat === filterAction;
+    });
+  }
+
+  // Filter by assignee
+  if (filterAssignee && VALID_ASSIGNEES.includes(filterAssignee)) {
+    filtered = filtered.filter(q => q.assignee === filterAssignee);
+  }
 
   if (filtered.length === 0) {
-    console.log(dim('\nNo open questions.'));
-    console.log(dim('Use --all to see resolved questions.'));
+    const hint = filterAction ? ` with action=${filterAction}` : '';
+    const hint2 = filterAssignee ? ` for ${filterAssignee}` : '';
+    console.log(dim(`\nNo open issues${hint}${hint2}.`));
+    console.log(dim('Use --all to see resolved issues.'));
+    console.log(dim('\nFilter by action: --action ASSIGN|SCHEDULE|ORDER|SPECIFY|TRACK|DECIDE'));
+    console.log(dim('Filter by assignee: --assignee brandon|tonia|dave'));
     return;
   }
 
-  console.log(bold('\nOpen Questions'));
-  console.log(dim('─'.repeat(40)));
+  // Determine display mode
+  const displayByCategory = filterAction || !filterAssignee;
 
-  // Group by assignee
-  const byAssignee = {};
-  for (const assignee of VALID_ASSIGNEES) {
-    byAssignee[assignee] = [];
-  }
-  for (const q of filtered) {
-    byAssignee[q.assignee].push(q);
-  }
+  if (displayByCategory) {
+    // Group by category (action-oriented view)
+    console.log(bold('\nIssues by Action'));
+    console.log(dim('─'.repeat(60)));
 
-  for (const assignee of VALID_ASSIGNEES) {
-    const assigneeQuestions = byAssignee[assignee];
-    console.log(`\n${cyan(`[${ASSIGNEE_DISPLAY_NAMES[assignee]}]`)}`);
+    const byCategory = {};
+    for (const cat of ACTION_CATEGORIES) {
+      byCategory[cat] = [];
+    }
+    for (const q of filtered) {
+      const cat = q.category || getActionCategory(q);
+      byCategory[cat].push(q);
+    }
 
-    if (assigneeQuestions.length === 0) {
-      console.log(dim('  (none)'));
-    } else {
+    for (const cat of ACTION_CATEGORIES) {
+      const catIssues = byCategory[cat];
+      if (catIssues.length === 0) continue;
+
+      const catName = CATEGORY_DISPLAY_NAMES[cat] || cat;
+      console.log(`\n${cyan(`[${catName.toUpperCase()}]`)} ${dim(`(${catIssues.length})`)}`);
+
+      for (const q of catIssues) {
+        const statusIcon = q.status === 'open' ? yellow('○') :
+          q.status === 'answered' ? cyan('◐') :
+          q.status === 'dismissed' ? dim('⊘') : green('●');
+        const assigneeTag = dim(`[${ASSIGNEE_DISPLAY_NAMES[q.assignee] || q.assignee}]`);
+        const title = q.title || getQuestionText(q).substring(0, 40);
+        const sourceTag = q.source === 'auto-detection' ? dim(' ⚡') : '';
+        console.log(`  ${statusIcon} ${title}${sourceTag} ${assigneeTag}`);
+      }
+    }
+  } else {
+    // Group by assignee (legacy view)
+    console.log(bold('\nIssues by Assignee'));
+    console.log(dim('─'.repeat(60)));
+
+    const byAssignee = {};
+    for (const assignee of VALID_ASSIGNEES) {
+      byAssignee[assignee] = [];
+    }
+    for (const q of filtered) {
+      byAssignee[q.assignee]?.push(q);
+    }
+
+    for (const assignee of VALID_ASSIGNEES) {
+      const assigneeQuestions = byAssignee[assignee];
+      if (assigneeQuestions.length === 0) continue;
+
+      console.log(`\n${cyan(`[${ASSIGNEE_DISPLAY_NAMES[assignee]}]`)}`);
+
       for (const q of assigneeQuestions) {
-        const statusIcon = q.status === 'open' ? yellow('?') :
-          q.status === 'answered' ? cyan('!') : green('✓');
-        const taskRef = q.relatedTask ? dim(` (${q.relatedTask})`) : '';
-        const qText = getQuestionText(q);
-        const preview = qText.substring(0, 50) + (qText.length > 50 ? '...' : '');
-        const typeTag = q.type ? dim(` [${q.type}]`) : '';
-        console.log(`  ${statusIcon} ${preview}${taskRef}${typeTag} [${q.status}]`);
+        const statusIcon = q.status === 'open' ? yellow('○') :
+          q.status === 'answered' ? cyan('◐') : green('●');
+        const cat = q.category || getActionCategory(q);
+        const catTag = dim(`[${CATEGORY_DISPLAY_NAMES[cat] || cat}]`);
+        const title = q.title || getQuestionText(q).substring(0, 40);
+        console.log(`  ${statusIcon} ${title} ${catTag}`);
       }
     }
   }
 
+  // Summary
   const openCount = questions.filter(q => q.status === 'open').length;
   const answeredCount = questions.filter(q => q.status === 'answered').length;
   const resolvedCount = questions.filter(q => q.status === 'resolved').length;
+  const dismissedCount = questions.filter(q => q.status === 'dismissed').length;
+  const detectedCount = questions.filter(q => q.source === 'auto-detection').length;
 
   console.log();
-  console.log(dim(`Total: ${questions.length} questions (${openCount} open, ${answeredCount} answered, ${resolvedCount} resolved)`));
+  console.log(dim(`Total: ${questions.length} issues (${openCount} open, ${answeredCount} answered, ${resolvedCount} resolved${dismissedCount > 0 ? `, ${dismissedCount} dismissed` : ''})`));
+  if (detectedCount > 0) {
+    console.log(dim(`  ${detectedCount} auto-detected`));
+  }
+  console.log();
+  console.log(dim('Commands:'));
+  console.log(dim('  npm run task issues --action ASSIGN     # What needs assignment?'));
+  console.log(dim('  npm run task issues --action SCHEDULE   # What needs scheduling?'));
+  console.log(dim('  npm run task issues --action ORDER      # What\'s ready to order?'));
+  console.log(dim('  npm run task detect                     # Run auto-detection'));
   console.log();
 }
 
@@ -4529,6 +5255,96 @@ async function cmdAnswer(questionId) {
   console.log(green(`\n✓ Response recorded: ${responsePreview}`));
   console.log(dim('  Status: answered → ready for review'));
   console.log(dim('  Run `npm run task review` to review and apply changes'));
+}
+
+// ============ DETECT COMMAND ============
+
+/**
+ * Run auto-detection rules to find schedule conflicts, past-due items, etc.
+ */
+function cmdDetect() {
+  const data = loadData();
+
+  console.log(bold('\nRunning Auto-Detection Rules'));
+  console.log(dim('─'.repeat(40)));
+
+  const { created, resolved } = runAutoDetection(data);
+
+  if (created === 0 && resolved === 0) {
+    console.log(dim('\nNo issues detected or resolved.'));
+  } else {
+    if (created > 0) {
+      console.log(yellow(`\n⚡ Created ${created} new auto-detected issue(s)`));
+    }
+    if (resolved > 0) {
+      console.log(green(`✓ Auto-resolved ${resolved} issue(s) (conditions cleared)`));
+    }
+    saveData(data);
+  }
+
+  // Show summary of detected issues
+  const detected = data.questions.filter(q =>
+    q.source === 'auto-detection' && q.status !== 'resolved' && q.status !== 'dismissed'
+  );
+
+  if (detected.length > 0) {
+    console.log(bold('\nActive Auto-Detected Issues:'));
+    for (const issue of detected) {
+      const cat = issue.category || getActionCategory(issue);
+      const catName = CATEGORY_DISPLAY_NAMES[cat] || cat;
+      console.log(`  ${yellow('⚡')} [${catName}] ${issue.title || issue.prompt}`);
+    }
+    console.log(dim(`\nDismiss with: npm run task dismiss <issue-id>`));
+  }
+
+  console.log();
+}
+
+// ============ DISMISS COMMAND ============
+
+/**
+ * Dismiss an auto-detected issue (acknowledge but don't want to see it)
+ */
+async function cmdDismiss(issueId) {
+  const data = loadData();
+
+  if (!issueId) {
+    // Show list of dismissable issues
+    const dismissable = data.questions.filter(q =>
+      q.source === 'auto-detection' && q.status !== 'resolved' && q.status !== 'dismissed'
+    );
+
+    if (dismissable.length === 0) {
+      console.log(dim('\nNo auto-detected issues to dismiss.'));
+      return;
+    }
+
+    const choices = dismissable.map(q => ({
+      name: `${q.title || q.prompt?.substring(0, 50)} ${dim(`[${q.id}]`)}`,
+      value: q.id,
+    }));
+
+    issueId = await search({
+      message: 'Select issue to dismiss:',
+      source: async (term) => {
+        if (!term) return choices;
+        const lower = term.toLowerCase();
+        return choices.filter(c =>
+          c.name.toLowerCase().includes(lower) || c.value.toLowerCase().includes(lower)
+        );
+      },
+    });
+  }
+
+  const issue = dismissIssue(data, issueId);
+  if (!issue) {
+    console.error(red(`Issue "${issueId}" not found`));
+    process.exit(1);
+  }
+
+  saveData(data);
+  console.log(green(`\n✓ Dismissed: ${issue.title || issue.id}`));
+  console.log(dim('  The issue will be hidden unless it recurs.'));
 }
 
 // ============ REVIEW COMMAND ============
@@ -5083,7 +5899,11 @@ switch (command) {
     cmdAssign(flags).catch(console.error);
     break;
   case 'deps':
-    cmdDeps(arg1).catch(console.error);
+    // Support both: `deps taskId` (legacy) and `deps --id taskId --add/--remove` (new)
+    if (arg1 && !arg1.startsWith('--')) {
+      flags.id = arg1;
+    }
+    cmdDeps(flags).catch(console.error);
     break;
   case 'note':
     cmdNote(arg1).catch(console.error);
@@ -5098,14 +5918,24 @@ switch (command) {
   case 'materials-check':
     cmdMaterialsCheck().catch(console.error);
     break;
-  case 'question':
+  // Issue commands (unified issues system)
+  case 'issue':
+  case 'question': // Backward compatibility alias
     cmdQuestion(arg1).catch(console.error);
     break;
-  case 'questions':
-    cmdQuestions(args.includes('--all'));
+  case 'issues':
+  case 'questions': // Backward compatibility alias
+    cmdQuestions(flags).catch(console.error);
     break;
-  case 'answer':
+  case 'respond':
+  case 'answer': // Backward compatibility alias
     cmdAnswer(arg1).catch(console.error);
+    break;
+  case 'dismiss':
+    cmdDismiss(arg1).catch(console.error);
+    break;
+  case 'detect':
+    cmdDetect();
     break;
   case 'review':
     cmdReview(arg1).catch(console.error);
@@ -5138,16 +5968,32 @@ ${yellow('Commands:')}
   materials [task-id]  Manage material dependencies
   materials-check      Scan materials and create missing questions
   note <task-id>       Add a note to task
-  question [id]        Add new structured question or manage existing
-  questions [--all]    List open questions (--all includes resolved)
-  answer [id]          Answer a question with structured response
-  review [id]          Review answered questions with impact analysis
   list                 List all tasks
   show <task-id>       Show task details
   validate             Validate data.json
   export               Export to spreadsheet with guardrails
 
-${yellow('Question Types:')}
+${yellow('Issues (Unified):')}
+  issues [--action]    List issues (filter by action category)
+  issue [id]           Add new issue or manage existing
+  respond [id]         Answer an issue with structured response
+  review [id]          Review answered issues with impact analysis
+  detect               Run auto-detection rules (conflicts, past-due, etc.)
+  dismiss [id]         Dismiss an auto-detected issue
+
+${yellow('Materials:')}
+  materials [task-id]  Manage material dependencies
+  materials-check      Scan materials and create missing issues
+
+${yellow('Action Categories:')}
+  ASSIGN     What do I need to assign? (Brandon)
+  SCHEDULE   What do I need to schedule? (Brandon)
+  ORDER      What's ready to order? (Tonia)
+  SPECIFY    What needs specs/quantity? (Tonia)
+  TRACK      What needs delivery tracking? (Tonia)
+  DECIDE     What decisions are needed? (Varies)
+
+${yellow('Issue Types:')}
   assignee       Who should do X? → Select vendor
   date           When should X happen? → Single date
   date-range     What dates for X? → Start and end dates
@@ -5159,22 +6005,28 @@ ${yellow('Question Types:')}
   free-text      Open-ended → Free-form text
 
 ${yellow('Examples:')}
-  ${dim('# Interactive mode (no flags or --interactive)')}
+  ${dim('# Issue filtering')}
+  npm run task issues                     # All open issues
+  npm run task issues --action ASSIGN     # What needs assignment?
+  npm run task issues --action SCHEDULE   # What needs scheduling?
+  npm run task issues --action ORDER      # What's ready to order?
+  npm run task issues --assignee tonia    # Tonia's issues
+
+  ${dim('# Auto-detection')}
+  npm run task detect                     # Find conflicts, past-due items
+  npm run task dismiss <id>               # Dismiss a warning
+
+  ${dim('# Tasks (interactive mode)')}
   npm run task add
   npm run task add-subtask
 
-  ${dim('# Flag-based mode (for scripting/skills)')}
+  ${dim('# Tasks (flag-based for scripting)')}
   npm run task add --name "Install dryer vents" --category finish --status needs-scheduled
   npm run task add --name "Paint doors" --category paint --assignee eliseo --start 2026-02-01 --end 2026-02-02
-  npm run task add-subtask --parent install-doors --name "Install weatherstripping" --assignee eliseo
 
   ${dim('# Other commands')}
   npm run task status finish-trim
   npm run task deps hvac-registers
-  npm run task materials kitchen-crown-molding
-  npm run task materials-check           # Scan and create material questions
-  npm run task question                  # Add new structured question
-  npm run task questions                 # List open questions
   npm run task export
 
 ${yellow('Add Task Flags:')}

@@ -232,6 +232,17 @@ for (const item of allItems) {
   }
 }
 
+// Build map of task IDs to their open questions
+const taskOpenQuestions = {};
+for (const question of (data.questions || [])) {
+  if (question.status === 'open' && question.relatedTask) {
+    if (!taskOpenQuestions[question.relatedTask]) {
+      taskOpenQuestions[question.relatedTask] = [];
+    }
+    taskOpenQuestions[question.relatedTask].push(question);
+  }
+}
+
 // Detect issues
 function detectIssues(item) {
   const issues = [];
@@ -257,34 +268,89 @@ function detectIssues(item) {
     issues.push('No date set but blocks other tasks');
   }
 
+  // Flag external dependencies for visibility (subtasks depending on tasks outside their parent)
+  if (item.parentId) {
+    const externalDeps = item.dependencies.filter(depId => {
+      const dep = itemMap[depId];
+      return dep && dep.parentId !== item.parentId;
+    });
+    if (externalDeps.length > 0) {
+      issues.push(`Waits for: ${externalDeps.join(', ')}`);
+    }
+  }
+
+  // Check for open questions linked to this task
+  const openQuestions = taskOpenQuestions[item.id] || [];
+  if (openQuestions.length > 0) {
+    for (const q of openQuestions) {
+      const assignee = q.assignee ? q.assignee.charAt(0).toUpperCase() + q.assignee.slice(1) : 'Unknown';
+      const questionText = q.prompt || q.question || 'Question pending';
+      // Truncate long questions
+      const truncated = questionText.length > 40 ? questionText.substring(0, 37) + '...' : questionText;
+      issues.push(`❓ ${assignee}: ${truncated}`);
+    }
+  }
+
   return issues;
 }
 
-// Build schedule rows
+// Build schedule rows grouped by parent task
 const scheduleRows = [];
 scheduleRows.push([
   'Order', 'Type', 'Task ID', 'Name', 'Status', 'Current Start', 'Current End',
   'Proposed Start', 'Assignee', 'Dependencies', 'Issues'
 ]);
 
+// Statuses that indicate task is no longer actionable
+const closedStatuses = ['completed', 'cancelled', 'confirmed'];
+
+// Get open parent tasks only, sorted by dependency order
+const parentTasks = sortedItems.filter(item =>
+  item.type === 'TASK' && !closedStatuses.includes(item.status)
+);
+
 let order = 1;
-for (const item of sortedItems) {
-  const dates = proposedDates[item.id];
-  const issues = detectIssues(item);
+for (const parent of parentTasks) {
+  // Add parent task row
+  const parentDates = proposedDates[parent.id];
+  const parentIssues = detectIssues(parent);
 
   scheduleRows.push([
     order++,
-    item.type,
-    item.id,
-    item.type === 'subtask' ? `  ${item.name}` : item.name,
-    item.status,
-    formatDate(item.start),
-    formatDate(item.end),
-    formatDate(dates.proposedStart),
-    item.assignee || 'Needs Assignment',
-    item.dependencies.join(', '),
-    issues.join('; ')
+    parent.type,
+    parent.id,
+    parent.name,
+    parent.status,
+    formatDate(parent.start),
+    formatDate(parent.end),
+    formatDate(parentDates.proposedStart),
+    parent.assignee || 'Needs Assignment',
+    parent.dependencies.join(', '),
+    parentIssues.join('; ')
   ]);
+
+  // Add subtasks immediately after parent (only open ones)
+  const subtasks = sortedItems.filter(item =>
+    item.parentId === parent.id && !closedStatuses.includes(item.status)
+  );
+  for (const sub of subtasks) {
+    const subDates = proposedDates[sub.id];
+    const subIssues = detectIssues(sub);
+
+    scheduleRows.push([
+      order++,
+      sub.type,
+      sub.id,
+      `  ${sub.name}`,
+      sub.status,
+      formatDate(sub.start),
+      formatDate(sub.end),
+      formatDate(subDates.proposedStart),
+      sub.assignee || 'Needs Assignment',
+      sub.dependencies.join(', '),
+      subIssues.join('; ')
+    ]);
+  }
 }
 
 // ============ TASKS + SUBTASKS (HIERARCHICAL) TAB ============
@@ -446,13 +512,15 @@ for (const vendor of data.vendors) {
 const ASSIGNEE_DISPLAY_NAMES = {
   brandon: 'Brandon',
   dave: 'Dave',
-  tonia: 'Tonia'
+  tonia: 'Tonia',
+  system: 'System'
 };
 
 const STATUS_DISPLAY_NAMES = {
   open: 'Open',
   answered: 'Answered',
-  resolved: 'Resolved'
+  resolved: 'Resolved',
+  dismissed: 'Dismissed'
 };
 
 const QUESTION_TYPE_DISPLAY = {
@@ -465,6 +533,11 @@ const QUESTION_TYPE_DISPLAY = {
   'material-status': 'Material Status',
   'notification': 'Notification',
   'free-text': 'Free Text',
+  'schedule-conflict': 'Conflict',
+  'missing-assignee': 'Missing Assignee',
+  'past-due': 'Past Due',
+  'unscheduled-blocker': 'Blocking',
+  'material-overdue': 'Overdue',
 };
 
 const REVIEW_STATUS_DISPLAY = {
@@ -472,6 +545,96 @@ const REVIEW_STATUS_DISPLAY = {
   accepted: 'Accepted',
   rejected: 'Rejected'
 };
+
+// Action category display names
+const CATEGORY_DISPLAY_NAMES = {
+  'ASSIGN': 'Assign',
+  'SCHEDULE': 'Schedule',
+  'ORDER': 'Order',
+  'SPECIFY': 'Specify',
+  'TRACK': 'Track',
+  'DECIDE': 'Decide'
+};
+
+// Action category colors (light pastels for row backgrounds)
+const CATEGORY_COLORS = {
+  'ASSIGN': 'DEEBF7',    // Light blue
+  'SCHEDULE': 'FCE4D6',  // Light orange
+  'ORDER': 'E2EFDA',     // Light green
+  'SPECIFY': 'FFF2CC',   // Light yellow
+  'TRACK': 'E4DFEC',     // Light purple
+  'DECIDE': 'F2F2F2'     // Light gray (neutral)
+};
+
+// Category sort order (for spreadsheet grouping)
+const CATEGORY_SORT_ORDER = {
+  'ASSIGN': 1,
+  'SCHEDULE': 2,
+  'ORDER': 3,
+  'SPECIFY': 4,
+  'TRACK': 5,
+  'DECIDE': 6
+};
+
+/**
+ * Compute ActionCategory for a question if not already set.
+ * This mirrors the logic in task.js for questions created before the category field was added.
+ */
+function computeCategory(question) {
+  if (question.category) return question.category;
+
+  const { type, relatedMaterial, relatedTask, prompt = '', question: legacyPrompt = '' } = question;
+  const promptText = (prompt || legacyPrompt).toLowerCase();
+
+  // Assignee questions are always ASSIGN
+  if (type === 'assignee' || type === 'missing-assignee') {
+    return 'ASSIGN';
+  }
+
+  // Schedule-related types for tasks
+  if (type === 'schedule-conflict' || type === 'unscheduled-blocker' || type === 'past-due') {
+    return 'SCHEDULE';
+  }
+
+  // Material-related questions
+  if (relatedMaterial) {
+    if (type === 'material-overdue' || type === 'date' ||
+        (type === 'free-text' && (promptText.includes('delivery') || promptText.includes('expected')))) {
+      return 'TRACK';
+    }
+    if (type === 'material-status') {
+      return 'TRACK';
+    }
+    if (type === 'yes-no' && (promptText.includes('order') || promptText.includes('purchase'))) {
+      return 'ORDER';
+    }
+    if (type === 'free-text') {
+      return 'SPECIFY';
+    }
+  }
+
+  // Task date questions → SCHEDULE
+  if ((type === 'date' || type === 'date-range') && relatedTask) {
+    return 'SCHEDULE';
+  }
+
+  // Dependency questions → DECIDE
+  if (type === 'dependency' || type === 'notification' || type === 'yes-no') {
+    return 'DECIDE';
+  }
+
+  // Free-text task questions
+  if (type === 'free-text' && relatedTask && !relatedMaterial) {
+    if (promptText.includes('schedul') || promptText.includes('date') || promptText.includes('when')) {
+      return 'SCHEDULE';
+    }
+    if (promptText.includes('assign') || promptText.includes('who')) {
+      return 'ASSIGN';
+    }
+  }
+
+  return 'DECIDE';
+}
 
 // Helper to format structured response for display
 function formatStructuredResponse(response) {
@@ -503,11 +666,22 @@ function formatStructuredResponse(response) {
 
 const openQuestionsRows = [];
 openQuestionsRows.push([
-  'Question ID', 'Type', 'Created', 'Question', 'Assignee', 'Related Task', 'Related Material',
+  'Action', 'Question ID', 'Type', 'Created', 'Question', 'Assignee', 'Related Task', 'Related Material',
   'Response', 'Notes', 'Status', 'Review Status'
 ]);
 
-for (const question of (data.questions || [])) {
+// Sort questions by Action category for better grouping
+const sortedQuestions = [...(data.questions || [])].sort((a, b) => {
+  const catA = computeCategory(a);
+  const catB = computeCategory(b);
+  const orderA = CATEGORY_SORT_ORDER[catA] || 99;
+  const orderB = CATEGORY_SORT_ORDER[catB] || 99;
+  if (orderA !== orderB) return orderA - orderB;
+  // Secondary sort by assignee within category
+  return (a.assignee || '').localeCompare(b.assignee || '');
+});
+
+for (const question of sortedQuestions) {
   // Get question text from prompt (new) or question (legacy) field
   const questionText = question.prompt || question.question || '';
 
@@ -517,7 +691,11 @@ for (const question of (data.questions || [])) {
   // Format response based on type
   const responseDisplay = formatStructuredResponse(question.response);
 
+  // Compute category if not already set
+  const category = computeCategory(question);
+
   openQuestionsRows.push([
+    CATEGORY_DISPLAY_NAMES[category] || category,
     question.id,
     QUESTION_TYPE_DISPLAY[questionType] || questionType,
     question.created,
@@ -765,6 +943,7 @@ wsVendorsData['!cols'] = [
 ];
 
 wsOpenQuestionsData['!cols'] = [
+  { wch: 10 }, // Action (category)
   { wch: 25 }, // Question ID
   { wch: 14 }, // Type
   { wch: 12 }, // Created
@@ -982,29 +1161,48 @@ for (let row = 1; row < vendorsRows.length; row++) {
   }
 }
 
-// Apply formatting to Open Questions sheet
-styleHeaderRow(wsOpenQuestionsData, 11);
+// Apply formatting to Open Questions sheet (now 12 columns with Action)
+styleHeaderRow(wsOpenQuestionsData, 12);
 setRowHeight(wsOpenQuestionsData, 0, 30);
+
+// Helper to get darker shade for alternating rows
+function darkenColor(hex) {
+  // Simple darkening: reduce each component by ~10%
+  const r = Math.max(0, parseInt(hex.slice(0, 2), 16) - 15);
+  const g = Math.max(0, parseInt(hex.slice(2, 4), 16) - 15);
+  const b = Math.max(0, parseInt(hex.slice(4, 6), 16) - 15);
+  return r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
+}
 
 for (let row = 1; row < openQuestionsRows.length; row++) {
   const rowData = openQuestionsRows[row];
-  const status = rowData[9]; // Status column (index 9 with new columns)
-  const questionType = rowData[1]; // Type column (index 1)
+  const actionCategory = rowData[0]; // Action column (index 0)
+  const status = rowData[10]; // Status column (index 10 with new columns)
 
-  for (let col = 0; col < 11; col++) {
+  for (let col = 0; col < 12; col++) {
     const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
     if (wsOpenQuestionsData[cellRef]) {
-      // Color based on status: Open = yellow, Answered = light blue, Resolved = light green
-      // Notifications get orange when open
+      // Color based on Action category (unified issues system)
+      // Resolved/answered items get muted versions
+      let baseColor = 'FFFFFF';
+
+      // Get category key from display name
+      const categoryKey = Object.keys(CATEGORY_DISPLAY_NAMES).find(
+        k => CATEGORY_DISPLAY_NAMES[k] === actionCategory
+      );
+      if (categoryKey && CATEGORY_COLORS[categoryKey]) {
+        baseColor = CATEGORY_COLORS[categoryKey];
+      }
+
+      // Mute color for resolved/answered (add gray overlay effect)
       let fillColor;
-      if (status === 'Resolved') {
-        fillColor = row % 2 === 0 ? 'E2EFDA' : 'D6EAD0'; // Light green
+      if (status === 'Resolved' || status === 'Dismissed') {
+        fillColor = 'E8E8E8'; // Gray out resolved items
       } else if (status === 'Answered') {
-        fillColor = row % 2 === 0 ? 'DEEBF7' : 'D0E4F4'; // Light blue
-      } else if (questionType === 'Notification') {
-        fillColor = row % 2 === 0 ? 'FCE4D6' : 'F8CBAD'; // Light orange for notifications
+        fillColor = row % 2 === 0 ? baseColor : darkenColor(baseColor);
+        // Add a subtle indicator that it needs review
       } else {
-        fillColor = row % 2 === 0 ? 'FFFFFF' : 'FFF2CC'; // Yellow for Open
+        fillColor = row % 2 === 0 ? baseColor : darkenColor(baseColor);
       }
 
       applyCellStyle(wsOpenQuestionsData, cellRef, {
@@ -1092,7 +1290,7 @@ wsScheduleData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0
 wsTaskHierarchyData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: taskHierarchyRows.length - 1, c: 12 } }) };
 wsMaterialsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: materialsRows.length - 1, c: 11 } }) };
 wsVendorsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: vendorsRows.length - 1, c: 6 } }) };
-wsOpenQuestionsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: openQuestionsRows.length - 1, c: 10 } }) };
+wsOpenQuestionsData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: openQuestionsRows.length - 1, c: 11 } }) };
 wsByAssigneeData['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: byAssigneeRows.length - 1, c: 8 } }) };
 
 // Add sheet protection to all sheets except GC Action Needed

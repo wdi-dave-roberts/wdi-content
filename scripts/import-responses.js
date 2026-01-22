@@ -9,7 +9,12 @@ const dataPath = path.join(__dirname, "..", "projects/kitchen-remodel/data.json"
 
 // Read spreadsheet
 const wb = XLSX.readFile(googleDrivePath);
-const sheet = wb.Sheets["Open Questions"];
+// Support both "Open Questions" (current) and "Issues" (future) sheet names
+const sheet = wb.Sheets["Open Questions"] || wb.Sheets["Issues"];
+if (!sheet) {
+  console.error("Error: Could not find 'Open Questions' or 'Issues' sheet in spreadsheet");
+  process.exit(1);
+}
 const sheetData = XLSX.utils.sheet_to_json(sheet);
 
 // Read data.json

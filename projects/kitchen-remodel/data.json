@@ -27,14 +27,11 @@
     {
       "id": "finish-trim",
       "name": "Finish Trim",
-      "start": "2026-01-21",
-      "end": "2026-01-23",
+      "start": "2026-01-23",
+      "end": "2026-01-24",
       "category": "trim",
       "assignee": "vendor:eliseo",
       "status": "in-progress",
-      "dependencies": [
-        "hvac-registers"
-      ],
       "notes": "Trim joints should be finished with Bondo for wood, not wood filler and definitely not caulk.",
       "materialDependencies": [
         {
@@ -45,68 +42,82 @@
       ],
       "subtasks": [
         {
-          "id": "trim-passthrough",
+          "id": "finish-trim-1",
           "name": "Trim Passthrough",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "notes": "1. Casing must be same thickness all around for equipment install. \n2. Inside casing is 3/4\". \n3. Outside casing is 1/2\" - need to plane 3/4\" to 1/2\" (Dave to provide planer). \n4. Trim height is 35 7/8\" - can be cut to 30\" to fit opening. Kat to reach out to Crest Mechanical. \n5. Opening width is 47 3/4\" - can be trimmed for tighter fit (site opening is 49\")."
+          "notes": "1. Casing must be same thickness all around for equipment install. \n2. Inside casing is 3/4\". \n3. Outside casing is 1/2\" - need to plane 3/4\" to 1/2\" (Dave to provide planer). \n4. Trim height is 35 7/8\" - can be cut to 30\" to fit opening. Kat to reach out to Crest Mechanical. \n5. Opening width is 47 3/4\" - can be trimmed for tighter fit (site opening is 49\").",
+          "start": "2026-01-23",
+          "end": "2026-01-24"
         },
         {
-          "id": "adjust-hallway-openings",
+          "id": "finish-trim-2",
           "name": "Adjust Hallway Opening Heights",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "notes": "1. Kitchen to storage: 4 1/2\" from ceiling in small storage room to finished opening height. \n2. Storage to back door: 4 1/2\" from ceiling from pantry side to finished opening height. \n3. Locations marked in pencil on openings, left side at top."
+          "notes": "1. Kitchen to storage: 4 1/2\" from ceiling in small storage room to finished opening height. \n2. Storage to back door: 4 1/2\" from ceiling from pantry side to finished opening height. \n3. Locations marked in pencil on openings, left side at top.",
+          "start": "2026-01-23",
+          "end": "2026-01-24"
         },
         {
-          "id": "kitchen-crown-molding",
+          "id": "finish-trim-3",
           "name": "Kitchen Crown Molding",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "dependencies": [
-            "hvac-registers"
-          ],
           "materialDependencies": [
             "crown-molding"
           ],
-          "notes": "1. Need to figure out how to handle the sagging joist (Can handle it by floating the ceiling from chase to the dip over the door.) \n2. Registers in laundry and storage room may be too low for crown molding. \n3. Need to verify once crown is on site. \n4. HVAC can be scheduled for 1/22 or 1/23 - confirmed we cannot adjust the registers ourselves from Joclar & Fields."
-        },
-        {
-          "id": "laundry-crown-molding",
-          "name": "Laundry Crown Molding",
-          "status": "scheduled",
-          "assignee": "vendor:eliseo",
+          "notes": "1. Need to figure out how to handle the sagging joist (Can handle it by floating the ceiling from chase to the dip over the door.) \n2. Registers in laundry and storage room may be too low for crown molding. \n3. Need to verify once crown is on site. \n4. HVAC can be scheduled for 1/22 or 1/23 - confirmed we cannot adjust the registers ourselves from Joclar & Fields.",
+          "start": "2026-01-23",
+          "end": "2026-01-24",
           "dependencies": [
-            "hvac-registers"
-          ],
-          "materialDependencies": [
-            "crown-molding"
+            "painting-1"
           ]
         },
         {
-          "id": "kitchen-main-door-casing",
+          "id": "finish-trim-4",
+          "name": "Laundry Crown Molding",
+          "status": "scheduled",
+          "assignee": "vendor:eliseo",
+          "materialDependencies": [
+            "crown-molding"
+          ],
+          "start": "2026-01-23",
+          "end": "2026-01-24"
+        },
+        {
+          "id": "finish-trim-5",
           "name": "Kitchen Main Door Casing",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "notes": "1. Light switch is so close to casing - need to case around light switch. 2. Need reveal on door casing (currently flush) - reveal should match standard reveal (e.g., match windows reveal)."
+          "notes": "1. Light switch is so close to casing - need to case around light switch. 2. Need reveal on door casing (currently flush) - reveal should match standard reveal (e.g., match windows reveal).",
+          "start": "2026-01-23",
+          "end": "2026-01-24"
         },
         {
-          "id": "baseboard-install-scupernong",
+          "id": "finish-trim-6",
           "name": "Install Baseboard in Scupernong",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
           "dependencies": [
-            "finish-drywall-scupernong",
-            "paint-scupernong"
+            "finish-drywall-2",
+            "painting-2"
           ],
-          "notes": "Requires Scupernong drywall and paint complete first."
+          "notes": "Requires Scupernong drywall and paint complete first.",
+          "start": "2026-01-23",
+          "end": "2026-01-24"
         },
         {
-          "id": "triple-window-header-trim",
+          "id": "finish-trim-7",
           "name": "Change header trim over triple window to match other window",
           "status": "scheduled",
-          "assignee": "vendor:eliseo"
+          "assignee": "vendor:eliseo",
+          "start": "2026-01-23",
+          "end": "2026-01-24"
         }
+      ],
+      "dependencies": [
+        "painting"
       ]
     },
     {
@@ -140,7 +151,7 @@
           "notes": "Existing 32\" door."
         },
         {
-          "id": "hinges-main-kitchen-door",
+          "id": "hinges-install-doors-1",
           "name": "Hinges (Main Kitchen Door)",
           "status": "ordered",
           "quantity": 4,
@@ -186,17 +197,17 @@
       ],
       "subtasks": [
         {
-          "id": "main-kitchen-door",
+          "id": "install-doors-1",
           "name": "Main Kitchen Door",
           "status": "needs-scheduled",
           "materialDependencies": [
             "door-main-kitchen",
-            "hinges-main-kitchen-door"
+            "hinges-install-doors-1"
           ],
           "notes": "1. Hinges to be delivered 1/22. 2. Door is in the garage."
         },
         {
-          "id": "install-back-door",
+          "id": "install-doors-2",
           "name": "Install Back Door",
           "status": "needs-scheduled",
           "materialDependencies": [
@@ -208,7 +219,7 @@
           "notes": "1. Door is in the garage. 2. Install with Antique Bronze hinges. 3. Install existing antique bronze electronic deadbolt and door knob provided by owner."
         },
         {
-          "id": "hvac-door",
+          "id": "install-doors-3",
           "name": "HVAC Door",
           "status": "needs-scheduled",
           "materialDependencies": [
@@ -247,9 +258,10 @@
       "end": "2026-01-22",
       "category": "mechanical",
       "assignee": "vendor:joclar-fields",
-      "status": "scheduled",
+      "status": "cancelled",
       "notes": "Registers in laundry and storage room may be too low for crown molding. Also available 1/23 if needed.",
-      "subtasks": []
+      "subtasks": [],
+      "comments": "1. 2026-01-21: Cancelled - Registers will work but barely - using low profile registers instead"
     },
     {
       "id": "crest-prep",
@@ -286,7 +298,7 @@
       ],
       "subtasks": [
         {
-          "id": "verify-install-time",
+          "id": "crest-installation-1",
           "name": "Verify Install Time",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
@@ -304,19 +316,19 @@
       ],
       "subtasks": [
         {
-          "id": "schedule-finish-plumbing",
+          "id": "finish-plumbing-1",
           "name": "Schedule Finish Plumbing",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
         },
         {
-          "id": "finish-plumbing-work",
+          "id": "finish-plumbing-2",
           "name": "Finish Plumbing",
           "status": "needs-scheduled",
           "assignee": "vendor:chris-bland"
         },
         {
-          "id": "install-handsink-laundry",
+          "id": "finish-plumbing-3",
           "name": "Install Existing Handsink in Laundry Room",
           "status": "needs-scheduled",
           "assignee": "vendor:chris-bland",
@@ -339,13 +351,13 @@
       ],
       "subtasks": [
         {
-          "id": "schedule-baseboard-install",
+          "id": "kitchen-baseboard-1",
           "name": "Schedule Baseboard Install",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
         },
         {
-          "id": "baseboard-install",
+          "id": "kitchen-baseboard-2",
           "name": "Baseboard Install",
           "status": "needs-scheduled",
           "assignee": "vendor:jerum"
@@ -377,7 +389,7 @@
       ],
       "subtasks": [
         {
-          "id": "move-mop-sink-receptacle",
+          "id": "finish-electrical-1",
           "name": "Move Receptacle Over Mop Sink",
           "end": "2026-01-26",
           "status": "needs-scheduled",
@@ -385,7 +397,7 @@
           "notes": "Move to left of hand sink."
         },
         {
-          "id": "install-coach-lamp",
+          "id": "finish-electrical-2",
           "name": "Install Coach Lamp",
           "end": "2026-01-26",
           "status": "needs-scheduled",
@@ -395,7 +407,7 @@
           ]
         },
         {
-          "id": "install-light-string-receptacle",
+          "id": "finish-electrical-3",
           "name": "Install Receptacle for Light Strings",
           "end": "2026-01-26",
           "status": "needs-scheduled",
@@ -403,33 +415,33 @@
           "notes": "For light strings that criss-cross to firepit."
         },
         {
-          "id": "add-tv-receptacle",
+          "id": "finish-electrical-4",
           "name": "Add Receptacle for TV Over Passthrough",
           "end": "2026-01-26",
           "status": "needs-scheduled",
           "assignee": "vendor:dion-cahoon"
         },
         {
-          "id": "finish-lighting-install",
+          "id": "finish-electrical-5",
           "name": "Finish Lighting Install",
           "end": "2026-01-26",
           "status": "needs-scheduled",
           "assignee": "vendor:dion-cahoon"
         },
         {
-          "id": "schedule-electrical-signoff",
+          "id": "finish-electrical-6",
           "name": "Schedule Electrical Sign-off",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
         },
         {
-          "id": "electrical-signoff",
+          "id": "finish-electrical-7",
           "name": "Electrical Sign-off",
           "status": "needs-scheduled",
           "assignee": "vendor:craig-davenport"
         },
         {
-          "id": "connect-passthrough-heat-lamp",
+          "id": "finish-electrical-8",
           "name": "Connect Passthrough Heat Lamp",
           "status": "needs-scheduled",
           "assignee": "vendor:dion-cahoon",
@@ -450,14 +462,14 @@
       "notes": "Dave coordinating and responsible. Dependency for siding install.",
       "subtasks": [
         {
-          "id": "install-propane-line",
+          "id": "propane-1",
           "name": "Install Propane Line for Gas Range",
           "status": "needs-scheduled",
           "assignee": "vendor:dion-cahoon",
           "notes": "1. Installed in secure box in wall to right of existing stainless steel wall covering. 2. Must be installed before remaining stainless is installed on Friday 1/23."
         },
         {
-          "id": "propane-line-remediation",
+          "id": "propane-2",
           "name": "Propane Line Remediation",
           "status": "scheduled",
           "assignee": "vendor:beach-gas",
@@ -488,32 +500,38 @@
       "assignee": "vendor:eliseo",
       "status": "scheduled",
       "dependencies": [
-        "finish-trim",
         "finish-drywall"
       ],
       "subtasks": [
         {
-          "id": "paint-kitchen",
+          "id": "painting-1",
           "name": "Paint Kitchen",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "notes": "Requires finish-drywall-kitchen complete first."
+          "notes": "Requires finish-drywall-1 complete first.",
+          "dependencies": [
+            "finish-drywall-1"
+          ]
         },
         {
-          "id": "paint-scupernong",
+          "id": "painting-2",
           "name": "Paint Scupernong",
           "status": "scheduled",
           "assignee": "vendor:eliseo",
-          "notes": "Requires finish-drywall-scupernong complete first."
+          "notes": "Requires finish-drywall-2 complete first.",
+          "dependencies": [
+            "finish-drywall-2",
+            "finish-drywall-4"
+          ]
         },
         {
-          "id": "paint-lobby-passthrough",
+          "id": "painting-3",
           "name": "Paint Lobby Passthrough Wall",
           "status": "needs-scheduled",
           "assignee": "vendor:eliseo"
         },
         {
-          "id": "paint-doors",
+          "id": "painting-4",
           "name": "Paint Doors (Kitchen Main, Back, HVAC)",
           "status": "needs-scheduled",
           "assignee": "vendor:eliseo",
@@ -523,7 +541,7 @@
           "notes": "Paint after door installation (1/24). 3 doors total."
         },
         {
-          "id": "touch-up-ceiling",
+          "id": "painting-5",
           "name": "Touch Up Ceiling Damage (as needed)",
           "status": "needs-scheduled",
           "assignee": "vendor:eliseo"
@@ -540,17 +558,36 @@
       "status": "scheduled",
       "subtasks": [
         {
-          "id": "finish-drywall-kitchen",
+          "id": "finish-drywall-1",
           "name": "Finish Drywall Kitchen",
           "status": "needs-scheduled",
+          "assignee": "vendor:eliseo",
+          "dependencies": [
+            "framing"
+          ]
+        },
+        {
+          "id": "finish-drywall-2",
+          "name": "Finish Drywall Scupernong",
+          "status": "scheduled",
           "assignee": "vendor:eliseo"
         },
         {
-          "id": "finish-drywall-scupernong",
-          "name": "Finish Drywall Scupernong",
-          "status": "needs-scheduled",
-          "assignee": "vendor:eliseo"
+          "id": "finish-drywall-3",
+          "name": "Finish drywall around back door",
+          "status": "scheduled",
+          "dependencies": [
+            "install-doors-2"
+          ]
+        },
+        {
+          "id": "finish-drywall-4",
+          "name": "Drywall patch two light holes in Scupernong",
+          "status": "scheduled"
         }
+      ],
+      "dependencies": [
+        "framing"
       ]
     },
     {
@@ -563,7 +600,7 @@
       ],
       "subtasks": [
         {
-          "id": "install-dishwasher",
+          "id": "kitchen-put-back-1",
           "name": "Install Dishwasher",
           "category": "electrical",
           "status": "needs-scheduled",
@@ -574,12 +611,12 @@
           ]
         },
         {
-          "id": "install-ovens",
+          "id": "kitchen-put-back-2",
           "name": "Install Ovens",
           "status": "needs-scheduled"
         },
         {
-          "id": "move-appliances",
+          "id": "kitchen-put-back-3",
           "name": "Move Range, Freezers and Refrigerators",
           "status": "needs-scheduled"
         }
@@ -604,13 +641,13 @@
       ],
       "subtasks": [
         {
-          "id": "schedule-siding",
+          "id": "siding-1",
           "name": "Schedule Siding",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
         },
         {
-          "id": "siding-work",
+          "id": "siding-2",
           "name": "Siding",
           "status": "needs-scheduled",
           "assignee": "vendor:sergio"
@@ -624,24 +661,24 @@
       "assignee": "vendor:brandon",
       "subtasks": [
         {
-          "id": "schedule-town-manteo",
+          "id": "inspection-1",
           "name": "Schedule Town of Manteo",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
         },
         {
-          "id": "schedule-dare-county-health",
+          "id": "inspection-2",
           "name": "Schedule Dare County Health",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
         },
         {
-          "id": "town-manteo-inspection",
+          "id": "inspection-3",
           "name": "Town of Manteo",
           "status": "needs-scheduled"
         },
         {
-          "id": "dare-county-health-inspection",
+          "id": "inspection-4",
           "name": "Dare County Health",
           "status": "needs-scheduled"
         }
@@ -670,7 +707,7 @@
       ],
       "subtasks": [
         {
-          "id": "install-pot-rack",
+          "id": "misc-equipment-install-1",
           "name": "Install Pot Rack",
           "status": "needs-scheduled",
           "materialDependencies": [
@@ -678,7 +715,7 @@
           ]
         },
         {
-          "id": "install-retractable-extension-cord",
+          "id": "misc-equipment-install-2",
           "name": "Install Retractable Extension Cord",
           "status": "needs-scheduled",
           "materialDependencies": [
@@ -718,19 +755,19 @@
       "notes": "Requires cabinet crown installation.",
       "subtasks": [
         {
-          "id": "upper-cabinet-delivery",
+          "id": "upper-cabinet-install-1",
           "name": "Upper Cabinet Delivery",
           "start": "2026-01-22",
           "status": "confirmed"
         },
         {
-          "id": "schedule-upper-cabinet-install",
+          "id": "upper-cabinet-install-2",
           "name": "Schedule Installation",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon"
         },
         {
-          "id": "install-upper-cabinets",
+          "id": "upper-cabinet-install-3",
           "name": "Install Upper Cabinets",
           "status": "needs-scheduled",
           "materialDependencies": [
@@ -763,41 +800,92 @@
       "notes": "Final punch acceptance criteria: All work complete per contract scope, all inspections passed, all equipment operational, no safety hazards, cosmetic defects documented and remediated.",
       "subtasks": [
         {
-          "id": "schedule-final-punch",
+          "id": "project-finish-1",
           "name": "Schedule Final Punch Walkthrough",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon",
           "notes": "Coordinate with owner for walkthrough date/time."
         },
         {
-          "id": "final-punch-walkthrough",
+          "id": "project-finish-2",
           "name": "Final Punch Walkthrough",
           "status": "needs-scheduled",
           "assignee": "vendor:dave",
           "notes": "Owner walks job with GC to identify any remaining items. Document all punch items."
         },
         {
-          "id": "punch-remediation",
+          "id": "project-finish-3",
           "name": "Punch List Remediation",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon",
           "notes": "GC addresses all documented punch items."
         },
         {
-          "id": "final-clean",
+          "id": "project-finish-4",
           "name": "Final Clean",
           "status": "needs-scheduled",
           "assignee": "vendor:brandon",
           "dependencies": [
-            "punch-remediation"
+            "project-finish-3"
           ]
         },
         {
-          "id": "final-acceptance",
+          "id": "project-finish-5",
           "name": "Final Acceptance",
           "status": "needs-scheduled",
           "assignee": "vendor:dave",
           "notes": "Owner confirms all punch items resolved. Project complete."
+        }
+      ]
+    },
+    {
+      "id": "install-hvac-registers",
+      "name": "Install HVAC Registers",
+      "category": "finish",
+      "status": "needs-scheduled",
+      "notes": "Need to check with Chad if he's providing and installing these",
+      "materials": [
+        {
+          "id": "registers-pantry",
+          "name": "Registers (Pantry)",
+          "status": "need-to-order",
+          "quantity": 2,
+          "detail": "Low profile"
+        },
+        {
+          "id": "registers-laundry",
+          "name": "Registers (Laundry)",
+          "status": "need-to-order",
+          "quantity": 2
+        },
+        {
+          "id": "registers-kitchen",
+          "name": "Registers (Kitchen)",
+          "status": "need-to-order",
+          "quantity": 8,
+          "detail": "TBD"
+        }
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "framing",
+      "name": "Framing",
+      "category": "framing",
+      "status": "needs-scheduled",
+      "assignee": "vendor:danny",
+      "subtasks": [
+        {
+          "id": "framing-1",
+          "name": "Adjust kitchen to pantry hallway opening",
+          "status": "needs-scheduled",
+          "assignee": "vendor:danny"
+        },
+        {
+          "id": "framing-2",
+          "name": "Adjust pantry to back door hallway opening",
+          "status": "needs-scheduled",
+          "assignee": "vendor:danny"
         }
       ]
     }
@@ -939,7 +1027,7 @@
       "relatedTask": "build-back-deck"
     },
     {
-      "id": "sq-assignee-move-appliances",
+      "id": "sq-assignee-kitchen-put-back-3",
       "created": "2026-01-20",
       "type": "assignee",
       "prompt": "Who moves range, freezers and refrigerators for Kitchen Put-Back?",
@@ -949,7 +1037,7 @@
       "relatedTask": "kitchen-put-back"
     },
     {
-      "id": "sq-assignee-install-ovens",
+      "id": "sq-assignee-kitchen-put-back-2",
       "created": "2026-01-20",
       "type": "assignee",
       "prompt": "Who should install the ovens?",
@@ -1042,7 +1130,7 @@
       "prompt": "Who should install the retractable extension cord?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-retractable-extension-cord"
+      "relatedTask": "misc-equipment-install-2"
     },
     {
       "id": "sq-yesno-order-receptacle-covers",
@@ -1082,31 +1170,31 @@
       "relatedTask": "project-finish"
     },
     {
-      "id": "tq-free-text-main-kitchen-door-start-end-assignee",
+      "id": "tq-free-text-install-doors-1-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Main Kitchen Door\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "main-kitchen-door"
+      "relatedTask": "install-doors-1"
     },
     {
-      "id": "tq-free-text-install-back-door-start-end-assignee",
+      "id": "tq-free-text-install-doors-2-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Install Back Door\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-back-door"
+      "relatedTask": "install-doors-2"
     },
     {
-      "id": "tq-free-text-hvac-door-start-end-assignee",
+      "id": "tq-free-text-install-doors-3-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"HVAC Door\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "hvac-door"
+      "relatedTask": "install-doors-3"
     },
     {
       "id": "tq-date-range-build-back-deck-start-end",
@@ -1127,13 +1215,13 @@
       "relatedTask": "remove-old-porch"
     },
     {
-      "id": "tq-date-range-verify-install-time-start-end",
+      "id": "tq-date-range-crest-installation-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Verify Install Time\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "verify-install-time"
+      "relatedTask": "crest-installation-1"
     },
     {
       "id": "tq-date-range-finish-plumbing-start-end",
@@ -1145,283 +1233,283 @@
       "relatedTask": "finish-plumbing"
     },
     {
-      "id": "tq-date-range-schedule-finish-plumbing-start-end",
+      "id": "tq-date-range-finish-plumbing-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Finish Plumbing\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-finish-plumbing"
+      "relatedTask": "finish-plumbing-1"
     },
     {
-      "id": "tq-date-range-finish-plumbing-work-start-end",
+      "id": "tq-date-range-finish-plumbing-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Finish Plumbing\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "finish-plumbing-work"
+      "relatedTask": "finish-plumbing-2"
     },
     {
-      "id": "tq-date-range-install-handsink-laundry-start-end",
+      "id": "tq-date-range-finish-plumbing-3-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Install Existing Handsink in Laundry Room\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-handsink-laundry"
+      "relatedTask": "finish-plumbing-3"
     },
     {
-      "id": "tq-date-range-schedule-baseboard-install-start-end",
+      "id": "tq-date-range-kitchen-baseboard-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Baseboard Install\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-baseboard-install"
+      "relatedTask": "kitchen-baseboard-1"
     },
     {
-      "id": "tq-date-range-baseboard-install-start-end",
+      "id": "tq-date-range-kitchen-baseboard-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Baseboard Install\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "baseboard-install"
+      "relatedTask": "kitchen-baseboard-2"
     },
     {
-      "id": "tq-date-range-move-mop-sink-receptacle-start-end",
+      "id": "tq-date-range-finish-electrical-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Move Receptacle Over Mop Sink\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "move-mop-sink-receptacle"
+      "relatedTask": "finish-electrical-1"
     },
     {
-      "id": "tq-date-range-install-coach-lamp-start-end",
+      "id": "tq-date-range-finish-electrical-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Install Coach Lamp\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-coach-lamp"
+      "relatedTask": "finish-electrical-2"
     },
     {
-      "id": "tq-date-range-install-light-string-receptacle-start-end",
+      "id": "tq-date-range-finish-electrical-3-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Install Receptacle for Light Strings\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-light-string-receptacle"
+      "relatedTask": "finish-electrical-3"
     },
     {
-      "id": "tq-date-range-add-tv-receptacle-start-end",
+      "id": "tq-date-range-finish-electrical-4-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Add Receptacle for TV Over Passthrough\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "add-tv-receptacle"
+      "relatedTask": "finish-electrical-4"
     },
     {
-      "id": "tq-date-range-finish-lighting-install-start-end",
+      "id": "tq-date-range-finish-electrical-5-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Finish Lighting Install\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "finish-lighting-install"
+      "relatedTask": "finish-electrical-5"
     },
     {
-      "id": "tq-date-range-schedule-electrical-signoff-start-end",
+      "id": "tq-date-range-finish-electrical-6-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Electrical Sign-off\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-electrical-signoff"
+      "relatedTask": "finish-electrical-6"
     },
     {
-      "id": "tq-date-range-electrical-signoff-start-end",
+      "id": "tq-date-range-finish-electrical-7-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Electrical Sign-off\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "electrical-signoff"
+      "relatedTask": "finish-electrical-7"
     },
     {
-      "id": "tq-date-range-connect-passthrough-heat-lamp-start-end",
+      "id": "tq-date-range-finish-electrical-8-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Connect Passthrough Heat Lamp\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "connect-passthrough-heat-lamp"
+      "relatedTask": "finish-electrical-8"
     },
     {
-      "id": "tq-date-range-install-propane-line-start-end",
+      "id": "tq-date-range-propane-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Install Propane Line for Gas Range\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-propane-line"
+      "relatedTask": "propane-1"
     },
     {
-      "id": "tq-date-range-paint-lobby-passthrough-start-end",
+      "id": "tq-date-range-painting-3-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Paint Lobby Passthrough Wall\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "paint-lobby-passthrough"
+      "relatedTask": "painting-3"
     },
     {
-      "id": "tq-date-range-paint-doors-start-end",
+      "id": "tq-date-range-painting-4-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Paint Doors (Kitchen Main, Back, HVAC)\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "paint-doors"
+      "relatedTask": "painting-4"
     },
     {
-      "id": "tq-date-range-touch-up-ceiling-start-end",
+      "id": "tq-date-range-painting-5-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Touch Up Ceiling Damage (as needed)\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "touch-up-ceiling"
+      "relatedTask": "painting-5"
     },
     {
-      "id": "tq-date-range-finish-drywall-kitchen-start-end",
+      "id": "tq-date-range-finish-drywall-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Finish Drywall Kitchen\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "finish-drywall-kitchen"
+      "relatedTask": "finish-drywall-1"
     },
     {
-      "id": "tq-date-range-finish-drywall-scupernong-start-end",
+      "id": "tq-date-range-finish-drywall-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Finish Drywall Scupernong\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "finish-drywall-scupernong"
+      "relatedTask": "finish-drywall-2"
     },
     {
-      "id": "tq-date-range-install-dishwasher-start-end",
+      "id": "tq-date-range-kitchen-put-back-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Install Dishwasher\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-dishwasher"
+      "relatedTask": "kitchen-put-back-1"
     },
     {
-      "id": "tq-free-text-install-ovens-start-end-assignee",
+      "id": "tq-free-text-kitchen-put-back-2-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Install Ovens\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-ovens"
+      "relatedTask": "kitchen-put-back-2"
     },
     {
-      "id": "tq-free-text-move-appliances-start-end-assignee",
+      "id": "tq-free-text-kitchen-put-back-3-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Move Range, Freezers and Refrigerators\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "move-appliances"
+      "relatedTask": "kitchen-put-back-3"
     },
     {
-      "id": "tq-date-range-schedule-siding-start-end",
+      "id": "tq-date-range-siding-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Siding\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-siding"
+      "relatedTask": "siding-1"
     },
     {
-      "id": "tq-date-range-siding-work-start-end",
+      "id": "tq-date-range-siding-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Siding\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "siding-work"
+      "relatedTask": "siding-2"
     },
     {
-      "id": "tq-date-range-schedule-town-manteo-start-end",
+      "id": "tq-date-range-inspection-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Town of Manteo\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-town-manteo"
+      "relatedTask": "inspection-1"
     },
     {
-      "id": "tq-date-range-schedule-dare-county-health-start-end",
+      "id": "tq-date-range-inspection-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Dare County Health\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-dare-county-health"
+      "relatedTask": "inspection-2"
     },
     {
-      "id": "tq-free-text-town-manteo-inspection-start-end-assignee",
+      "id": "tq-free-text-inspection-3-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Town of Manteo\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "town-manteo-inspection"
+      "relatedTask": "inspection-3"
     },
     {
-      "id": "tq-free-text-dare-county-health-inspection-start-end-assignee",
+      "id": "tq-free-text-inspection-4-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Dare County Health\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "dare-county-health-inspection"
+      "relatedTask": "inspection-4"
     },
     {
-      "id": "tq-free-text-install-pot-rack-start-end-assignee",
+      "id": "tq-free-text-misc-equipment-install-1-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Install Pot Rack\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-pot-rack"
+      "relatedTask": "misc-equipment-install-1"
     },
     {
-      "id": "tq-date-range-schedule-upper-cabinet-install-start-end",
+      "id": "tq-date-range-upper-cabinet-install-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Installation\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-upper-cabinet-install"
+      "relatedTask": "upper-cabinet-install-2"
     },
     {
-      "id": "tq-free-text-install-upper-cabinets-start-end-assignee",
+      "id": "tq-free-text-upper-cabinet-install-3-start-end-assignee",
       "created": "2026-01-21",
       "type": "free-text",
       "prompt": "For \"Install Upper Cabinets\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "install-upper-cabinets"
+      "relatedTask": "upper-cabinet-install-3"
     },
     {
       "id": "tq-date-range-close-permit-start-end",
@@ -1442,49 +1530,49 @@
       "relatedTask": "project-finish"
     },
     {
-      "id": "tq-date-range-schedule-final-punch-start-end",
+      "id": "tq-date-range-project-finish-1-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Schedule Final Punch Walkthrough\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "schedule-final-punch"
+      "relatedTask": "project-finish-1"
     },
     {
-      "id": "tq-date-range-final-punch-walkthrough-start-end",
+      "id": "tq-date-range-project-finish-2-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Final Punch Walkthrough\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "final-punch-walkthrough"
+      "relatedTask": "project-finish-2"
     },
     {
-      "id": "tq-date-range-punch-remediation-start-end",
+      "id": "tq-date-range-project-finish-3-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Punch List Remediation\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "punch-remediation"
+      "relatedTask": "project-finish-3"
     },
     {
-      "id": "tq-date-range-final-clean-start-end",
+      "id": "tq-date-range-project-finish-4-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Final Clean\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "final-clean"
+      "relatedTask": "project-finish-4"
     },
     {
-      "id": "tq-date-range-final-acceptance-start-end",
+      "id": "tq-date-range-project-finish-5-start-end",
       "created": "2026-01-21",
       "type": "date-range",
       "prompt": "When should \"Final Acceptance\" be scheduled?",
       "assignee": "brandon",
       "status": "open",
-      "relatedTask": "final-acceptance"
+      "relatedTask": "project-finish-5"
     },
     {
       "id": "sq-date-hinges-back-door-expectedDate",
@@ -1558,6 +1646,272 @@
       "assignee": "brandon",
       "status": "open",
       "relatedTask": "install-doors"
+    },
+    {
+      "id": "sq-free-text-hallway-height",
+      "created": "2026-01-22",
+      "type": "free-text",
+      "prompt": "Dave to specify hallway height",
+      "question": "What is the desired finished height for the hallway openings? (kitchen-to-pantry and pantry-to-back-door)",
+      "assignee": "dave",
+      "status": "open",
+      "relatedTask": "framing"
+    },
+    {
+      "id": "id-unscheduled-blocker-install-doors",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Install Doors",
+      "prompt": "\"Install Doors\" has no scheduled dates but blocks 1 task(s): painting-4",
+      "relatedTask": "install-doors",
+      "relatedTasks": [
+        "painting-4"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-install-doors-2",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Install Back Door",
+      "prompt": "\"Install Back Door\" has no scheduled dates but blocks 1 task(s): finish-drywall-3",
+      "relatedTask": "install-doors-2",
+      "relatedTasks": [
+        "finish-drywall-3"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-remove-old-porch",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Remove Old Porch Steps and Posts",
+      "prompt": "\"Remove Old Porch Steps and Posts\" has no scheduled dates but blocks 1 task(s): build-back-deck",
+      "relatedTask": "remove-old-porch",
+      "relatedTasks": [
+        "build-back-deck"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-finish-plumbing",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Finish Plumbing",
+      "prompt": "\"Finish Plumbing\" has no scheduled dates but blocks 2 task(s): kitchen-put-back, kitchen-put-back-1",
+      "relatedTask": "finish-plumbing",
+      "relatedTasks": [
+        "kitchen-put-back",
+        "kitchen-put-back-1"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-painting-1",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Paint Kitchen",
+      "prompt": "\"Paint Kitchen\" has no scheduled dates but blocks 1 task(s): finish-trim-3",
+      "relatedTask": "painting-1",
+      "relatedTasks": [
+        "finish-trim-3"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-painting-2",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Paint Scupernong",
+      "prompt": "\"Paint Scupernong\" has no scheduled dates but blocks 1 task(s): finish-trim-6",
+      "relatedTask": "painting-2",
+      "relatedTasks": [
+        "finish-trim-6"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-finish-drywall-1",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Finish Drywall Kitchen",
+      "prompt": "\"Finish Drywall Kitchen\" has no scheduled dates but blocks 1 task(s): painting-1",
+      "relatedTask": "finish-drywall-1",
+      "relatedTasks": [
+        "painting-1"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-finish-drywall-2",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Finish Drywall Scupernong",
+      "prompt": "\"Finish Drywall Scupernong\" has no scheduled dates but blocks 2 task(s): finish-trim-6, painting-2",
+      "relatedTask": "finish-drywall-2",
+      "relatedTasks": [
+        "finish-trim-6",
+        "painting-2"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-finish-drywall-4",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Drywall patch two light holes in Scupernong",
+      "prompt": "\"Drywall patch two light holes in Scupernong\" has no scheduled dates but blocks 1 task(s): painting-2",
+      "relatedTask": "finish-drywall-4",
+      "relatedTasks": [
+        "painting-2"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-kitchen-put-back",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Kitchen Put-Back",
+      "prompt": "\"Kitchen Put-Back\" has no scheduled dates but blocks 1 task(s): project-finish",
+      "relatedTask": "kitchen-put-back",
+      "relatedTasks": [
+        "project-finish"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-inspection",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Inspection",
+      "prompt": "\"Inspection\" has no scheduled dates but blocks 2 task(s): close-permit, project-finish",
+      "relatedTask": "inspection",
+      "relatedTasks": [
+        "close-permit",
+        "project-finish"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-close-permit",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Close Building Permit",
+      "prompt": "\"Close Building Permit\" has no scheduled dates but blocks 1 task(s): project-finish",
+      "relatedTask": "close-permit",
+      "relatedTasks": [
+        "project-finish"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-project-finish-3",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Punch List Remediation",
+      "prompt": "\"Punch List Remediation\" has no scheduled dates but blocks 1 task(s): project-finish-4",
+      "relatedTask": "project-finish-3",
+      "relatedTasks": [
+        "project-finish-4"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
+    },
+    {
+      "id": "id-unscheduled-blocker-framing",
+      "created": "2026-01-22",
+      "type": "unscheduled-blocker",
+      "title": "Blocking: Framing",
+      "prompt": "\"Framing\" has no scheduled dates but blocks 2 task(s): finish-drywall, finish-drywall-1",
+      "relatedTask": "framing",
+      "relatedTasks": [
+        "finish-drywall",
+        "finish-drywall-1"
+      ],
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "unscheduled-blocker",
+      "lastChecked": "2026-01-22"
     }
   ],
   "budget": {
