@@ -34,6 +34,10 @@ Management tools and internal applications for White Doe Inn (Inspired Manteo Mo
 │       └── reference/         # Documents, receipts
 ├── scripts/
 │   ├── create-project.js      # Interactive project creation CLI
+│   ├── task.js                # Kitchen remodel CLI (npm run task)
+│   ├── task-lib.js            # Extracted pure functions (testable)
+│   ├── task-lib.test.js       # Tests for task-lib (77 tests)
+│   ├── fixtures/              # Test fixture data
 │   └── update-plugins.sh      # Re-vendor wdi plugin from source
 └── src/
     ├── main.ts                # Entry point - initializes Alpine.js
@@ -50,6 +54,8 @@ npm run dev            # Start development server
 npm run build          # TypeScript check + Vite production build
 npm run preview        # Preview production build locally
 npm run create-project # Create a new project (interactive CLI)
+npm test               # Run tests (vitest)
+npm run test:watch     # Run tests in watch mode
 ```
 
 ## Projects System
@@ -207,6 +213,43 @@ echo -e "Live at:\n  https://whitedoeinn.github.io/wdi-content/projects/my-proje
 - **Styling**: Most pages use DaisyUI; some (expense forms) use standalone CSS for print
 - **Alpine.js**: Available globally via `window.Alpine`
 - **Strict TypeScript**: Enabled with `noUnusedLocals`, `noUnusedParameters`
+
+## Testing
+
+The CLI (`scripts/task.js`) has automated tests using Vitest.
+
+### Architecture
+
+Pure functions are extracted into `scripts/task-lib.js` for testability:
+- Validation functions (validate, isValidDate)
+- Lookup functions (findTask, findTasksByVendor, findDependentTasks)
+- Impact analysis (analyzeAssigneeImpact, analyzeDateRangeImpact, analyzeDependencyImpact)
+- Auto-detection rules (DETECTION_RULES, runAutoDetection)
+- Text similarity, slugify, getActionCategory, constants
+
+The CLI imports from task-lib.js, keeping the same interface.
+
+### Running Tests
+
+```bash
+npm test               # Run all tests once
+npm run test:watch     # Watch mode - re-runs on file changes
+```
+
+### Test Fixtures
+
+Test data lives in `scripts/fixtures/`:
+- `valid-data.json` - Valid project data
+- `invalid-data.json` - Various validation failures
+- `circular-deps.json` - Circular dependency scenario
+- `schedule-conflicts.json` - Schedule conflict scenarios
+- `past-due.json` - Past-due and auto-detection scenarios
+
+### Adding Tests
+
+1. Add test cases to `scripts/task-lib.test.js`
+2. Add fixture data to `scripts/fixtures/` if needed
+3. Run `npm test` to verify
 
 ## Claude Code Workflows
 
