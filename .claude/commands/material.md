@@ -58,10 +58,12 @@ When the user asks to manage materials:
 
 6. **Report result** to user
 
-7. **Export spreadsheet** after changes:
-   ```bash
-   node scripts/export-to-spreadsheet.js && cp projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx ~/Google\ Drive/Shared\ drives/White\ Doe\ Inn/Operations/Building\ and\ Maintenance\ /Kitchen\ Remodel/
-   ```
+7. **Loop back** - ask "Anything else?" or finish
+
+## Exporting
+
+Export is **not automatic**. When done with material changes:
+- Say "done" to finish and optionally export via `/export-tracker`
 
 ## Valid Material Statuses
 
@@ -83,17 +85,17 @@ User: "What materials are needed for install-doors?"
 User: "Add weatherstripping to install-doors, need to order 3 rolls"
 
 1. Run: `node scripts/task.js materials --task install-doors --action add --name "Weatherstripping" --mat-status need-to-order --quantity 3`
-2. Export spreadsheet
+2. Asks: "Anything else?"
 
 ### Update material status
 User: "The hinges for the back door have been ordered"
 
 1. Find material ID (e.g., hinges-back-door)
 2. Run: `node scripts/task.js materials --task install-doors --action status --material hinges-back-door --mat-status ordered`
-3. Export spreadsheet
+3. Asks: "Anything else?"
 
 ### Add material with delivery info
 User: "I ordered the door handles from Amazon, arriving Feb 20"
 
 1. Run: `node scripts/task.js materials --task install-doors --action add --name "Door handles" --mat-status ordered --expected-date 2026-02-20 --order-link "https://amazon.com/..."`
-2. Export spreadsheet
+2. Asks: "Anything else?"

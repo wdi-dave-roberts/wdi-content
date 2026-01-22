@@ -34,8 +34,8 @@ Interactive task management for the kitchen remodel project. Shows task details,
 4. **Handle selection** conversationally:
    - Gather needed info through follow-up questions
    - Execute appropriate CLI command
-5. **Export spreadsheet** after any change
-6. **Show updated task** to confirm
+5. **Show updated task** to confirm
+6. **Loop back** - ask "Anything else?" to continue or finish
 
 ### When Given No Task ID
 
@@ -203,12 +203,16 @@ Run `npm run task list` or check data.json for current vendors. Common ones:
 
 ---
 
-## After Any Change
+## Exporting
 
-Always export spreadsheet after modifications:
+Export is **not automatic** after each change. When the user says "done" or "finished":
 
+1. Ask: "Would you like me to export the spreadsheet?"
+2. If yes: Run `/export-tracker` for full pre-flight checks
+
+For manual export without checks:
 ```bash
-node scripts/export-to-spreadsheet.js && cp projects/kitchen-remodel/Kitchen-Remodel-Tracker.xlsx ~/Google\ Drive/Shared\ drives/White\ Doe\ Inn/Operations/Building\ and\ Maintenance\ /Kitchen\ Remodel/
+npm run task export
 ```
 
 ---
@@ -249,8 +253,8 @@ node scripts/export-to-spreadsheet.js && cp projects/kitchen-remodel/Kitchen-Rem
 3. Asks: "What would you like to do?"
 4. User says: "Add a dependency on drywall"
 5. Runs: `npm run task deps --id install-doors --add drywall`
-6. Exports spreadsheet
-7. Shows updated task
+6. Shows updated task
+7. Asks: "Anything else?"
 
 ### Create a new task
 
@@ -261,7 +265,8 @@ node scripts/export-to-spreadsheet.js && cp projects/kitchen-remodel/Kitchen-Rem
 2. User says: "Create a task for installing the coach lamp"
 3. Asks clarifying questions (category, dates, assignee)
 4. Runs: `npm run task add --name "Install Coach Lamp" --category electrical --status needs-scheduled`
-5. Exports spreadsheet
+5. Shows created task
+6. Asks: "Anything else?"
 
 ### Quick status update
 
@@ -273,5 +278,13 @@ node scripts/export-to-spreadsheet.js && cp projects/kitchen-remodel/Kitchen-Rem
 
 **Claude:**
 1. Runs: `npm run task status --id install-doors --status in-progress`
-2. Exports spreadsheet
-3. Shows updated task
+2. Shows updated task
+3. Asks: "Anything else?"
+
+### End of session
+
+**User:** "That's all for now"
+
+**Claude:**
+1. Asks: "Would you like me to export the spreadsheet?"
+2. If yes: Runs `/export-tracker`
