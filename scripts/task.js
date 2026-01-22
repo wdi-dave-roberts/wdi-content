@@ -343,10 +343,24 @@ function validateFlags(flags, rules) {
 // ============ DATA OPERATIONS ============
 
 function loadData() {
-  return JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+  const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+  // Migrate questions → issues if needed
+  if (data.issues && !data.issues) {
+    data.issues = data.issues;
+    delete data.issues;
+  }
+  if (!data.issues) {
+    data.issues = [];
+  }
+  return data;
 }
 
 function saveData(data) {
+  // Ensure we're using 'issues' not 'questions'
+  if (data.issues) {
+    data.issues = data.issues;
+    delete data.issues;
+  }
   const errors = validate(data);
   if (errors.length > 0) {
     console.error(red('\nValidation failed:'));
@@ -362,7 +376,7 @@ function validate(data) {
   const errors = [];
   const taskIds = new Set();
   const vendorIds = new Set(data.vendors.map(v => v.id));
-  const questionIds = new Set();
+  const issueIds = new Set();
 
   // Build task ID set
   for (const task of data.tasks) {
@@ -379,76 +393,76 @@ function validate(data) {
     }
   }
 
-  // Validate questions
-  const validQuestionTypes = [
+  // Validate issues
+  const validIssueTypes = [
     'assignee', 'date', 'date-range', 'dependency', 'yes-no', 'select-one',
     'material-status', 'notification', 'free-text',
     // Auto-detection types
     'schedule-conflict', 'missing-assignee', 'past-due', 'unscheduled-blocker', 'material-overdue'
   ];
 
-  for (const question of (data.questions || [])) {
+  for (const issue of (data.issues || [])) {
     // Duplicate ID check
-    if (questionIds.has(question.id)) {
-      errors.push(`Duplicate question ID: "${question.id}"`);
+    if (issueIds.has(issue.id)) {
+      errors.push(`Duplicate issue ID: "${issue.id}"`);
     }
-    questionIds.add(question.id);
+    issueIds.add(issue.id);
 
     // Required fields - support both prompt (new) and question (legacy) fields
-    const questionText = question.prompt || question.question;
-    if (!questionText || questionText.trim().length === 0) {
-      errors.push(`Question "${question.id}" is missing question/prompt text`);
+    const promptText = issue.prompt || issue.question;
+    if (!promptText || promptText.trim().length === 0) {
+      errors.push(`Issue "${issue.id}" is missing prompt text`);
     }
 
-    // Type validation (optional for legacy questions)
-    if (question.type && !validQuestionTypes.includes(question.type)) {
-      errors.push(`Invalid type "${question.type}" for question "${question.id}". Valid: ${validQuestionTypes.join(', ')}`);
+    // Type validation (optional for legacy issues)
+    if (issue.type && !validIssueTypes.includes(issue.type)) {
+      errors.push(`Invalid type "${issue.type}" for issue "${issue.id}". Valid: ${validIssueTypes.join(', ')}`);
     }
 
     // Assignee validation
-    if (!question.assignee) {
-      errors.push(`Question "${question.id}" is missing assignee`);
-    } else if (!VALID_ASSIGNEES.includes(question.assignee)) {
-      errors.push(`Invalid assignee "${question.assignee}" for question "${question.id}". Valid: ${VALID_ASSIGNEES.join(', ')}`);
+    if (!issue.assignee) {
+      errors.push(`Issue "${issue.id}" is missing assignee`);
+    } else if (!VALID_ASSIGNEES.includes(issue.assignee)) {
+      errors.push(`Invalid assignee "${issue.assignee}" for issue "${issue.id}". Valid: ${VALID_ASSIGNEES.join(', ')}`);
     }
 
     // Status validation
-    if (!question.status) {
-      errors.push(`Question "${question.id}" is missing status`);
-    } else if (!VALID_QUESTION_STATUSES.includes(question.status)) {
-      errors.push(`Invalid status "${question.status}" for question "${question.id}". Valid: ${VALID_QUESTION_STATUSES.join(', ')}`);
+    if (!issue.status) {
+      errors.push(`Issue "${issue.id}" is missing status`);
+    } else if (!VALID_QUESTION_STATUSES.includes(issue.status)) {
+      errors.push(`Invalid status "${issue.status}" for issue "${issue.id}". Valid: ${VALID_QUESTION_STATUSES.join(', ')}`);
     }
 
     // Review status validation (optional)
-    if (question.reviewStatus && !VALID_REVIEW_STATUSES.includes(question.reviewStatus)) {
-      errors.push(`Invalid review status "${question.reviewStatus}" for question "${question.id}". Valid: ${VALID_REVIEW_STATUSES.join(', ')}`);
+    if (issue.reviewStatus && !VALID_REVIEW_STATUSES.includes(issue.reviewStatus)) {
+      errors.push(`Invalid review status "${issue.reviewStatus}" for issue "${issue.id}". Valid: ${VALID_REVIEW_STATUSES.join(', ')}`);
     }
 
     // Related task validation (if provided)
-    if (question.relatedTask && !taskIds.has(question.relatedTask)) {
-      errors.push(`Related task "${question.relatedTask}" not found for question "${question.id}"`);
+    if (issue.relatedTask && !taskIds.has(issue.relatedTask)) {
+      errors.push(`Related task "${issue.relatedTask}" not found for issue "${issue.id}"`);
     }
 
     // Related material validation (if provided)
-    if (question.relatedMaterial) {
+    if (issue.relatedMaterial) {
       const allMaterialIds = getAllMaterialIds(data);
-      if (!allMaterialIds.has(question.relatedMaterial)) {
-        errors.push(`Related material "${question.relatedMaterial}" not found for question "${question.id}"`);
+      if (!allMaterialIds.has(issue.relatedMaterial)) {
+        errors.push(`Related material "${issue.relatedMaterial}" not found for issue "${issue.id}"`);
       }
     }
 
     // Date validations
-    if (question.created && !isValidDate(question.created)) {
-      errors.push(`Invalid created date "${question.created}" for question "${question.id}". Use YYYY-MM-DD format`);
+    if (issue.created && !isValidDate(issue.created)) {
+      errors.push(`Invalid created date "${issue.created}" for issue "${issue.id}". Use YYYY-MM-DD format`);
     }
-    if (question.resolvedDate && !isValidDate(question.resolvedDate)) {
-      errors.push(`Invalid resolved date "${question.resolvedDate}" for question "${question.id}". Use YYYY-MM-DD format`);
+    if (issue.resolvedDate && !isValidDate(issue.resolvedDate)) {
+      errors.push(`Invalid resolved date "${issue.resolvedDate}" for issue "${issue.id}". Use YYYY-MM-DD format`);
     }
-    if (question.resolvedAt && !isValidDate(question.resolvedAt)) {
-      errors.push(`Invalid resolvedAt date "${question.resolvedAt}" for question "${question.id}". Use YYYY-MM-DD format`);
+    if (issue.resolvedAt && !isValidDate(issue.resolvedAt)) {
+      errors.push(`Invalid resolvedAt date "${issue.resolvedAt}" for issue "${issue.id}". Use YYYY-MM-DD format`);
     }
-    if (question.respondedAt && !isValidDate(question.respondedAt)) {
-      errors.push(`Invalid respondedAt date "${question.respondedAt}" for question "${question.id}". Use YYYY-MM-DD format`);
+    if (issue.respondedAt && !isValidDate(issue.respondedAt)) {
+      errors.push(`Invalid respondedAt date "${issue.respondedAt}" for issue "${issue.id}". Use YYYY-MM-DD format`);
     }
   }
 
@@ -853,7 +867,7 @@ function displayQuestionSimilarityWarning(similar) {
  * Get questions related to a specific task
  */
 function getQuestionsForTask(data, taskId) {
-  const questions = data.questions || [];
+  const questions = data.issues || [];
   return questions.filter(q => q.relatedTask === taskId);
 }
 
@@ -1593,8 +1607,8 @@ function removeCancelledTaskFromDependencies(data, cancelledTaskId) {
  * @returns {number} Number of questions generated
  */
 function triggerQuestionGeneration(data, entityType, entityId, taskId = null) {
-  if (!data.questions) {
-    data.questions = [];
+  if (!data.issues) {
+    data.issues = [];
   }
 
   let questionsCreated = 0;
@@ -1630,7 +1644,7 @@ function triggerQuestionGeneration(data, entityType, entityId, taskId = null) {
         newQuestion.category = getActionCategory(newQuestion);
         newQuestion.title = generateIssueTitle(newQuestion);
 
-        data.questions.push(newQuestion);
+        data.issues.push(newQuestion);
         questionsCreated++;
       }
     }
@@ -1670,7 +1684,7 @@ function triggerQuestionGeneration(data, entityType, entityId, taskId = null) {
         newQuestion.category = getActionCategory(newQuestion);
         newQuestion.title = generateIssueTitle(newQuestion);
 
-        data.questions.push(newQuestion);
+        data.issues.push(newQuestion);
         questionsCreated++;
       }
     }
@@ -2009,7 +2023,7 @@ function generateMaterialQuestionId(type, materialId, field) {
  * @param {string|string[]} fields - Field(s) to check for (e.g., 'expectedDate' or ['expectedDate', 'orderLink'])
  */
 function materialQuestionExists(data, materialId, questionType, fields) {
-  const questions = data.questions || [];
+  const questions = data.issues || [];
   const fieldsArray = Array.isArray(fields) ? fields : [fields];
 
   return questions.some(q => {
@@ -2069,8 +2083,8 @@ function findMaterial(data, materialId) {
  * Returns the number of questions created
  */
 function generateMaterialQuestions(data) {
-  if (!data.questions) {
-    data.questions = [];
+  if (!data.issues) {
+    data.issues = [];
   }
 
   const materials = getAllMaterials(data);
@@ -2090,7 +2104,7 @@ function generateMaterialQuestions(data) {
     const id = generateMaterialQuestionId(rule.type, material.id, fieldSuffix);
 
     // Check if a question with this ID already exists (including resolved)
-    const idExists = data.questions.some(q => q.id === id);
+    const idExists = data.issues.some(q => q.id === id);
     if (idExists) continue;
 
     // Create the question
@@ -2110,7 +2124,7 @@ function generateMaterialQuestions(data) {
     newQuestion.category = getActionCategory(newQuestion);
     newQuestion.title = generateIssueTitle(newQuestion);
 
-    data.questions.push(newQuestion);
+    data.issues.push(newQuestion);
     created++;
   }
 
@@ -2348,7 +2362,7 @@ function generateTaskQuestionId(type, taskId, field) {
  * @param {string|string[]} fields - Field(s) to check for
  */
 function taskQuestionExists(data, taskId, questionType, fields) {
-  const questions = data.questions || [];
+  const questions = data.issues || [];
   const fieldsArray = Array.isArray(fields) ? fields : [fields];
 
   return questions.some(q => {
@@ -2366,8 +2380,8 @@ function taskQuestionExists(data, taskId, questionType, fields) {
  * Returns the number of questions created
  */
 function generateTaskQuestions(data) {
-  if (!data.questions) {
-    data.questions = [];
+  if (!data.issues) {
+    data.issues = [];
   }
 
   const today = new Date().toISOString().split('T')[0];
@@ -2383,7 +2397,7 @@ function generateTaskQuestions(data) {
         const id = generateTaskQuestionId(rule.type, task.id, fieldSuffix);
 
         // Check if a question with this ID already exists (including resolved)
-        const idExists = data.questions.some(q => q.id === id);
+        const idExists = data.issues.some(q => q.id === id);
         if (!idExists) {
           const newQuestion = {
             id,
@@ -2400,7 +2414,7 @@ function generateTaskQuestions(data) {
           newQuestion.category = getActionCategory(newQuestion);
           newQuestion.title = generateIssueTitle(newQuestion);
 
-          data.questions.push(newQuestion);
+          data.issues.push(newQuestion);
           created++;
         }
       }
@@ -2416,7 +2430,7 @@ function generateTaskQuestions(data) {
           const id = generateTaskQuestionId(subRule.type, sub.id, fieldSuffix);
 
           // Check if a question with this ID already exists (including resolved)
-          const idExists = data.questions.some(q => q.id === id);
+          const idExists = data.issues.some(q => q.id === id);
           if (!idExists) {
             const newQuestion = {
               id,
@@ -2433,7 +2447,7 @@ function generateTaskQuestions(data) {
             newQuestion.category = getActionCategory(newQuestion);
             newQuestion.title = generateIssueTitle(newQuestion);
 
-            data.questions.push(newQuestion);
+            data.issues.push(newQuestion);
             created++;
           }
         }
@@ -2454,14 +2468,14 @@ function generateTaskQuestions(data) {
  * Returns the number of questions removed.
  */
 function cleanupResolvedQuestions(data) {
-  if (!data.questions || data.questions.length === 0) {
+  if (!data.issues || data.issues.length === 0) {
     return 0;
   }
 
-  const before = data.questions.length;
+  const before = data.issues.length;
 
   // Keep questions that are NOT fully resolved
-  data.questions = data.questions.filter(q => {
+  data.issues = data.issues.filter(q => {
     // Keep if not resolved
     if (q.status !== 'resolved') return true;
 
@@ -2477,7 +2491,7 @@ function cleanupResolvedQuestions(data) {
     return false;
   });
 
-  return before - data.questions.length;
+  return before - data.issues.length;
 }
 
 /**
@@ -2653,8 +2667,8 @@ const DETECTION_RULES = {
  * Returns { created: number, resolved: number }
  */
 function runAutoDetection(data) {
-  if (!data.questions) {
-    data.questions = [];
+  if (!data.issues) {
+    data.issues = [];
   }
 
   const today = new Date().toISOString().split('T')[0];
@@ -2676,7 +2690,7 @@ function runAutoDetection(data) {
         validDetectionIds.add(issueId);
 
         // Check if issue already exists
-        const existing = data.questions.find(q => q.id === issueId);
+        const existing = data.issues.find(q => q.id === issueId);
         if (!existing) {
           const newIssue = {
             id: issueId,
@@ -2688,7 +2702,7 @@ function runAutoDetection(data) {
             detectionRule: ruleName,
             lastChecked: today,
           };
-          data.questions.push(newIssue);
+          data.issues.push(newIssue);
           created++;
         } else {
           // Update lastChecked
@@ -2707,7 +2721,7 @@ function runAutoDetection(data) {
           const issueId = `id-${detection.type}-${sub.id}`;
           validDetectionIds.add(issueId);
 
-          const existing = data.questions.find(q => q.id === issueId);
+          const existing = data.issues.find(q => q.id === issueId);
           if (!existing) {
             const newIssue = {
               id: issueId,
@@ -2719,7 +2733,7 @@ function runAutoDetection(data) {
               detectionRule: ruleName,
               lastChecked: today,
             };
-            data.questions.push(newIssue);
+            data.issues.push(newIssue);
             created++;
           } else {
             existing.lastChecked = today;
@@ -2738,7 +2752,7 @@ function runAutoDetection(data) {
         const issueId = `id-${detection.type}-${mat.id}`;
         validDetectionIds.add(issueId);
 
-        const existing = data.questions.find(q => q.id === issueId);
+        const existing = data.issues.find(q => q.id === issueId);
         if (!existing) {
           const newIssue = {
             id: issueId,
@@ -2750,7 +2764,7 @@ function runAutoDetection(data) {
             detectionRule: 'material-overdue',
             lastChecked: today,
           };
-          data.questions.push(newIssue);
+          data.issues.push(newIssue);
           created++;
         } else {
           existing.lastChecked = today;
@@ -2769,7 +2783,7 @@ function runAutoDetection(data) {
           const issueId = `id-${detection.type}-${mat.id}`;
           validDetectionIds.add(issueId);
 
-          const existing = data.questions.find(q => q.id === issueId);
+          const existing = data.issues.find(q => q.id === issueId);
           if (!existing) {
             const newIssue = {
               id: issueId,
@@ -2781,7 +2795,7 @@ function runAutoDetection(data) {
               detectionRule: 'material-overdue',
               lastChecked: today,
             };
-            data.questions.push(newIssue);
+            data.issues.push(newIssue);
             created++;
           } else {
             existing.lastChecked = today;
@@ -2792,7 +2806,7 @@ function runAutoDetection(data) {
   }
 
   // Auto-resolve detection issues that are no longer valid
-  for (const question of data.questions) {
+  for (const question of data.issues) {
     if (question.source !== 'auto-detection') continue;
     if (question.status === 'resolved' || question.status === 'dismissed') continue;
 
@@ -2811,7 +2825,7 @@ function runAutoDetection(data) {
  * Dismiss an auto-detected issue (user acknowledges but doesn't want to see it)
  */
 function dismissIssue(data, issueId) {
-  const issue = data.questions.find(q => q.id === issueId);
+  const issue = data.issues.find(q => q.id === issueId);
   if (!issue) return null;
 
   issue.status = 'dismissed';
@@ -4385,8 +4399,8 @@ async function cmdMaterialsCheck() {
   const data = loadData();
 
   // Initialize questions array if needed
-  if (!data.questions) {
-    data.questions = [];
+  if (!data.issues) {
+    data.issues = [];
   }
 
   const materials = getAllMaterials(data);
@@ -4431,7 +4445,7 @@ async function cmdMaterialsCheck() {
       relatedMaterial: material.id,
     };
 
-    data.questions.push(newQuestion);
+    data.issues.push(newQuestion);
     created++;
 
     // Display info
@@ -4588,13 +4602,13 @@ async function cmdQuestion(questionId) {
   const data = loadData();
 
   // Initialize questions array if needed
-  if (!data.questions) {
-    data.questions = [];
+  if (!data.issues) {
+    data.issues = [];
   }
 
   // If questionId provided, manage existing question
   if (questionId) {
-    const question = data.questions.find(q => q.id === questionId);
+    const question = data.issues.find(q => q.id === questionId);
     if (!question) {
       console.error(red(`Question "${questionId}" not found`));
       process.exit(1);
@@ -4704,7 +4718,7 @@ async function cmdQuestion(questionId) {
         default: false,
       });
       if (confirmDelete) {
-        data.questions = data.questions.filter(q => q.id !== questionId);
+        data.issues = data.issues.filter(q => q.id !== questionId);
         saveData(data);
         console.log(green(`\n✓ Deleted question "${questionId}"`));
       } else {
@@ -4843,7 +4857,7 @@ async function cmdQuestion(questionId) {
   const baseId = `sq-${questionType}-${slugify(questionText.substring(0, 20))}`;
   let id = baseId;
   let counter = 1;
-  const existingIds = new Set(data.questions.map(q => q.id));
+  const existingIds = new Set(data.issues.map(q => q.id));
   while (existingIds.has(id)) {
     id = `${baseId}-${counter++}`;
   }
@@ -4855,7 +4869,7 @@ async function cmdQuestion(questionId) {
     relatedTask: relatedTask || undefined,
     relatedMaterial: relatedMaterial || undefined,
   };
-  const similarQuestions = findSimilarQuestions(newQuestionData, data.questions, 0.50);
+  const similarQuestions = findSimilarQuestions(newQuestionData, data.issues, 0.50);
 
   if (similarQuestions.length > 0) {
     displayQuestionSimilarityWarning(similarQuestions);
@@ -4883,7 +4897,7 @@ async function cmdQuestion(questionId) {
   if (relatedMaterial) newQuestion.relatedMaterial = relatedMaterial;
   if (config) newQuestion.config = config;
 
-  data.questions.push(newQuestion);
+  data.issues.push(newQuestion);
   saveData(data);
 
   const materialSuffix = relatedMaterial ? ` (material: ${relatedMaterial})` : '';
@@ -4892,7 +4906,7 @@ async function cmdQuestion(questionId) {
 
 async function cmdQuestions(flags = {}) {
   const data = loadData();
-  const questions = data.questions || [];
+  const questions = data.issues || [];
   const showAll = flags.all;
   const filterAction = flags.action?.toUpperCase();
   const filterAssignee = flags.assignee?.toLowerCase();
@@ -5024,14 +5038,14 @@ async function cmdQuestions(flags = {}) {
 async function cmdAnswer(questionId) {
   const data = loadData();
 
-  if (!data.questions || data.questions.length === 0) {
+  if (!data.issues || data.issues.length === 0) {
     console.log(dim('\nNo questions found.'));
     return;
   }
 
   // Select question if not provided
   if (!questionId) {
-    const openQuestions = data.questions.filter(q => q.status === 'open');
+    const openQuestions = data.issues.filter(q => q.status === 'open');
     if (openQuestions.length === 0) {
       console.log(dim('\nNo open questions to answer.'));
       return;
@@ -5054,7 +5068,7 @@ async function cmdAnswer(questionId) {
     });
   }
 
-  const question = data.questions.find(q => q.id === questionId);
+  const question = data.issues.find(q => q.id === questionId);
   if (!question) {
     console.error(red(`Question "${questionId}" not found`));
     process.exit(1);
@@ -5283,7 +5297,7 @@ function cmdDetect() {
   }
 
   // Show summary of detected issues
-  const detected = data.questions.filter(q =>
+  const detected = data.issues.filter(q =>
     q.source === 'auto-detection' && q.status !== 'resolved' && q.status !== 'dismissed'
   );
 
@@ -5310,7 +5324,7 @@ async function cmdDismiss(issueId) {
 
   if (!issueId) {
     // Show list of dismissable issues
-    const dismissable = data.questions.filter(q =>
+    const dismissable = data.issues.filter(q =>
       q.source === 'auto-detection' && q.status !== 'resolved' && q.status !== 'dismissed'
     );
 
@@ -5352,13 +5366,13 @@ async function cmdDismiss(issueId) {
 async function cmdReview(questionId) {
   const data = loadData();
 
-  if (!data.questions || data.questions.length === 0) {
+  if (!data.issues || data.issues.length === 0) {
     console.log(dim('\nNo questions found.'));
     return;
   }
 
   // Find questions ready for review
-  const reviewable = data.questions.filter(q =>
+  const reviewable = data.issues.filter(q =>
     q.status === 'answered' ||
     (q.type === 'notification' && q.status === 'open')
   );
@@ -5402,7 +5416,7 @@ async function cmdReview(questionId) {
     });
   }
 
-  const question = data.questions.find(q => q.id === questionId);
+  const question = data.issues.find(q => q.id === questionId);
   if (!question) {
     console.error(red(`Question "${questionId}" not found`));
     process.exit(1);
@@ -5600,7 +5614,7 @@ async function cmdReview(questionId) {
         relatedMaterial: question.relatedMaterial,
       };
 
-      data.questions.push(followUpQuestion);
+      data.issues.push(followUpQuestion);
       saveData(data);
 
       console.log(green(`\n✓ Created follow-up ${followUpId} assigned to ${ASSIGNEE_DISPLAY_NAMES[question.assignee]}`));
@@ -5673,8 +5687,8 @@ async function cmdExport() {
       const XLSX = (await import('xlsx-js-style')).default;
       const wbGD = XLSX.readFile(googleDrivePath);
 
-      // Check for responses to preserve in Open Questions sheet
-      const questionsSheet = wbGD.Sheets['Open Questions'];
+      // Check for responses to preserve in Issues sheet (or legacy Open Questions)
+      const questionsSheet = wbGD.Sheets['Issues'] || wbGD.Sheets['Open Questions'];
       if (questionsSheet) {
         const questionsData = XLSX.utils.sheet_to_json(questionsSheet);
         gcResponses = questionsData
@@ -5738,8 +5752,8 @@ async function cmdExport() {
             status: 'open',
           };
 
-          if (!data.questions) data.questions = [];
-          data.questions.push(notificationQuestion);
+          if (!data.issues) data.issues = [];
+          data.issues.push(notificationQuestion);
         }
 
         saveData(data);
@@ -5754,7 +5768,7 @@ async function cmdExport() {
     try {
       const XLSX = (await import('xlsx-js-style')).default;
       const wb = XLSX.readFile(xlsxPath);
-      const questionsSheet = wb.Sheets['Open Questions'];
+      const questionsSheet = wb.Sheets['Issues'] || wb.Sheets['Open Questions'];
 
       if (questionsSheet) {
         const questionsData = XLSX.utils.sheet_to_json(questionsSheet);
@@ -5810,7 +5824,7 @@ async function cmdExport() {
       const XLSX = (await import('xlsx-js-style')).default;
 
       const wb = XLSX.readFile(xlsxPath);
-      const questionsSheet = wb.Sheets['Open Questions'];
+      const questionsSheet = wb.Sheets['Issues'] || wb.Sheets['Open Questions'];
 
       if (questionsSheet) {
         const questionsData = XLSX.utils.sheet_to_json(questionsSheet, { header: 1 });

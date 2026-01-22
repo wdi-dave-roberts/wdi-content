@@ -234,7 +234,7 @@ for (const item of allItems) {
 
 // Build map of task IDs to their open questions
 const taskOpenQuestions = {};
-for (const question of (data.questions || [])) {
+for (const question of (data.issues || [])) {
   if (question.status === 'open' && question.relatedTask) {
     if (!taskOpenQuestions[question.relatedTask]) {
       taskOpenQuestions[question.relatedTask] = [];
@@ -508,7 +508,7 @@ for (const vendor of data.vendors) {
   ]);
 }
 
-// ============ OPEN QUESTIONS TAB ============
+// ============ ISSUES TAB ============
 const ASSIGNEE_DISPLAY_NAMES = {
   brandon: 'Brandon',
   dave: 'Dave',
@@ -671,7 +671,7 @@ openQuestionsRows.push([
 ]);
 
 // Sort questions by Action category for better grouping
-const sortedQuestions = [...(data.questions || [])].sort((a, b) => {
+const sortedQuestions = [...(data.issues || [])].sort((a, b) => {
   const catA = computeCategory(a);
   const catB = computeCategory(b);
   const orderA = CATEGORY_SORT_ORDER[catA] || 99;
@@ -819,15 +819,21 @@ const instructionsRows = [
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
-  ['📋 OPEN QUESTIONS'],
+  ['📋 ISSUES'],
   [''],
-  ['Questions that need your input. Find your name in the Assignee column'],
+  ['Issues that need your input. Find your name in the Assignee column'],
   ['and type your answer in the Response column.'],
   [''],
   ['Once answered, Dave reviews and updates the tracker - then your'],
-  ['question disappears from this list.'],
+  ['issue disappears from this list.'],
   [''],
-  ['  • Yellow rows = Waiting for your answer'],
+  ['Row colors indicate action needed:'],
+  ['  • Blue = Assign (Who should do this?)'],
+  ['  • Orange = Schedule (When should this happen?)'],
+  ['  • Green = Order (Ready to purchase?)'],
+  ['  • Yellow = Specify (Need specs/quantity)'],
+  ['  • Purple = Track (Need delivery info)'],
+  ['  • White = Decide (Decision needed)'],
   [''],
   ['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'],
   [''],
@@ -1161,7 +1167,7 @@ for (let row = 1; row < vendorsRows.length; row++) {
   }
 }
 
-// Apply formatting to Open Questions sheet (now 12 columns with Action)
+// Apply formatting to Issues sheet (12 columns with Action category)
 styleHeaderRow(wsOpenQuestionsData, 12);
 setRowHeight(wsOpenQuestionsData, 0, 30);
 
@@ -1266,7 +1272,7 @@ applyCellStyle(wsInstructionsData, 'A1', {
 });
 setRowHeight(wsInstructionsData, 0, 35);
 
-// Sheet section headers (📋 OPEN QUESTIONS, 📅 SCHEDULE, etc.)
+// Sheet section headers (📋 ISSUES, 📅 SCHEDULE, etc.)
 const sheetNameRows = [7, 19, 29, 36, 49, 65]; // Row indices for section headers
 for (const row of sheetNameRows) {
   const cellRef = XLSX.utils.encode_cell({ r: row, c: 0 });
@@ -1314,7 +1320,7 @@ XLSX.utils.book_append_sheet(wb, wsByAssigneeData, 'By Assignee');
 XLSX.utils.book_append_sheet(wb, wsTaskHierarchyData, 'Tasks');
 XLSX.utils.book_append_sheet(wb, wsMaterialsData, 'Materials');
 XLSX.utils.book_append_sheet(wb, wsVendorsData, 'Vendors');
-XLSX.utils.book_append_sheet(wb, wsOpenQuestionsData, 'Open Questions');
+XLSX.utils.book_append_sheet(wb, wsOpenQuestionsData, 'Issues');
 
 // Write Excel file
 const xlsxPath = path.join(projectDir, 'Kitchen-Remodel-Tracker.xlsx');
@@ -1341,7 +1347,7 @@ fs.writeFileSync(
   XLSX.utils.sheet_to_csv(wsVendorsData, csvOptions)
 );
 fs.writeFileSync(
-  path.join(exportsDir, 'open-questions.csv'),
+  path.join(exportsDir, 'issues.csv'),
   XLSX.utils.sheet_to_csv(wsOpenQuestionsData, csvOptions)
 );
 fs.writeFileSync(

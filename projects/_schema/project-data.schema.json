@@ -49,6 +49,11 @@
       "type": "array",
       "items": { "type": "string" },
       "description": "Project-specific status values (extends schema enum)"
+    },
+    "issues": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Issue" },
+      "description": "Unified issues system (questions + auto-detected issues)"
     }
   },
   "$defs": {
@@ -851,6 +856,148 @@
         "href": {
           "type": "string",
           "description": "Path to signed contract document"
+        }
+      }
+    },
+    "Issue": {
+      "type": "object",
+      "required": ["id", "created", "assignee", "status"],
+      "description": "Unified issue - includes questions, lifecycle issues, and auto-detected issues",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier (pattern: i-{type}-{slug}, il-{type}-{task}, id-{type}-{task})"
+        },
+        "created": {
+          "type": "string",
+          "format": "date",
+          "description": "Creation date YYYY-MM-DD"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["ASSIGN", "SCHEDULE", "ORDER", "SPECIFY", "TRACK", "DECIDE"],
+          "description": "Action category - what action is needed?"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "assignee", "date", "date-range", "dependency", "yes-no", "select-one",
+            "material-status", "notification", "free-text",
+            "schedule-conflict", "missing-assignee", "past-due", "unscheduled-blocker", "material-overdue"
+          ],
+          "description": "Structured issue type"
+        },
+        "source": {
+          "type": "string",
+          "enum": ["manual", "auto-lifecycle", "auto-detection"],
+          "description": "Where this issue came from"
+        },
+        "title": {
+          "type": "string",
+          "description": "Short summary for display"
+        },
+        "prompt": {
+          "type": "string",
+          "description": "Question text for structured questions"
+        },
+        "question": {
+          "type": "string",
+          "description": "Legacy field - use prompt instead"
+        },
+        "description": {
+          "type": "string",
+          "description": "Additional context"
+        },
+        "config": {
+          "type": "object",
+          "description": "Type-specific options (tradeFilter, options, statusOptions)"
+        },
+        "relatedTask": {
+          "type": "string",
+          "description": "Task ID (without task: prefix)"
+        },
+        "relatedTasks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "For cross-task issues (schedule conflicts)"
+        },
+        "relatedMaterial": {
+          "type": "string",
+          "description": "Material ID from task's materialDependencies"
+        },
+        "assignee": {
+          "type": "string",
+          "enum": ["brandon", "dave", "tonia", "system"],
+          "description": "Who should answer this issue"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "answered", "resolved", "dismissed"],
+          "description": "Issue status"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "critical"],
+          "description": "Issue priority level"
+        },
+        "response": {
+          "description": "Structured response or legacy string"
+        },
+        "responseNotes": {
+          "type": "string",
+          "description": "Optional explanation with response"
+        },
+        "respondedAt": {
+          "type": "string",
+          "format": "date",
+          "description": "Date response was added YYYY-MM-DD"
+        },
+        "reviewStatus": {
+          "type": "string",
+          "enum": ["pending", "accepted", "rejected"],
+          "description": "Review workflow status"
+        },
+        "rejectionReason": {
+          "type": "string",
+          "description": "Reason if rejected"
+        },
+        "appliedChanges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity": { "type": "string", "enum": ["task", "subtask", "material"] },
+              "entityId": { "type": "string" },
+              "field": { "type": "string" },
+              "oldValue": {},
+              "newValue": {}
+            }
+          },
+          "description": "Audit trail of changes made"
+        },
+        "resolvedAt": {
+          "type": "string",
+          "format": "date",
+          "description": "Date resolved YYYY-MM-DD"
+        },
+        "resolvedDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Legacy field - use resolvedAt instead"
+        },
+        "resolvedBy": {
+          "type": "string",
+          "enum": ["manual", "auto"],
+          "description": "How this was resolved"
+        },
+        "detectionRule": {
+          "type": "string",
+          "description": "Rule that created this issue (for auto-detection)"
+        },
+        "lastChecked": {
+          "type": "string",
+          "format": "date",
+          "description": "When condition was last verified (for auto-detection)"
         }
       }
     }

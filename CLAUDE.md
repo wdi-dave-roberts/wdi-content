@@ -324,7 +324,7 @@ Main data file: `projects/kitchen-remodel/data.json`
 - **tasks**: Parent tasks with subtasks, dependencies, assignees, dates, materials
 - **vendors**: Contractor/supplier contacts (referenced as `vendor:{id}`)
 - **receipts**: Financial records with links to source files in `reference/`
-- **questions/issues**: Unified issues system (questions + auto-detected issues)
+- **issues**: Unified issues system (questions + auto-detected issues)
 - **notes**: Journal entries (general notes, not issues)
 - **milestones**: Project milestones
 - **budget**: Budget totals and tracking
@@ -334,7 +334,7 @@ Main data file: `projects/kitchen-remodel/data.json`
 - Subtasks inherit parent task's assignee/dates/status unless overridden
 - `dependencies`: array of task/subtask IDs that must complete first
 - `materialDependencies`: links tasks to required materials (inline or by ID)
-- Issues linked to tasks via `relatedTask` field; appear in "Open Questions" sheet
+- Issues linked to tasks via `relatedTask` field; appear in "Issues" sheet
 
 ### Task Statuses
 - `scheduled` - Has dates, ready to work
@@ -351,7 +351,7 @@ Main data file: `projects/kitchen-remodel/data.json`
 ~/Google Drive/Shared drives/White Doe Inn/Operations/Building and Maintenance /Kitchen Remodel/Kitchen-Remodel-Tracker.xlsx
 ```
 
-**Sheets**: Instructions, Schedule (dependency order), By Assignee, Tasks, Materials, Vendors, Open Questions (unprotected for responses)
+**Sheets**: Instructions, Schedule (dependency order), By Assignee, Tasks, Materials, Vendors, Issues (unprotected for responses)
 
 > **Note**: Any other spreadsheets in the Kitchen Remodel folder (e.g., `task-tracker-sample.xlsx` in Weathertek subfolder, `Task Tracker - With Sample Data.gsheet`) are old test/experimentation files and can be removed.
 
@@ -417,7 +417,7 @@ Issues are categorized by action needed:
 
 When you say **"process issues"** or **"process questions"**, Claude will:
 
-1. **Import responses** from the Google Drive spreadsheet's "Open Questions" sheet
+1. **Import responses** from the Google Drive spreadsheet's "Issues" sheet
 2. **Show each response** with:
    - The issue category and Brandon's response
    - Proposed changes (task assignments, material updates, dates, status changes)

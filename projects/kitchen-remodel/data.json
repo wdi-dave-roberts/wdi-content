@@ -1005,7 +1005,12 @@
   "receipts": [],
   "changeOrders": [],
   "notes": [],
-  "questions": [
+  "budget": {
+    "total": 100311.07,
+    "contingency": 15046.66,
+    "categories": {}
+  },
+  "issues": [
     {
       "id": "sq-dependency-inspection",
       "created": "2026-01-20",
@@ -1913,10 +1918,5 @@
       "detectionRule": "unscheduled-blocker",
       "lastChecked": "2026-01-22"
     }
-  ],
-  "budget": {
-    "total": 100311.07,
-    "contingency": 15046.66,
-    "categories": {}
-  }
+  ]
 }

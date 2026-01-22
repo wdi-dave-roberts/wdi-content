@@ -9,10 +9,10 @@ const dataPath = path.join(__dirname, "..", "projects/kitchen-remodel/data.json"
 
 // Read spreadsheet
 const wb = XLSX.readFile(googleDrivePath);
-// Support both "Open Questions" (current) and "Issues" (future) sheet names
-const sheet = wb.Sheets["Open Questions"] || wb.Sheets["Issues"];
+// Support both "Issues" (current) and "Open Questions" (legacy) sheet names
+const sheet = wb.Sheets["Issues"] || wb.Sheets["Open Questions"];
 if (!sheet) {
-  console.error("Error: Could not find 'Open Questions' or 'Issues' sheet in spreadsheet");
+  console.error("Error: Could not find 'Issues' or 'Open Questions' sheet in spreadsheet");
   process.exit(1);
 }
 const sheetData = XLSX.utils.sheet_to_json(sheet);
@@ -20,10 +20,19 @@ const sheetData = XLSX.utils.sheet_to_json(sheet);
 // Read data.json
 const data = JSON.parse(fs.readFileSync(dataPath));
 
-// Find responses and update questions
+// Migrate questions → issues if needed
+if (data.questions && !data.issues) {
+  data.issues = data.questions;
+  delete data.questions;
+}
+if (!data.issues) {
+  data.issues = [];
+}
+
+// Find responses and update issues
 let updated = 0;
 for (const row of sheetData) {
-  const questionId = row["Question ID"];
+  const issueId = row["Question ID"]; // Column name in spreadsheet
   let response = row["Response"];
   if (response === undefined || response === null || response === "") continue;
 
@@ -31,13 +40,13 @@ for (const row of sheetData) {
   response = String(response).trim();
   if (!response) continue;
 
-  const question = data.questions.find(q => q.id === questionId);
-  if (question && question.status === "open") {
-    question.response = { type: "free-text", value: response };
-    question.status = "answered";
-    question.respondedAt = new Date().toISOString().split("T")[0];
+  const issue = data.issues.find(q => q.id === issueId);
+  if (issue && issue.status === "open") {
+    issue.response = { type: "free-text", value: response };
+    issue.status = "answered";
+    issue.respondedAt = new Date().toISOString().split("T")[0];
     updated++;
-    console.log("Updated:", questionId);
+    console.log("Updated:", issueId);
     console.log("  Response:", response.substring(0, 60) + (response.length > 60 ? "..." : ""));
   }
 }
