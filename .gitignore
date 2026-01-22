@@ -17,7 +17,7 @@ dist/
 .playwright-mcp/
 
 # Claude Code local settings (machine-specific)
-.claude/
+.claude/*
 
 # Exception: Project settings (plugin enablement)
 !.claude/settings.json
