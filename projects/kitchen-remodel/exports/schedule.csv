@@ -1,7 +1,7 @@
 Order,Type,Task ID,Name,Status,Current Start,Current End,Proposed Start,Assignee,Dependencies,Issues
-1,TASK,framing,Framing,needs-scheduled,,,2026-01-22,Danny,,"No date set but blocks other tasks; ❓ Dave: Dave to specify hallway height; ❓ Brandon: ""Framing"" has no scheduled dates but ..."
-2,subtask,framing-1,  Adjust kitchen to pantry hallway opening,needs-scheduled,,,2026-01-22,Danny,,
-3,subtask,framing-2,  Adjust pantry to back door hallway opening,needs-scheduled,,,2026-01-22,Danny,,
+1,TASK,framing,Framing,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,
+2,subtask,framing-1,  Adjust kitchen to pantry hallway opening,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,
+3,subtask,framing-2,  Adjust pantry to back door hallway opening,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,
 4,TASK,finish-drywall,Finish Drywall,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,framing,
 5,subtask,finish-drywall-1,  Finish Drywall Kitchen,needs-scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,framing,"Waits for: framing; ❓ Brandon: When should ""Finish Drywall Kitchen"" ...; ❓ Brandon: ""Finish Drywall Kitchen"" has no sched..."
 6,subtask,finish-drywall-2,  Finish Drywall Scupernong,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,,"❓ Brandon: When should ""Finish Drywall Scupernon...; ❓ Brandon: ""Finish Drywall Scupernong"" has no sc..."
@@ -77,3 +77,4 @@ Order,Type,Task ID,Name,Status,Current Start,Current End,Proposed Start,Assignee
 76,subtask,project-finish-4,  Final Clean,needs-scheduled,,,2026-01-23,Brandon,project-finish-3,"❓ Brandon: When should ""Final Clean"" be scheduled?"
 77,subtask,project-finish-5,  Final Acceptance,needs-scheduled,,,2026-01-22,Dave,,"❓ Brandon: When should ""Final Acceptance"" be sch..."
 78,TASK,install-hvac-registers,Install HVAC Registers,needs-scheduled,,,2026-01-22,Needs Assignment,,No assignee
+79,TASK,hvac-finish,Schedule HVAC Finish,needs-scheduled,,,2026-01-22,Joclar & Fields,,

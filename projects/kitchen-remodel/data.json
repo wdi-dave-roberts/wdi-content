@@ -551,26 +551,30 @@
     {
       "id": "finish-drywall",
       "name": "Finish Drywall",
-      "start": "2026-01-23",
-      "end": "2026-01-23",
+      "start": "2026-01-22",
+      "end": "2026-01-22",
       "category": "trim",
-      "assignee": "vendor:eliseo",
+      "assignee": "vendor:dion-cahoon",
       "status": "scheduled",
       "subtasks": [
         {
           "id": "finish-drywall-1",
           "name": "Finish Drywall Kitchen",
-          "status": "needs-scheduled",
-          "assignee": "vendor:eliseo",
+          "status": "scheduled",
+          "assignee": "vendor:dion-cahoon",
           "dependencies": [
             "framing"
-          ]
+          ],
+          "start": "2026-01-22",
+          "end": "2026-01-22"
         },
         {
           "id": "finish-drywall-2",
           "name": "Finish Drywall Scupernong",
           "status": "scheduled",
-          "assignee": "vendor:eliseo"
+          "assignee": "vendor:dion-cahoon",
+          "start": "2026-01-22",
+          "end": "2026-01-22"
         },
         {
           "id": "finish-drywall-3",
@@ -578,12 +582,18 @@
           "status": "scheduled",
           "dependencies": [
             "install-doors-2"
-          ]
+          ],
+          "start": "2026-01-22",
+          "end": "2026-01-22",
+          "assignee": "vendor:dion-cahoon"
         },
         {
           "id": "finish-drywall-4",
           "name": "Drywall patch two light holes in Scupernong",
-          "status": "scheduled"
+          "status": "scheduled",
+          "start": "2026-01-22",
+          "end": "2026-01-22",
+          "assignee": "vendor:dion-cahoon"
         }
       ],
       "dependencies": [
@@ -1956,6 +1966,32 @@
       "lastChecked": "2026-01-22",
       "resolvedAt": "2026-01-22",
       "resolvedBy": "auto"
+    },
+    {
+      "id": "tq-assignee-finish-drywall-3-assignee",
+      "type": "assignee",
+      "prompt": "Who should be assigned to \"Finish drywall around back door\"?",
+      "assignee": "brandon",
+      "status": "open",
+      "created": "2026-01-22",
+      "relatedTask": "finish-drywall-3",
+      "source": "auto-lifecycle",
+      "autoApply": "(response) => {\n            const value = typeof response === 'object' ? response.value : response;\n            return value ? { assignee: normalizeVendorRef(value) } : null;\n          }",
+      "category": "ASSIGN",
+      "title": "Assign: finish drywall 3"
+    },
+    {
+      "id": "tq-assignee-finish-drywall-4-assignee",
+      "type": "assignee",
+      "prompt": "Who should be assigned to \"Drywall patch two light holes in Scupernong\"?",
+      "assignee": "brandon",
+      "status": "open",
+      "created": "2026-01-22",
+      "relatedTask": "finish-drywall-4",
+      "source": "auto-lifecycle",
+      "autoApply": "(response) => {\n            const value = typeof response === 'object' ? response.value : response;\n            return value ? { assignee: normalizeVendorRef(value) } : null;\n          }",
+      "category": "ASSIGN",
+      "title": "Assign: finish drywall 4"
     }
   ]
 }

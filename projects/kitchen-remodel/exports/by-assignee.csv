@@ -31,22 +31,19 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ▶ Crest Mechanical (1 items),,,,,,,,
 ,crest-installation,Crest Installation,scheduled,2026-01-27,2026-01-27,"finish-trim, kitchen-baseboard, finish-electrical, propane, install-stainless-wall, upper-cabinet-install, crest-prep","finish-plumbing, finish-electrical-8, kitchen-put-back, kitchen-put-back-1, project-finish",Need to confirm exact delivery time and duration for install.
 ,,,,,,,,
-▶ Danny (9 items),,,,,,,,
+▶ Danny (6 items),,,,,,,,
 ,install-doors,Install Doors,needs-scheduled,,,finish-trim,painting-4,
 ,install-doors-1,  ↳ Main Kitchen Door,needs-scheduled,,,,,1. Hinges to be delivered 1/22. 2. Door is in the garage.
 ,install-doors-2,  ↳ Install Back Door,needs-scheduled,,,,finish-drywall-3,1. Door is in the garage. 2. Install with Antique Bronze hinges. 3. Install existing antique bronze electronic deadbolt and door knob provided by owner.
 ,install-doors-3,  ↳ HVAC Door,needs-scheduled,,,,,"1. Install existing 32"" door with jamb. 2. Same casing as main kitchen door."
 ,build-back-deck,Build Back Deck with Ramp,needs-scheduled,,,remove-old-porch,,"Need to sort out details for dimensions, rail system vs. no rail system, etc. REQUEST: GC meet with owner to plan."
 ,remove-old-porch,Remove Old Porch Steps and Posts,needs-scheduled,,,,build-back-deck,
-,framing,Framing,needs-scheduled,,,,"finish-drywall, finish-drywall-1",
-,framing-1,  ↳ Adjust kitchen to pantry hallway opening,needs-scheduled,,,,,
-,framing-2,  ↳ Adjust pantry to back door hallway opening,needs-scheduled,,,,,
 ,,,,,,,,
 ▶ Dave (2 items),,,,,,,,
 ,project-finish-2,  ↳ Final Punch Walkthrough,needs-scheduled,,,,,Owner walks job with GC to identify any remaining items. Document all punch items.
 ,project-finish-5,  ↳ Final Acceptance,needs-scheduled,,,,,Owner confirms all punch items resolved. Project complete.
 ,,,,,,,,
-▶ Dion Cahoon (8 items),,,,,,,,
+▶ Dion Cahoon (11 items),,,,,,,,
 ,finish-electrical-1,  ↳ Move Receptacle Over Mop Sink,needs-scheduled,2026-01-26,2026-01-26,,,Move to left of hand sink.
 ,finish-electrical-2,  ↳ Install Coach Lamp,needs-scheduled,2026-01-26,2026-01-26,,,
 ,finish-electrical-3,  ↳ Install Receptacle for Light Strings,needs-scheduled,2026-01-26,2026-01-26,,,For light strings that criss-cross to firepit.
@@ -55,6 +52,9 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,finish-electrical-8,  ↳ Connect Passthrough Heat Lamp,needs-scheduled,2026-01-26,2026-01-26,crest-installation,,Must be done after Crest installation. Heat lamp is part of passthrough equipment.
 ,propane-1,  ↳ Install Propane Line for Gas Range,needs-scheduled,2026-01-23,2026-01-23,,,1. Installed in secure box in wall to right of existing stainless steel wall covering. 2. Must be installed before remaining stainless is installed on Friday 1/23.
 ,kitchen-put-back-1,  ↳ Install Dishwasher,needs-scheduled,,,"crest-installation, finish-plumbing",,
+,framing,Framing,scheduled,2026-01-22,2026-01-22,,"finish-drywall, finish-drywall-1","Hallway opening height: 89 1/2"" for both openings (kitchen-to-pantry and pantry-to-back-door)"
+,framing-1,  ↳ Adjust kitchen to pantry hallway opening,scheduled,2026-01-22,2026-01-22,,,
+,framing-2,  ↳ Adjust pantry to back door hallway opening,scheduled,2026-01-22,2026-01-22,,,
 ,,,,,,,,
 ▶ Eliseo (19 items),,,,,,,,
 ,finish-trim,Finish Trim,in-progress,2026-01-23,2026-01-24,painting,"install-doors, crest-prep, crest-installation, kitchen-baseboard, upper-cabinet-install","Trim joints should be finished with Bondo for wood, not wood filler and definitely not caulk."
@@ -93,8 +93,9 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,kitchen-baseboard,Kitchen Baseboard,scheduled,2026-01-26,2026-01-26,"finish-trim, painting","crest-prep, crest-installation",Must be complete before Crest install on 1/27.
 ,kitchen-baseboard-2,  ↳ Baseboard Install,needs-scheduled,2026-01-26,2026-01-26,,,
 ,,,,,,,,
-▶ Joclar & Fields (1 items),,,,,,,,
+▶ Joclar & Fields (2 items),,,,,,,,
 ,hvac-registers,HVAC Lower Registers,cancelled,2026-01-22,2026-01-22,,,Registers in laundry and storage room may be too low for crown molding. Also available 1/23 if needed.
+,hvac-finish,Schedule HVAC Finish,needs-scheduled,,,,,
 ,,,,,,,,
 ▶ Sergio (2 items),,,,,,,,
 ,siding,Siding,needs-scheduled,,,propane,,
