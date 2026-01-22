@@ -1,0 +1,50 @@
+{
+  "tasks": [
+    {
+      "id": "blocking-task",
+      "name": "Blocking Task",
+      "status": "scheduled",
+      "category": "demolition",
+      "start": "2026-01-20",
+      "end": "2026-01-30"
+    },
+    {
+      "id": "conflicting-task",
+      "name": "Conflicting Task",
+      "status": "scheduled",
+      "category": "rough-in",
+      "start": "2026-01-25",
+      "end": "2026-02-05",
+      "dependencies": ["blocking-task"]
+    },
+    {
+      "id": "vendor-overlap-1",
+      "name": "Vendor Task 1",
+      "status": "scheduled",
+      "category": "finish",
+      "start": "2026-02-01",
+      "end": "2026-02-10",
+      "assignee": "vendor:danny"
+    },
+    {
+      "id": "vendor-overlap-2",
+      "name": "Vendor Task 2",
+      "status": "scheduled",
+      "category": "fixtures",
+      "start": "2026-02-05",
+      "end": "2026-02-15",
+      "assignee": "vendor:danny"
+    }
+  ],
+  "vendors": [
+    {
+      "id": "danny",
+      "name": "Danny Contractor",
+      "type": "contractor"
+    }
+  ],
+  "issues": [],
+  "notes": [],
+  "receipts": [],
+  "milestones": []
+}

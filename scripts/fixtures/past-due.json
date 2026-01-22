@@ -1,0 +1,74 @@
+{
+  "tasks": [
+    {
+      "id": "past-due-task",
+      "name": "Past Due Task",
+      "status": "scheduled",
+      "category": "demolition",
+      "start": "2025-12-01",
+      "end": "2025-12-15"
+    },
+    {
+      "id": "completed-past-due",
+      "name": "Completed Past Due",
+      "status": "completed",
+      "category": "rough-in",
+      "start": "2025-12-01",
+      "end": "2025-12-10"
+    },
+    {
+      "id": "future-task",
+      "name": "Future Task",
+      "status": "scheduled",
+      "category": "finish",
+      "start": "2026-03-01",
+      "end": "2026-03-15"
+    },
+    {
+      "id": "unscheduled-blocker",
+      "name": "Unscheduled Blocker",
+      "status": "needs-scheduled",
+      "category": "structural"
+    },
+    {
+      "id": "blocked-by-unscheduled",
+      "name": "Blocked By Unscheduled",
+      "status": "needs-scheduled",
+      "category": "finish",
+      "dependencies": ["unscheduled-blocker"]
+    },
+    {
+      "id": "task-with-overdue-material",
+      "name": "Task With Overdue Material",
+      "status": "scheduled",
+      "category": "fixtures",
+      "start": "2026-02-01",
+      "end": "2026-02-10",
+      "materialDependencies": [
+        {
+          "id": "overdue-mat",
+          "name": "Overdue Material",
+          "status": "ordered",
+          "expectedDate": "2025-12-20"
+        },
+        {
+          "id": "on-time-mat",
+          "name": "On Time Material",
+          "status": "ordered",
+          "expectedDate": "2026-03-01"
+        },
+        {
+          "id": "received-mat",
+          "name": "Received Material",
+          "status": "on-hand",
+          "expectedDate": "2025-12-01"
+        }
+      ]
+    }
+  ],
+  "vendors": [],
+  "issues": [],
+  "notes": [],
+  "receipts": [],
+  "milestones": []
+}

@@ -1,0 +1,27 @@
+{
+  "tasks": [
+    {
+      "id": "task-a",
+      "name": "Task A",
+      "status": "scheduled",
+      "category": "demolition",
+      "start": "2026-01-20",
+      "end": "2026-01-25",
+      "dependencies": ["task-b"]
+    },
+    {
+      "id": "task-b",
+      "name": "Task B",
+      "status": "scheduled",
+      "category": "rough-in",
+      "start": "2026-01-26",
+      "end": "2026-01-30",
+      "dependencies": ["task-a"]
+    }
+  ],
+  "vendors": [],
+  "issues": [],
+  "notes": [],
+  "receipts": [],
+  "milestones": []
+}

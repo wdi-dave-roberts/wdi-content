@@ -1,0 +1,78 @@
+{
+  "tasks": [
+    {
+      "id": "task-1",
+      "name": "First Task",
+      "status": "scheduled",
+      "category": "demolition",
+      "start": "2026-01-20",
+      "end": "2026-01-25",
+      "assignee": "vendor:danny",
+      "subtasks": [
+        {
+          "id": "subtask-1a",
+          "name": "Subtask A",
+          "status": "scheduled",
+          "start": "2026-01-20",
+          "end": "2026-01-22"
+        },
+        {
+          "id": "subtask-1b",
+          "name": "Subtask B",
+          "status": "pending",
+          "dependencies": ["subtask-1a"]
+        }
+      ]
+    },
+    {
+      "id": "task-2",
+      "name": "Second Task",
+      "status": "needs-scheduled",
+      "category": "rough-in",
+      "dependencies": ["task-1"],
+      "materialDependencies": [
+        {
+          "id": "mat-wood",
+          "name": "Wood Planks",
+          "status": "on-hand",
+          "quantity": 20
+        }
+      ]
+    },
+    {
+      "id": "task-3",
+      "name": "Third Task",
+      "status": "scheduled",
+      "category": "finish",
+      "start": "2026-02-01",
+      "end": "2026-02-05",
+      "assignee": "vendor:danny"
+    }
+  ],
+  "vendors": [
+    {
+      "id": "danny",
+      "name": "Danny Contractor",
+      "type": "contractor"
+    },
+    {
+      "id": "bob",
+      "name": "Bob Supplier",
+      "type": "supplier"
+    }
+  ],
+  "issues": [
+    {
+      "id": "issue-1",
+      "prompt": "Who should install the cabinets?",
+      "type": "assignee",
+      "assignee": "brandon",
+      "status": "open",
+      "created": "2026-01-15",
+      "relatedTask": "task-2"
+    }
+  ],
+  "notes": [],
+  "receipts": [],
+  "milestones": []
+}

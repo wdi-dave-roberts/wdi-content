@@ -1,0 +1,120 @@
+{
+  "tasks": [
+    {
+      "id": "dup-task",
+      "name": "First Duplicate",
+      "status": "scheduled",
+      "category": "demolition"
+    },
+    {
+      "id": "dup-task",
+      "name": "Second Duplicate",
+      "status": "pending",
+      "category": "finish"
+    },
+    {
+      "id": "bad-status",
+      "name": "Bad Status Task",
+      "status": "invalid-status",
+      "category": "rough-in"
+    },
+    {
+      "id": "bad-dates",
+      "name": "Bad Dates Task",
+      "status": "scheduled",
+      "category": "plumbing",
+      "start": "2026-02-15",
+      "end": "2026-02-10"
+    },
+    {
+      "id": "bad-vendor",
+      "name": "Unknown Vendor Task",
+      "status": "scheduled",
+      "category": "electrical",
+      "assignee": "vendor:nonexistent"
+    },
+    {
+      "id": "bad-dep",
+      "name": "Unknown Dependency Task",
+      "status": "scheduled",
+      "category": "finish",
+      "dependencies": ["nonexistent-task"]
+    },
+    {
+      "id": "bad-date-format",
+      "name": "Invalid Date Format",
+      "status": "scheduled",
+      "category": "cleanup",
+      "start": "01/15/2026",
+      "end": "01-20-2026"
+    },
+    {
+      "id": "task-with-bad-material",
+      "name": "Task With Bad Material Status",
+      "status": "scheduled",
+      "category": "fixtures",
+      "materialDependencies": [
+        {
+          "id": "mat-bad",
+          "name": "Bad Material",
+          "status": "invalid-material-status"
+        }
+      ]
+    }
+  ],
+  "vendors": [
+    {
+      "id": "danny",
+      "name": "Danny Contractor",
+      "type": "contractor"
+    }
+  ],
+  "issues": [
+    {
+      "id": "dup-issue",
+      "prompt": "First duplicate issue",
+      "type": "yes-no",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "dup-issue",
+      "prompt": "Second duplicate issue",
+      "type": "yes-no",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "no-prompt",
+      "prompt": "",
+      "type": "yes-no",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "bad-assignee",
+      "prompt": "Issue with bad assignee",
+      "type": "yes-no",
+      "assignee": "invalid-person",
+      "status": "open"
+    },
+    {
+      "id": "bad-issue-status",
+      "prompt": "Issue with bad status",
+      "type": "yes-no",
+      "assignee": "brandon",
+      "status": "invalid-status"
+    },
+    {
+      "id": "bad-related-task",
+      "prompt": "Issue with missing related task",
+      "type": "assignee",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "nonexistent-task"
+    }
+  ],
+  "notes": [],
+  "receipts": [],
+  "milestones": []
+}
