@@ -4950,42 +4950,12 @@ async function cmdExport() {
     process.exit(1);
   }
 
-  // Step 5: Merge responses back if any
+  // Step 5: Show responses that were preserved
+  // Note: Responses are imported into data.json via import-responses.js before export.
+  // The export script includes them in the Response column. No re-write needed.
+  // Re-writing the file after export would strip cell styles, so we avoid it.
   if (gcResponses.length > 0) {
-    console.log('\nPreserving responses...');
-
-    try {
-      const XLSX = (await import('xlsx-js-style')).default;
-
-      const wb = XLSX.readFile(xlsxPath);
-      const questionsSheet = wb.Sheets['Issues'] || wb.Sheets['Open Questions'];
-
-      if (questionsSheet) {
-        const questionsData = XLSX.utils.sheet_to_json(questionsSheet, { header: 1 });
-        const headerRow = questionsData[0];
-        const responseColIndex = headerRow.indexOf('Response');
-
-        if (responseColIndex >= 0) {
-          // Build question ID to row index mapping
-          const questionIdColIndex = headerRow.indexOf('Question ID');
-
-          for (let i = 1; i < questionsData.length; i++) {
-            const questionId = questionsData[i][questionIdColIndex];
-            const preserved = gcResponses.find(r => r.questionId === questionId);
-
-            if (preserved) {
-              const cellRef = XLSX.utils.encode_cell({ r: i, c: responseColIndex });
-              questionsSheet[cellRef] = { t: 's', v: preserved.response };
-            }
-          }
-
-          XLSX.writeFile(wb, xlsxPath);
-          console.log(green(`✓ Preserved ${gcResponses.length} response(s)`));
-        }
-      }
-    } catch (err) {
-      console.error(yellow(`Warning: Could not preserve responses: ${err.message}`));
-    }
+    console.log(green(`✓ Preserved ${gcResponses.length} response(s)`));
   }
 
   // Step 6: Copy to Google Drive

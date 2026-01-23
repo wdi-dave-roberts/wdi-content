@@ -41,6 +41,108 @@ function formatDate(dateStr) {
   return dateStr; // Keep as YYYY-MM-DD for spreadsheet sorting
 }
 
+// ============ CELL STYLING HELPERS ============
+// xlsx-js-style requires styles embedded in cell objects BEFORE aoa_to_sheet()
+
+// Style definitions - xlsx-js-style requires patternType: "solid" for fills
+const STYLES = {
+  header: {
+    font: { bold: true, color: { rgb: 'FFFFFF' } },
+    fill: { patternType: 'solid', fgColor: { rgb: '4472C4' } },
+    alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+    border: {
+      top: { style: 'thin', color: { rgb: '000000' } },
+      bottom: { style: 'thin', color: { rgb: '000000' } },
+      left: { style: 'thin', color: { rgb: '000000' } },
+      right: { style: 'thin', color: { rgb: '000000' } }
+    }
+  },
+  taskRow: {
+    font: { bold: true },
+    fill: { patternType: 'solid', fgColor: { rgb: 'E2EFDA' } }, // Light green for tasks
+    border: {
+      top: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      left: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      right: { style: 'thin', color: { rgb: 'D9D9D9' } }
+    }
+  },
+  subtaskRow: {
+    fill: { patternType: 'solid', fgColor: { rgb: 'FFFFFF' } },
+    border: {
+      top: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      left: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      right: { style: 'thin', color: { rgb: 'D9D9D9' } }
+    }
+  },
+  subtaskRowAlt: {
+    fill: { patternType: 'solid', fgColor: { rgb: 'F9F9F9' } },
+    border: {
+      top: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      left: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      right: { style: 'thin', color: { rgb: 'D9D9D9' } }
+    }
+  },
+  issueText: {
+    font: { color: { rgb: 'C00000' }, bold: true }
+  },
+  needsAssignee: {
+    font: { color: { rgb: 'C65911' }, italic: true }
+  },
+  assigneeGroupHeader: {
+    font: { bold: true, color: { rgb: 'FFFFFF' } },
+    fill: { patternType: 'solid', fgColor: { rgb: '305496' } },
+    alignment: { horizontal: 'left' }
+  }
+};
+
+// Category colors for Issues sheet
+const CATEGORY_STYLES = {
+  'ASSIGN': { fill: { patternType: 'solid', fgColor: { rgb: 'DEEBF7' } } },    // Light blue
+  'SCHEDULE': { fill: { patternType: 'solid', fgColor: { rgb: 'FCE4D6' } } },  // Light orange
+  'ORDER': { fill: { patternType: 'solid', fgColor: { rgb: 'E2EFDA' } } },     // Light green
+  'SPECIFY': { fill: { patternType: 'solid', fgColor: { rgb: 'FFF2CC' } } },   // Light yellow
+  'TRACK': { fill: { patternType: 'solid', fgColor: { rgb: 'E4DFEC' } } },     // Light purple
+  'DECIDE': { fill: { patternType: 'solid', fgColor: { rgb: 'F2F2F2' } } }     // Light gray
+};
+
+// Create a styled cell object
+function cell(value, style = null) {
+  const c = { v: value ?? '', t: typeof value === 'number' ? 'n' : 's' };
+  if (style) c.s = style;
+  return c;
+}
+
+// Create a row of header cells
+function headerRow(values) {
+  return values.map(v => cell(v, STYLES.header));
+}
+
+// Create a styled data row
+function dataRow(values, baseStyle, overrides = {}) {
+  return values.map((v, i) => {
+    const style = overrides[i] ? { ...baseStyle, ...overrides[i] } : baseStyle;
+    return cell(v, style);
+  });
+}
+
+// Merge two style objects (deep merge for nested properties)
+function mergeStyles(base, override) {
+  if (!override) return base;
+  if (!base) return override;
+  const result = { ...base };
+  for (const key of Object.keys(override)) {
+    if (typeof override[key] === 'object' && !Array.isArray(override[key])) {
+      result[key] = { ...base[key], ...override[key] };
+    } else {
+      result[key] = override[key];
+    }
+  }
+  return result;
+}
+
 // Get completeness status for a material
 function getMaterialCompleteness(material) {
   const missing = [];
@@ -301,10 +403,10 @@ function detectIssues(item) {
 
 // Build schedule rows grouped by parent task
 const scheduleRows = [];
-scheduleRows.push([
+scheduleRows.push(headerRow([
   'Order', 'Type', 'Task ID', 'Name', 'Status', 'Current Start', 'Current End',
   'Proposed Start', 'Assignee', 'Dependencies', 'Issues'
-]);
+]));
 
 // Statuses that indicate task is no longer actionable
 const closedStatuses = ['completed', 'cancelled', 'confirmed'];
@@ -315,12 +417,15 @@ const parentTasks = sortedItems.filter(item =>
 );
 
 let order = 1;
+let subtaskRowIndex = 0;
 for (const parent of parentTasks) {
-  // Add parent task row
+  // Add parent task row (green background, bold)
   const parentDates = proposedDates[parent.id];
   const parentIssues = detectIssues(parent);
+  const hasIssues = parentIssues.length > 0;
+  const needsAssignee = !parent.assignee;
 
-  scheduleRows.push([
+  const parentValues = [
     order++,
     parent.type,
     parent.id,
@@ -332,7 +437,14 @@ for (const parent of parentTasks) {
     parent.assignee || 'Needs Assignment',
     parent.dependencies.join(', '),
     parentIssues.join('; ')
-  ]);
+  ];
+
+  // Build overrides for special columns
+  const parentOverrides = {};
+  if (needsAssignee) parentOverrides[8] = mergeStyles(STYLES.taskRow, STYLES.needsAssignee);
+  if (hasIssues) parentOverrides[10] = mergeStyles(STYLES.taskRow, STYLES.issueText);
+
+  scheduleRows.push(dataRow(parentValues, STYLES.taskRow, parentOverrides));
 
   // Add subtasks immediately after parent (only open ones)
   const subtasks = sortedItems.filter(item =>
@@ -341,8 +453,14 @@ for (const parent of parentTasks) {
   for (const sub of subtasks) {
     const subDates = proposedDates[sub.id];
     const subIssues = detectIssues(sub);
+    const subHasIssues = subIssues.length > 0;
+    const subNeedsAssignee = !sub.assignee;
 
-    scheduleRows.push([
+    // Alternate subtask row colors
+    const subtaskStyle = subtaskRowIndex % 2 === 0 ? STYLES.subtaskRow : STYLES.subtaskRowAlt;
+    subtaskRowIndex++;
+
+    const subValues = [
       order++,
       sub.type,
       sub.id,
@@ -354,7 +472,13 @@ for (const parent of parentTasks) {
       sub.assignee || 'Needs Assignment',
       sub.dependencies.join(', '),
       subIssues.join('; ')
-    ]);
+    ];
+
+    const subOverrides = {};
+    if (subNeedsAssignee) subOverrides[8] = mergeStyles(subtaskStyle, STYLES.needsAssignee);
+    if (subHasIssues) subOverrides[10] = mergeStyles(subtaskStyle, STYLES.issueText);
+
+    scheduleRows.push(dataRow(subValues, subtaskStyle, subOverrides));
   }
 }
 
@@ -380,10 +504,10 @@ for (const task of data.tasks) {
 }
 
 const taskHierarchyRows = [];
-taskHierarchyRows.push([
+taskHierarchyRows.push(headerRow([
   'Type', 'Task ID', 'Name', 'Status', 'Ready', 'Start Date', 'End Date',
   'Assignee', 'Category', 'Dependencies', 'Required For', 'Material Deps', 'Notes', 'Comments'
-]);
+]));
 
 // Helper to get material dependency names
 function getMaterialDeps(matDeps) {
@@ -398,8 +522,10 @@ for (const task of data.tasks) {
   const taskMatDeps = getMaterialDeps(task.materialDependencies);
   const taskRequiredFor = (requiredFor[task.id] || []).join(', ');
   const taskCompleteness = getTaskCompleteness(task);
-  // Add parent task row
-  taskHierarchyRows.push([
+  const taskNeedsAssignee = !taskAssignee;
+
+  // Add parent task row (green background, bold)
+  const taskValues = [
     'TASK',
     task.id,
     task.name,
@@ -414,7 +540,12 @@ for (const task of data.tasks) {
     taskMatDeps,
     task.notes || '',
     task.comments || '' // Status change history
-  ]);
+  ];
+
+  const taskOverrides = {};
+  if (taskNeedsAssignee) taskOverrides[7] = mergeStyles(STYLES.taskRow, STYLES.needsAssignee);
+
+  taskHierarchyRows.push(dataRow(taskValues, STYLES.taskRow, taskOverrides));
 
   // Add subtasks indented below parent (inherit parent values unless overridden)
   for (const sub of (task.subtasks || [])) {
@@ -433,9 +564,10 @@ for (const task of data.tasks) {
       assignee: sub.assignee || task.assignee
     };
     const subCompleteness = getTaskCompleteness(effectiveSub);
+    const subNeedsAssignee = !subAssignee;
 
     const subRequiredFor = (requiredFor[sub.id] || []).join(', ');
-    taskHierarchyRows.push([
+    const subValues = [
       '  ↳ subtask',
       sub.id,
       `    ${sub.name}`,
@@ -450,7 +582,12 @@ for (const task of data.tasks) {
       subMatDeps,
       sub.notes || '',
       sub.comments || '' // Status change history
-    ]);
+    ];
+
+    const subOverrides = {};
+    if (subNeedsAssignee) subOverrides[7] = mergeStyles(STYLES.subtaskRow, STYLES.needsAssignee);
+
+    taskHierarchyRows.push(dataRow(subValues, STYLES.subtaskRow, subOverrides));
   }
 }
 
@@ -469,16 +606,17 @@ for (const task of data.tasks) {
 }
 
 const materialsRows = [];
-materialsRows.push([
+materialsRows.push(headerRow([
   'Material ID', 'Material Name', 'Status', 'Ready', 'For Task',
   'Depends On', 'Quantity', 'Expected Date', 'Order Link', 'Detail', 'Notes', 'Comments'
-]);
+]));
 
+let materialRowIndex = 0;
 for (const task of data.tasks) {
   for (const mat of (task.materialDependencies || [])) {
     const dependsOn = (materialDependsOn[mat.id] || []).join(', ');
     const completeness = getMaterialCompleteness(mat);
-    materialsRows.push([
+    const matValues = [
       mat.id,
       mat.name,
       mat.status || '',
@@ -491,18 +629,23 @@ for (const task of data.tasks) {
       mat.detail || '',
       mat.notes || '',
       mat.comments || '' // Status change history
-    ]);
+    ];
+    // Alternate row colors for readability
+    const rowStyle = materialRowIndex % 2 === 0 ? STYLES.subtaskRow : STYLES.subtaskRowAlt;
+    materialRowIndex++;
+    materialsRows.push(dataRow(matValues, rowStyle));
   }
 }
 
 // ============ VENDORS TAB ============
 const vendorsRows = [];
-vendorsRows.push([
+vendorsRows.push(headerRow([
   'Vendor ID', 'Name', 'Type', 'Trade', 'Status', 'Contact', 'Notes'
-]);
+]));
 
+let vendorRowIndex = 0;
 for (const vendor of data.vendors) {
-  vendorsRows.push([
+  const vendorValues = [
     vendor.id,
     vendor.name,
     vendor.type || '',
@@ -510,7 +653,10 @@ for (const vendor of data.vendors) {
     vendor.status || '',
     vendor.contact || '',
     '' // Notes column
-  ]);
+  ];
+  const rowStyle = vendorRowIndex % 2 === 0 ? STYLES.subtaskRow : STYLES.subtaskRowAlt;
+  vendorRowIndex++;
+  vendorsRows.push(dataRow(vendorValues, rowStyle));
 }
 
 // ============ ISSUES TAB ============
@@ -559,16 +705,6 @@ const CATEGORY_DISPLAY_NAMES = {
   'SPECIFY': 'Specify',
   'TRACK': 'Track',
   'DECIDE': 'Decide'
-};
-
-// Action category colors (light pastels for row backgrounds)
-const CATEGORY_COLORS = {
-  'ASSIGN': 'DEEBF7',    // Light blue
-  'SCHEDULE': 'FCE4D6',  // Light orange
-  'ORDER': 'E2EFDA',     // Light green
-  'SPECIFY': 'FFF2CC',   // Light yellow
-  'TRACK': 'E4DFEC',     // Light purple
-  'DECIDE': 'F2F2F2'     // Light gray (neutral)
 };
 
 // Category sort order (for spreadsheet grouping)
@@ -670,10 +806,10 @@ function formatStructuredResponse(response) {
 }
 
 const openQuestionsRows = [];
-openQuestionsRows.push([
+openQuestionsRows.push(headerRow([
   'Action', 'Question ID', 'Type', 'Created', 'Question', 'Assignee', 'Related Task', 'Related Material',
   'Response', 'Notes', 'Status', 'Review Status'
-]);
+]));
 
 // Sort questions by Action category for better grouping
 const sortedQuestions = [...(data.issues || [])].sort((a, b) => {
@@ -699,7 +835,19 @@ for (const question of sortedQuestions) {
   // Compute category if not already set
   const category = computeCategory(question);
 
-  openQuestionsRows.push([
+  // Get category-based row style
+  const categoryStyle = CATEGORY_STYLES[category] || CATEGORY_STYLES['DECIDE'];
+  const rowStyle = {
+    fill: categoryStyle.fill,
+    border: {
+      top: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      left: { style: 'thin', color: { rgb: 'D9D9D9' } },
+      right: { style: 'thin', color: { rgb: 'D9D9D9' } }
+    }
+  };
+
+  const issueValues = [
     CATEGORY_DISPLAY_NAMES[category] || category,
     question.id,
     QUESTION_TYPE_DISPLAY[questionType] || questionType,
@@ -712,16 +860,18 @@ for (const question of sortedQuestions) {
     question.responseNotes || '',
     STATUS_DISPLAY_NAMES[question.status] || question.status,
     question.reviewStatus ? (REVIEW_STATUS_DISPLAY[question.reviewStatus] || question.reviewStatus) : ''
-  ]);
+  ];
+
+  openQuestionsRows.push(dataRow(issueValues, rowStyle));
 }
 
 // ============ BY ASSIGNEE TAB ============
 // Group tasks by assignee, showing only their work with dependencies
 const byAssigneeRows = [];
-byAssigneeRows.push([
+byAssigneeRows.push(headerRow([
   'Assignee', 'Task ID', 'Task Name', 'Status', 'Start Date', 'End Date',
   'Dependencies', 'Required For', 'Notes'
-]);
+]));
 
 // Collect all tasks/subtasks by assignee
 const tasksByAssignee = {};
@@ -788,17 +938,20 @@ const sortedAssignees = Object.keys(tasksByAssignee).sort((a, b) => {
 for (const assignee of sortedAssignees) {
   const tasks = tasksByAssignee[assignee];
 
-  // Add assignee header row
-  byAssigneeRows.push([
+  // Add assignee header row (dark blue background)
+  const assigneeHeaderValues = [
     `▶ ${assignee} (${tasks.length} items)`,
     '', '', '', '', '', '', '', ''
-  ]);
+  ];
+  byAssigneeRows.push(dataRow(assigneeHeaderValues, STYLES.assigneeGroupHeader));
 
   // Add each task for this assignee
   for (const item of tasks) {
     const displayName = item.type === 'subtask' ? `  ↳ ${item.name}` : item.name;
+    const isTask = item.type === 'TASK';
+    const rowStyle = isTask ? STYLES.taskRow : STYLES.subtaskRow;
 
-    byAssigneeRows.push([
+    const itemValues = [
       '', // Assignee column empty for task rows (header has it)
       item.id,
       displayName,
@@ -808,11 +961,13 @@ for (const assignee of sortedAssignees) {
       item.deps,
       item.reqFor,
       item.notes
-    ]);
+    ];
+
+    byAssigneeRows.push(dataRow(itemValues, rowStyle));
   }
 
   // Add blank row between assignees
-  byAssigneeRows.push(['', '', '', '', '', '', '', '', '']);
+  byAssigneeRows.push(['', '', '', '', '', '', '', '', ''].map(v => cell(v)));
 }
 
 // ============ INSTRUCTIONS TAB ============
@@ -998,51 +1153,7 @@ wsByAssigneeData['!cols'] = [
   { wch: 50 }, // Notes
 ];
 
-// ============ STYLING AND FORMATTING ============
-
-// Style definitions
-const headerStyle = {
-  font: { bold: true, color: { rgb: 'FFFFFF' } },
-  fill: { fgColor: { rgb: '4472C4' } },
-  alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
-  border: {
-    top: { style: 'thin', color: { rgb: '000000' } },
-    bottom: { style: 'thin', color: { rgb: '000000' } },
-    left: { style: 'thin', color: { rgb: '000000' } },
-    right: { style: 'thin', color: { rgb: '000000' } }
-  }
-};
-
-const taskRowStyle = {
-  font: { bold: true },
-  fill: { fgColor: { rgb: 'D6DCE5' } }
-};
-
-const subtaskRowStyle = {
-  fill: { fgColor: { rgb: 'F2F2F2' } }
-};
-
-const issueStyle = {
-  font: { color: { rgb: 'C00000' }, bold: true }
-};
-
-const noAssigneeStyle = {
-  font: { color: { rgb: 'C65911' }, italic: true }
-};
-
-// Helper to apply styles to a cell
-function applyCellStyle(ws, cellRef, style) {
-  if (!ws[cellRef]) return;
-  ws[cellRef].s = { ...ws[cellRef].s, ...style };
-}
-
-// Helper to apply styles to header row
-function styleHeaderRow(ws, numCols) {
-  for (let col = 0; col < numCols; col++) {
-    const cellRef = XLSX.utils.encode_cell({ r: 0, c: col });
-    applyCellStyle(ws, cellRef, headerStyle);
-  }
-}
+// ============ ROW HEIGHT AND SHEET SETTINGS ============
 
 // Helper to apply row height
 function setRowHeight(ws, row, height) {
@@ -1050,243 +1161,14 @@ function setRowHeight(ws, row, height) {
   ws['!rows'][row] = { hpt: height };
 }
 
-// Apply formatting to Schedule sheet
-styleHeaderRow(wsScheduleData, 11);
+// Set header row heights
 setRowHeight(wsScheduleData, 0, 30);
-
-// Style data rows in Schedule - highlight issues and tasks vs subtasks
-for (let row = 1; row < scheduleRows.length; row++) {
-  const rowData = scheduleRows[row];
-  const isTask = rowData[1] === 'TASK';
-  const hasIssues = rowData[10] && rowData[10].length > 0;
-  const needsAssignee = rowData[8] === 'Needs Assignment';
-
-  for (let col = 0; col < 11; col++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-    if (wsScheduleData[cellRef]) {
-      // Base style for alternating rows
-      const baseStyle = {
-        fill: { fgColor: { rgb: isTask ? 'E2EFDA' : (row % 2 === 0 ? 'FFFFFF' : 'F9F9F9') } },
-        border: {
-          top: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          left: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          right: { style: 'thin', color: { rgb: 'D9D9D9' } }
-        }
-      };
-
-      // Bold for task rows
-      if (isTask) {
-        baseStyle.font = { bold: true };
-      }
-
-      applyCellStyle(wsScheduleData, cellRef, baseStyle);
-
-      // Highlight issues column in red
-      if (col === 10 && hasIssues) {
-        applyCellStyle(wsScheduleData, cellRef, issueStyle);
-      }
-
-      // Highlight needs assignee in orange
-      if (col === 8 && needsAssignee) {
-        applyCellStyle(wsScheduleData, cellRef, noAssigneeStyle);
-      }
-    }
-  }
-}
-
-// Apply formatting to Tasks sheet
-styleHeaderRow(wsTaskHierarchyData, 13);
 setRowHeight(wsTaskHierarchyData, 0, 30);
-
-for (let row = 1; row < taskHierarchyRows.length; row++) {
-  const rowData = taskHierarchyRows[row];
-  const isTask = rowData[0] === 'TASK';
-  const needsAssignee = rowData[6] === 'Needs Assignment';
-
-  for (let col = 0; col < 13; col++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-    if (wsTaskHierarchyData[cellRef]) {
-      const baseStyle = {
-        fill: { fgColor: { rgb: isTask ? 'E2EFDA' : 'FFFFFF' } },
-        border: {
-          top: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          left: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          right: { style: 'thin', color: { rgb: 'D9D9D9' } }
-        }
-      };
-
-      if (isTask) {
-        baseStyle.font = { bold: true };
-      }
-
-      applyCellStyle(wsTaskHierarchyData, cellRef, baseStyle);
-
-      if (col === 6 && needsAssignee) {
-        applyCellStyle(wsTaskHierarchyData, cellRef, noAssigneeStyle);
-      }
-    }
-  }
-}
-
-// Apply formatting to Materials sheet
-styleHeaderRow(wsMaterialsData, 12);
 setRowHeight(wsMaterialsData, 0, 30);
-
-for (let row = 1; row < materialsRows.length; row++) {
-  for (let col = 0; col < 12; col++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-    if (wsMaterialsData[cellRef]) {
-      applyCellStyle(wsMaterialsData, cellRef, {
-        fill: { fgColor: { rgb: row % 2 === 0 ? 'FFFFFF' : 'F2F2F2' } },
-        border: {
-          top: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          left: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          right: { style: 'thin', color: { rgb: 'D9D9D9' } }
-        }
-      });
-    }
-  }
-}
-
-// Apply formatting to Vendors sheet
-styleHeaderRow(wsVendorsData, 7);
 setRowHeight(wsVendorsData, 0, 30);
-
-for (let row = 1; row < vendorsRows.length; row++) {
-  for (let col = 0; col < 7; col++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-    if (wsVendorsData[cellRef]) {
-      applyCellStyle(wsVendorsData, cellRef, {
-        fill: { fgColor: { rgb: row % 2 === 0 ? 'FFFFFF' : 'F2F2F2' } },
-        border: {
-          top: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          left: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          right: { style: 'thin', color: { rgb: 'D9D9D9' } }
-        }
-      });
-    }
-  }
-}
-
-// Apply formatting to Issues sheet (12 columns with Action category)
-styleHeaderRow(wsOpenQuestionsData, 12);
 setRowHeight(wsOpenQuestionsData, 0, 30);
-
-// Helper to get darker shade for alternating rows
-function darkenColor(hex) {
-  // Simple darkening: reduce each component by ~10%
-  const r = Math.max(0, parseInt(hex.slice(0, 2), 16) - 15);
-  const g = Math.max(0, parseInt(hex.slice(2, 4), 16) - 15);
-  const b = Math.max(0, parseInt(hex.slice(4, 6), 16) - 15);
-  return r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
-}
-
-for (let row = 1; row < openQuestionsRows.length; row++) {
-  const rowData = openQuestionsRows[row];
-  const actionCategory = rowData[0]; // Action column (index 0)
-  const status = rowData[10]; // Status column (index 10 with new columns)
-
-  for (let col = 0; col < 12; col++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-    if (wsOpenQuestionsData[cellRef]) {
-      // Color based on Action category (unified issues system)
-      // Resolved/answered items get muted versions
-      let baseColor = 'FFFFFF';
-
-      // Get category key from display name
-      const categoryKey = Object.keys(CATEGORY_DISPLAY_NAMES).find(
-        k => CATEGORY_DISPLAY_NAMES[k] === actionCategory
-      );
-      if (categoryKey && CATEGORY_COLORS[categoryKey]) {
-        baseColor = CATEGORY_COLORS[categoryKey];
-      }
-
-      // Mute color for resolved/answered (add gray overlay effect)
-      let fillColor;
-      if (status === 'Resolved' || status === 'Dismissed') {
-        fillColor = 'E8E8E8'; // Gray out resolved items
-      } else if (status === 'Answered') {
-        fillColor = row % 2 === 0 ? baseColor : darkenColor(baseColor);
-        // Add a subtle indicator that it needs review
-      } else {
-        fillColor = row % 2 === 0 ? baseColor : darkenColor(baseColor);
-      }
-
-      applyCellStyle(wsOpenQuestionsData, cellRef, {
-        fill: { fgColor: { rgb: fillColor } },
-        border: {
-          top: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          left: { style: 'thin', color: { rgb: 'D9D9D9' } },
-          right: { style: 'thin', color: { rgb: 'D9D9D9' } }
-        }
-      });
-    }
-  }
-}
-
-// Apply formatting to By Assignee sheet
-styleHeaderRow(wsByAssigneeData, 9);
 setRowHeight(wsByAssigneeData, 0, 30);
-
-for (let row = 1; row < byAssigneeRows.length; row++) {
-  const rowData = byAssigneeRows[row];
-  const isAssigneeHeader = rowData[0] && rowData[0].startsWith('▶');
-  const isBlankRow = !rowData[0] && !rowData[1] && !rowData[2];
-
-  for (let col = 0; col < 9; col++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
-    if (wsByAssigneeData[cellRef]) {
-      if (isAssigneeHeader) {
-        // Assignee header row - blue background, bold
-        applyCellStyle(wsByAssigneeData, cellRef, {
-          font: { bold: true, sz: 12, color: { rgb: 'FFFFFF' } },
-          fill: { fgColor: { rgb: '4472C4' } },
-          border: {
-            top: { style: 'thin', color: { rgb: '000000' } },
-            bottom: { style: 'thin', color: { rgb: '000000' } },
-            left: { style: 'thin', color: { rgb: '000000' } },
-            right: { style: 'thin', color: { rgb: '000000' } }
-          }
-        });
-      } else if (!isBlankRow) {
-        // Task rows - alternating colors
-        applyCellStyle(wsByAssigneeData, cellRef, {
-          fill: { fgColor: { rgb: row % 2 === 0 ? 'FFFFFF' : 'F2F2F2' } },
-          border: {
-            top: { style: 'thin', color: { rgb: 'D9D9D9' } },
-            bottom: { style: 'thin', color: { rgb: 'D9D9D9' } },
-            left: { style: 'thin', color: { rgb: 'D9D9D9' } },
-            right: { style: 'thin', color: { rgb: 'D9D9D9' } }
-          }
-        });
-      }
-    }
-  }
-}
-
-// Apply formatting to Instructions sheet
-// Title row - large and bold
-applyCellStyle(wsInstructionsData, 'A1', {
-  font: { bold: true, sz: 20, color: { rgb: '1F4E79' } },
-  alignment: { horizontal: 'center' }
-});
 setRowHeight(wsInstructionsData, 0, 35);
-
-// Sheet section headers (📋 ISSUES, 📅 SCHEDULE, etc.)
-const sheetNameRows = [7, 19, 29, 36, 49, 65]; // Row indices for section headers
-for (const row of sheetNameRows) {
-  const cellRef = XLSX.utils.encode_cell({ r: row, c: 0 });
-  if (wsInstructionsData[cellRef]) {
-    applyCellStyle(wsInstructionsData, cellRef, {
-      font: { bold: true, sz: 13, color: { rgb: '2E75B6' } }
-    });
-  }
-}
 
 // Freeze header rows for all sheets
 wsScheduleData['!freeze'] = { xSplit: 0, ySplit: 1 };

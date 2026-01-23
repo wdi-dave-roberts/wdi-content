@@ -884,13 +884,13 @@
       "start": "2026-01-22",
       "end": "2026-01-22",
       "category": "framing",
-      "status": "scheduled",
+      "status": "complete",
       "assignee": "vendor:dion-cahoon",
       "subtasks": [
         {
           "id": "framing-1",
           "name": "Adjust kitchen to pantry hallway opening",
-          "status": "scheduled",
+          "status": "complete",
           "start": "2026-01-22",
           "end": "2026-01-22",
           "assignee": "vendor:dion-cahoon"
@@ -898,7 +898,7 @@
         {
           "id": "framing-2",
           "name": "Adjust pantry to back door hallway opening",
-          "status": "scheduled",
+          "status": "complete",
           "start": "2026-01-22",
           "end": "2026-01-22",
           "assignee": "vendor:dion-cahoon"
@@ -2117,9 +2117,11 @@
       "priority": "high",
       "category": "SCHEDULE",
       "source": "auto-detection",
-      "status": "open",
+      "status": "resolved",
       "detectionRule": "past-due",
-      "lastChecked": "2026-01-23"
+      "lastChecked": "2026-01-23",
+      "response": "Complete",
+      "reviewStatus": "accepted"
     },
     {
       "id": "id-past-due-framing-1",
@@ -2132,9 +2134,11 @@
       "priority": "high",
       "category": "SCHEDULE",
       "source": "auto-detection",
-      "status": "open",
+      "status": "resolved",
       "detectionRule": "past-due",
-      "lastChecked": "2026-01-23"
+      "lastChecked": "2026-01-23",
+      "response": "Complete",
+      "reviewStatus": "accepted"
     },
     {
       "id": "id-past-due-framing-2",
@@ -2147,9 +2151,11 @@
       "priority": "high",
       "category": "SCHEDULE",
       "source": "auto-detection",
-      "status": "open",
+      "status": "resolved",
       "detectionRule": "past-due",
-      "lastChecked": "2026-01-23"
+      "lastChecked": "2026-01-23",
+      "response": "Complete",
+      "reviewStatus": "accepted"
     },
     {
       "id": "sq-yes-no-hinges-install-doors-1-status",
@@ -2259,11 +2265,13 @@
       "type": "yes-no",
       "prompt": "Has work started on \"Framing\"? (Scheduled start: 2026-01-22)",
       "assignee": "brandon",
-      "status": "open",
+      "status": "resolved",
       "relatedTask": "framing",
       "source": "auto-lifecycle",
       "category": "DECIDE",
-      "title": "Started? framing"
+      "title": "Started? framing",
+      "response": "Yes - Complete",
+      "reviewStatus": "accepted"
     },
     {
       "id": "tq-yes-no-framing-1-status",
@@ -2271,11 +2279,13 @@
       "type": "yes-no",
       "prompt": "Has work started on \"Adjust kitchen to pantry hallway opening\"? (Scheduled start: 2026-01-22)",
       "assignee": "brandon",
-      "status": "open",
+      "status": "resolved",
       "relatedTask": "framing-1",
       "source": "auto-lifecycle",
       "category": "DECIDE",
-      "title": "Started? framing 1"
+      "title": "Started? framing 1",
+      "response": "Yes - Complete",
+      "reviewStatus": "accepted"
     },
     {
       "id": "tq-yes-no-framing-2-status",
@@ -2283,11 +2293,13 @@
       "type": "yes-no",
       "prompt": "Has work started on \"Adjust pantry to back door hallway opening\"? (Scheduled start: 2026-01-22)",
       "assignee": "brandon",
-      "status": "open",
+      "status": "resolved",
       "relatedTask": "framing-2",
       "source": "auto-lifecycle",
       "category": "DECIDE",
-      "title": "Started? framing 2"
+      "title": "Started? framing 2",
+      "response": "Yes - Complete",
+      "reviewStatus": "accepted"
     },
     {
       "id": "tq-date-range-hvac-finish-start-end",
