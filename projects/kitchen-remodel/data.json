@@ -1725,7 +1725,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-install-doors-2",
@@ -1743,7 +1743,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-remove-old-porch",
@@ -1761,7 +1761,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-finish-plumbing",
@@ -1780,7 +1780,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-painting-1",
@@ -1798,7 +1798,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-painting-2",
@@ -1816,7 +1816,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-finish-drywall-1",
@@ -1832,9 +1832,11 @@
       "priority": "high",
       "category": "SCHEDULE",
       "source": "auto-detection",
-      "status": "open",
+      "status": "resolved",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-22",
+      "resolvedAt": "2026-01-23",
+      "resolvedBy": "auto"
     },
     {
       "id": "id-unscheduled-blocker-finish-drywall-2",
@@ -1851,9 +1853,11 @@
       "priority": "high",
       "category": "SCHEDULE",
       "source": "auto-detection",
-      "status": "open",
+      "status": "resolved",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-22",
+      "resolvedAt": "2026-01-23",
+      "resolvedBy": "auto"
     },
     {
       "id": "id-unscheduled-blocker-finish-drywall-4",
@@ -1869,9 +1873,11 @@
       "priority": "high",
       "category": "SCHEDULE",
       "source": "auto-detection",
-      "status": "open",
+      "status": "resolved",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-22",
+      "resolvedAt": "2026-01-23",
+      "resolvedBy": "auto"
     },
     {
       "id": "id-unscheduled-blocker-kitchen-put-back",
@@ -1889,7 +1895,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-inspection",
@@ -1908,7 +1914,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-close-permit",
@@ -1926,7 +1932,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-project-finish-3",
@@ -1944,7 +1950,7 @@
       "source": "auto-detection",
       "status": "open",
       "detectionRule": "unscheduled-blocker",
-      "lastChecked": "2026-01-22"
+      "lastChecked": "2026-01-23"
     },
     {
       "id": "id-unscheduled-blocker-framing",
@@ -1992,6 +1998,398 @@
       "autoApply": "(response) => {\n            const value = typeof response === 'object' ? response.value : response;\n            return value ? { assignee: normalizeVendorRef(value) } : null;\n          }",
       "category": "ASSIGN",
       "title": "Assign: finish drywall 4"
+    },
+    {
+      "id": "id-material-overdue-hinges-install-doors-1",
+      "created": "2026-01-23",
+      "type": "material-overdue",
+      "title": "Overdue: Hinges (Main Kitchen Door)",
+      "prompt": "\"Hinges (Main Kitchen Door)\" was expected 2026-01-22 but status is still \"ordered\"",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "hinges-install-doors-1",
+      "assignee": "tonia",
+      "priority": "high",
+      "category": "TRACK",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "material-overdue",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-finish-drywall",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Finish Drywall",
+      "prompt": "\"Finish Drywall\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "finish-drywall",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-finish-drywall-1",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Finish Drywall Kitchen",
+      "prompt": "\"Finish Drywall Kitchen\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "finish-drywall-1",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-finish-drywall-2",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Finish Drywall Scupernong",
+      "prompt": "\"Finish Drywall Scupernong\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "finish-drywall-2",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-finish-drywall-3",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Finish drywall around back door",
+      "prompt": "\"Finish drywall around back door\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "finish-drywall-3",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-finish-drywall-4",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Drywall patch two light holes in Scupernong",
+      "prompt": "\"Drywall patch two light holes in Scupernong\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "finish-drywall-4",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-material-overdue-upper-cabinets",
+      "created": "2026-01-23",
+      "type": "material-overdue",
+      "title": "Overdue: Upper Cabinets",
+      "prompt": "\"Upper Cabinets\" was expected 2026-01-22 but status is still \"ordered\"",
+      "relatedTask": "upper-cabinet-install",
+      "relatedMaterial": "upper-cabinets",
+      "assignee": "tonia",
+      "priority": "high",
+      "category": "TRACK",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "material-overdue",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-framing",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Framing",
+      "prompt": "\"Framing\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "framing",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-framing-1",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Adjust kitchen to pantry hallway opening",
+      "prompt": "\"Adjust kitchen to pantry hallway opening\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "framing-1",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "id-past-due-framing-2",
+      "created": "2026-01-23",
+      "type": "past-due",
+      "title": "Past due: Adjust pantry to back door hallway opening",
+      "prompt": "\"Adjust pantry to back door hallway opening\" was scheduled to end 2026-01-22 but is still scheduled",
+      "relatedTask": "framing-2",
+      "assignee": "brandon",
+      "priority": "high",
+      "category": "SCHEDULE",
+      "source": "auto-detection",
+      "status": "open",
+      "detectionRule": "past-due",
+      "lastChecked": "2026-01-23"
+    },
+    {
+      "id": "sq-yes-no-hinges-install-doors-1-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has \"Hinges (Main Kitchen Door)\" been delivered? (Expected 2026-01-22)",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "install-doors",
+      "relatedMaterial": "hinges-install-doors-1"
+    },
+    {
+      "id": "sq-free-text-receptacle-light-switch-covers-quantity-detail",
+      "created": "2026-01-23",
+      "type": "free-text",
+      "prompt": "How many \"Receptacle and Light Switch Covers\" are needed, and what are the specifications? (Answer 'N/A' for specs if not applicable)",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "finish-electrical",
+      "relatedMaterial": "receptacle-light-switch-covers"
+    },
+    {
+      "id": "sq-yes-no-upper-cabinets-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has \"Upper Cabinets\" been delivered? (Expected 2026-01-22)",
+      "assignee": "tonia",
+      "status": "open",
+      "relatedTask": "upper-cabinet-install",
+      "relatedMaterial": "upper-cabinets"
+    },
+    {
+      "id": "tq-yes-no-finish-drywall-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Finish Drywall\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-drywall",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? finish drywall"
+    },
+    {
+      "id": "tq-yes-no-finish-drywall-1-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Finish Drywall Kitchen\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-drywall-1",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? finish drywall 1"
+    },
+    {
+      "id": "tq-yes-no-finish-drywall-2-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Finish Drywall Scupernong\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-drywall-2",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? finish drywall 2"
+    },
+    {
+      "id": "tq-yes-no-finish-drywall-3-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Finish drywall around back door\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-drywall-3",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? finish drywall 3"
+    },
+    {
+      "id": "tq-yes-no-finish-drywall-4-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Drywall patch two light holes in Scupernong\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "finish-drywall-4",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? finish drywall 4"
+    },
+    {
+      "id": "tq-free-text-install-hvac-registers-start-end-assignee",
+      "created": "2026-01-23",
+      "type": "free-text",
+      "prompt": "For \"Install HVAC Registers\": When should this be scheduled, and who should do it? (e.g., \"2026-01-25 to 2026-01-26, Eliseo\")",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "install-hvac-registers",
+      "source": "auto-lifecycle",
+      "category": "SCHEDULE",
+      "title": "Schedule+Assign: install hvac registers"
+    },
+    {
+      "id": "tq-yes-no-framing-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Framing\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "framing",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? framing"
+    },
+    {
+      "id": "tq-yes-no-framing-1-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Adjust kitchen to pantry hallway opening\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "framing-1",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? framing 1"
+    },
+    {
+      "id": "tq-yes-no-framing-2-status",
+      "created": "2026-01-23",
+      "type": "yes-no",
+      "prompt": "Has work started on \"Adjust pantry to back door hallway opening\"? (Scheduled start: 2026-01-22)",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "framing-2",
+      "source": "auto-lifecycle",
+      "category": "DECIDE",
+      "title": "Started? framing 2"
+    },
+    {
+      "id": "tq-date-range-hvac-finish-start-end",
+      "created": "2026-01-23",
+      "type": "date-range",
+      "prompt": "When should \"Schedule HVAC Finish\" be scheduled?",
+      "assignee": "brandon",
+      "status": "open",
+      "relatedTask": "hvac-finish",
+      "source": "auto-lifecycle",
+      "category": "SCHEDULE",
+      "title": "Schedule: hvac finish"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-1769126436021",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-1-1769126436021",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-1 changes (status: \"scheduled\" → \"needs-scheduled\", assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-1",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-2-1769126436021",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-2 changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-2",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-4-1769126436021",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-4 changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-4",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-3-1769126436021",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-3 changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-3",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-1769126676309",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-1-1769126676309",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-1 changes (status: \"scheduled\" → \"needs-scheduled\", assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-1",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-2-1769126676309",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-2 changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-2",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-4-1769126676309",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-4 changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-4",
+      "assignee": "brandon",
+      "status": "open"
+    },
+    {
+      "id": "sq-notification-edit-finish-drywall-3-1769126676309",
+      "created": "2026-01-23",
+      "type": "notification",
+      "prompt": "SPREADSHEET EDIT DETECTED: finish-drywall-3 changes (assignee: \"Dion Cahoon\" → \"Eliseo\", start: \"2026-01-22\" → \"2026-01-23\", end: \"2026-01-22\" → \"2026-01-23\") were reverted. Use CLI for changes.",
+      "relatedTask": "finish-drywall-3",
+      "assignee": "brandon",
+      "status": "open"
     }
   ]
 }

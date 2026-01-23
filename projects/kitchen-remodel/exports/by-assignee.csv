@@ -43,7 +43,7 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,project-finish-2,  ↳ Final Punch Walkthrough,needs-scheduled,,,,,Owner walks job with GC to identify any remaining items. Document all punch items.
 ,project-finish-5,  ↳ Final Acceptance,needs-scheduled,,,,,Owner confirms all punch items resolved. Project complete.
 ,,,,,,,,
-▶ Dion Cahoon (11 items),,,,,,,,
+▶ Dion Cahoon (16 items),,,,,,,,
 ,finish-electrical-1,  ↳ Move Receptacle Over Mop Sink,needs-scheduled,2026-01-26,2026-01-26,,,Move to left of hand sink.
 ,finish-electrical-2,  ↳ Install Coach Lamp,needs-scheduled,2026-01-26,2026-01-26,,,
 ,finish-electrical-3,  ↳ Install Receptacle for Light Strings,needs-scheduled,2026-01-26,2026-01-26,,,For light strings that criss-cross to firepit.
@@ -51,12 +51,17 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,finish-electrical-5,  ↳ Finish Lighting Install,needs-scheduled,2026-01-26,2026-01-26,,,
 ,finish-electrical-8,  ↳ Connect Passthrough Heat Lamp,needs-scheduled,2026-01-26,2026-01-26,crest-installation,,Must be done after Crest installation. Heat lamp is part of passthrough equipment.
 ,propane-1,  ↳ Install Propane Line for Gas Range,needs-scheduled,2026-01-23,2026-01-23,,,1. Installed in secure box in wall to right of existing stainless steel wall covering. 2. Must be installed before remaining stainless is installed on Friday 1/23.
+,finish-drywall,Finish Drywall,scheduled,2026-01-22,2026-01-22,framing,painting,
+,finish-drywall-1,  ↳ Finish Drywall Kitchen,scheduled,2026-01-22,2026-01-22,framing,painting-1,
+,finish-drywall-2,  ↳ Finish Drywall Scupernong,scheduled,2026-01-22,2026-01-22,,"finish-trim-6, painting-2",
+,finish-drywall-3,  ↳ Finish drywall around back door,scheduled,2026-01-22,2026-01-22,install-doors-2,,
+,finish-drywall-4,  ↳ Drywall patch two light holes in Scupernong,scheduled,2026-01-22,2026-01-22,,painting-2,
 ,kitchen-put-back-1,  ↳ Install Dishwasher,needs-scheduled,,,"crest-installation, finish-plumbing",,
 ,framing,Framing,scheduled,2026-01-22,2026-01-22,,"finish-drywall, finish-drywall-1","Hallway opening height: 89 1/2"" for both openings (kitchen-to-pantry and pantry-to-back-door)"
 ,framing-1,  ↳ Adjust kitchen to pantry hallway opening,scheduled,2026-01-22,2026-01-22,,,
 ,framing-2,  ↳ Adjust pantry to back door hallway opening,scheduled,2026-01-22,2026-01-22,,,
 ,,,,,,,,
-▶ Eliseo (19 items),,,,,,,,
+▶ Eliseo (14 items),,,,,,,,
 ,finish-trim,Finish Trim,in-progress,2026-01-23,2026-01-24,painting,"install-doors, crest-prep, crest-installation, kitchen-baseboard, upper-cabinet-install","Trim joints should be finished with Bondo for wood, not wood filler and definitely not caulk."
 ,finish-trim-1,  ↳ Trim Passthrough,scheduled,2026-01-23,2026-01-24,,,"1. Casing must be same thickness all around for equipment install. 
 2. Inside casing is 3/4"". 
@@ -80,11 +85,6 @@ Assignee,Task ID,Task Name,Status,Start Date,End Date,Dependencies,Required For,
 ,painting-3,  ↳ Paint Lobby Passthrough Wall,needs-scheduled,2026-01-23,2026-01-23,,,
 ,painting-4,"  ↳ Paint Doors (Kitchen Main, Back, HVAC)",needs-scheduled,2026-01-23,2026-01-23,install-doors,,Paint after door installation (1/24). 3 doors total.
 ,painting-5,  ↳ Touch Up Ceiling Damage (as needed),needs-scheduled,2026-01-23,2026-01-23,,,
-,finish-drywall,Finish Drywall,scheduled,2026-01-23,2026-01-23,framing,painting,
-,finish-drywall-1,  ↳ Finish Drywall Kitchen,needs-scheduled,2026-01-23,2026-01-23,framing,painting-1,
-,finish-drywall-2,  ↳ Finish Drywall Scupernong,scheduled,2026-01-23,2026-01-23,,"finish-trim-6, painting-2",
-,finish-drywall-3,  ↳ Finish drywall around back door,scheduled,2026-01-23,2026-01-23,install-doors-2,,
-,finish-drywall-4,  ↳ Drywall patch two light holes in Scupernong,scheduled,2026-01-23,2026-01-23,,painting-2,
 ,,,,,,,,
 ▶ JD Fletcher (1 items),,,,,,,,
 ,install-stainless-wall,Install Stainless Wall Covering (Right of Range),scheduled,2026-01-23,2026-01-23,propane,crest-installation,Cannot be before Dion finishes range propane install.

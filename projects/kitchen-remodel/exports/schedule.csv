@@ -1,15 +1,15 @@
 Order,Type,Task ID,Name,Status,Current Start,Current End,Proposed Start,Assignee,Dependencies,Issues
-1,TASK,framing,Framing,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,
-2,subtask,framing-1,  Adjust kitchen to pantry hallway opening,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,
-3,subtask,framing-2,  Adjust pantry to back door hallway opening,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,
-4,TASK,finish-drywall,Finish Drywall,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,framing,
-5,subtask,finish-drywall-1,  Finish Drywall Kitchen,needs-scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,framing,"Waits for: framing; ❓ Brandon: When should ""Finish Drywall Kitchen"" ...; ❓ Brandon: ""Finish Drywall Kitchen"" has no sched..."
-6,subtask,finish-drywall-2,  Finish Drywall Scupernong,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,,"❓ Brandon: When should ""Finish Drywall Scupernon...; ❓ Brandon: ""Finish Drywall Scupernong"" has no sc..."
-7,subtask,finish-drywall-4,  Drywall patch two light holes in Scupernong,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,,"❓ Brandon: ""Drywall patch two light holes in Scu..."
-8,subtask,finish-drywall-3,  Finish drywall around back door,scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,install-doors-2,Waits for: install-doors-2
-9,TASK,painting,Painting,scheduled,2026-01-23,2026-01-23,2026-01-24,Eliseo,finish-drywall,Scheduled before finish-drywall ends (2026-01-23)
-10,subtask,painting-1,  Paint Kitchen,scheduled,2026-01-23,2026-01-23,2026-01-24,Eliseo,finish-drywall-1,"Scheduled before finish-drywall-1 ends (2026-01-23); Waits for: finish-drywall-1; ❓ Brandon: ""Paint Kitchen"" has no scheduled date..."
-11,subtask,painting-2,  Paint Scupernong,scheduled,2026-01-23,2026-01-23,2026-01-24,Eliseo,"finish-drywall-2, finish-drywall-4","Scheduled before finish-drywall-2 ends (2026-01-23); Scheduled before finish-drywall-4 ends (2026-01-23); Waits for: finish-drywall-2, finish-drywall-4; ❓ Brandon: ""Paint Scupernong"" has no scheduled d..."
+1,TASK,framing,Framing,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,"❓ Brandon: ""Framing"" was scheduled to end 2026-0...; ❓ Brandon: Has work started on ""Framing""? (Sched..."
+2,subtask,framing-1,  Adjust kitchen to pantry hallway opening,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,"❓ Brandon: ""Adjust kitchen to pantry hallway ope...; ❓ Brandon: Has work started on ""Adjust kitchen t..."
+3,subtask,framing-2,  Adjust pantry to back door hallway opening,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,"❓ Brandon: ""Adjust pantry to back door hallway o...; ❓ Brandon: Has work started on ""Adjust pantry to..."
+4,TASK,finish-drywall,Finish Drywall,scheduled,2026-01-22,2026-01-22,2026-01-24,Dion Cahoon,framing,"Scheduled before framing ends (2026-01-22); ❓ Brandon: ""Finish Drywall"" was scheduled to end...; ❓ Brandon: Has work started on ""Finish Drywall""?...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry..."
+5,subtask,finish-drywall-1,  Finish Drywall Kitchen,scheduled,2026-01-22,2026-01-22,2026-01-24,Dion Cahoon,framing,"Scheduled before framing ends (2026-01-22); Waits for: framing; ❓ Brandon: When should ""Finish Drywall Kitchen"" ...; ❓ Brandon: ""Finish Drywall Kitchen"" was schedule...; ❓ Brandon: Has work started on ""Finish Drywall K...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry..."
+6,subtask,finish-drywall-2,  Finish Drywall Scupernong,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,"❓ Brandon: When should ""Finish Drywall Scupernon...; ❓ Brandon: ""Finish Drywall Scupernong"" was sched...; ❓ Brandon: Has work started on ""Finish Drywall S...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry..."
+7,subtask,finish-drywall-4,  Drywall patch two light holes in Scupernong,scheduled,2026-01-22,2026-01-22,2026-01-22,Dion Cahoon,,"❓ Brandon: Who should be assigned to ""Drywall pa...; ❓ Brandon: ""Drywall patch two light holes in Scu...; ❓ Brandon: Has work started on ""Drywall patch tw...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry..."
+8,subtask,finish-drywall-3,  Finish drywall around back door,scheduled,2026-01-22,2026-01-22,2026-01-24,Dion Cahoon,install-doors-2,"Scheduled before install-doors-2 ends (2026-01-23); Waits for: install-doors-2; ❓ Brandon: Who should be assigned to ""Finish dry...; ❓ Brandon: ""Finish drywall around back door"" was...; ❓ Brandon: Has work started on ""Finish drywall a...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry...; ❓ Brandon: SPREADSHEET EDIT DETECTED: finish-dry..."
+9,TASK,painting,Painting,scheduled,2026-01-23,2026-01-23,2026-01-24,Eliseo,finish-drywall,
+10,subtask,painting-1,  Paint Kitchen,scheduled,2026-01-23,2026-01-23,2026-01-24,Eliseo,finish-drywall-1,"Waits for: finish-drywall-1; ❓ Brandon: ""Paint Kitchen"" has no scheduled date..."
+11,subtask,painting-2,  Paint Scupernong,scheduled,2026-01-23,2026-01-23,2026-01-24,Eliseo,"finish-drywall-2, finish-drywall-4","Waits for: finish-drywall-2, finish-drywall-4; ❓ Brandon: ""Paint Scupernong"" has no scheduled d..."
 12,subtask,painting-3,  Paint Lobby Passthrough Wall,needs-scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,,"❓ Brandon: When should ""Paint Lobby Passthrough ..."
 13,subtask,painting-4,"  Paint Doors (Kitchen Main, Back, HVAC)",needs-scheduled,2026-01-23,2026-01-23,2026-01-28,Eliseo,install-doors,"Scheduled before install-doors ends (2026-01-27); Waits for: install-doors; ❓ Brandon: When should ""Paint Doors (Kitchen Mai..."
 14,subtask,painting-5,  Touch Up Ceiling Damage (as needed),needs-scheduled,2026-01-23,2026-01-23,2026-01-23,Eliseo,,"❓ Brandon: When should ""Touch Up Ceiling Damage ..."
@@ -19,22 +19,22 @@ Order,Type,Task ID,Name,Status,Current Start,Current End,Proposed Start,Assignee
 18,subtask,finish-trim-3,  Kitchen Crown Molding,scheduled,2026-01-23,2026-01-24,2026-01-24,Eliseo,painting-1,Scheduled before painting-1 ends (2026-01-23); Waits for: painting-1
 19,subtask,finish-trim-4,  Laundry Crown Molding,scheduled,2026-01-23,2026-01-24,2026-01-23,Eliseo,,
 20,subtask,finish-trim-5,  Kitchen Main Door Casing,scheduled,2026-01-23,2026-01-24,2026-01-23,Eliseo,,
-21,subtask,finish-trim-6,  Install Baseboard in Scupernong,scheduled,2026-01-23,2026-01-24,2026-01-24,Eliseo,"finish-drywall-2, painting-2","Scheduled before finish-drywall-2 ends (2026-01-23); Scheduled before painting-2 ends (2026-01-23); Waits for: finish-drywall-2, painting-2"
+21,subtask,finish-trim-6,  Install Baseboard in Scupernong,scheduled,2026-01-23,2026-01-24,2026-01-24,Eliseo,"finish-drywall-2, painting-2","Scheduled before painting-2 ends (2026-01-23); Waits for: finish-drywall-2, painting-2"
 22,subtask,finish-trim-7,  Change header trim over triple window to match other window,scheduled,2026-01-23,2026-01-24,2026-01-23,Eliseo,,
-23,TASK,install-doors,Install Doors,needs-scheduled,,,2026-01-27,Danny,finish-trim,"No date set but blocks other tasks; ❓ Brandon: When should ""Install Doors"" be schedu...; ❓ Brandon: ""Install Doors"" has no scheduled date..."
-24,subtask,install-doors-1,  Main Kitchen Door,needs-scheduled,,,2026-01-22,Danny,,"❓ Brandon: For ""Main Kitchen Door"": When should ..."
-25,subtask,install-doors-2,  Install Back Door,needs-scheduled,,,2026-01-22,Danny,,"No date set but blocks other tasks; ❓ Brandon: For ""Install Back Door"": When should ...; ❓ Brandon: ""Install Back Door"" has no scheduled ..."
-26,subtask,install-doors-3,  HVAC Door,needs-scheduled,,,2026-01-22,Danny,,"❓ Brandon: For ""HVAC Door"": When should this be ..."
-27,TASK,remove-old-porch,Remove Old Porch Steps and Posts,needs-scheduled,,,2026-01-22,Danny,,"No date set but blocks other tasks; ❓ Brandon: When should the old porch steps and p...; ❓ Brandon: When should ""Remove Old Porch Steps a...; ❓ Brandon: ""Remove Old Porch Steps and Posts"" ha..."
-28,TASK,build-back-deck,Build Back Deck with Ramp,needs-scheduled,,,2026-01-23,Danny,remove-old-porch,"❓ Brandon: What are the start and end dates for ...; ❓ Brandon: When should ""Build Back Deck with Ram..."
+23,TASK,install-doors,Install Doors,needs-scheduled,,,2026-01-27,Danny,finish-trim,"No date set but blocks other tasks; ❓ Brandon: When should ""Install Doors"" be schedu...; ❓ Brandon: ""Install Doors"" has no scheduled date...; ❓ Tonia: ""Hinges (Main Kitchen Door)"" was expe...; ❓ Tonia: Has ""Hinges (Main Kitchen Door)"" been..."
+24,subtask,install-doors-1,  Main Kitchen Door,needs-scheduled,,,2026-01-23,Danny,,"❓ Brandon: For ""Main Kitchen Door"": When should ..."
+25,subtask,install-doors-2,  Install Back Door,needs-scheduled,,,2026-01-23,Danny,,"No date set but blocks other tasks; ❓ Brandon: For ""Install Back Door"": When should ...; ❓ Brandon: ""Install Back Door"" has no scheduled ..."
+26,subtask,install-doors-3,  HVAC Door,needs-scheduled,,,2026-01-23,Danny,,"❓ Brandon: For ""HVAC Door"": When should this be ..."
+27,TASK,remove-old-porch,Remove Old Porch Steps and Posts,needs-scheduled,,,2026-01-23,Danny,,"No date set but blocks other tasks; ❓ Brandon: When should the old porch steps and p...; ❓ Brandon: When should ""Remove Old Porch Steps a...; ❓ Brandon: ""Remove Old Porch Steps and Posts"" ha..."
+28,TASK,build-back-deck,Build Back Deck with Ramp,needs-scheduled,,,2026-01-24,Danny,remove-old-porch,"❓ Brandon: What are the start and end dates for ...; ❓ Brandon: When should ""Build Back Deck with Ram..."
 29,TASK,kitchen-baseboard,Kitchen Baseboard,scheduled,2026-01-26,2026-01-26,2026-01-27,Jerum,"finish-trim, painting",
 30,subtask,kitchen-baseboard-1,  Schedule Baseboard Install,needs-scheduled,2026-01-26,2026-01-26,2026-01-26,Brandon,,"❓ Brandon: When should ""Schedule Baseboard Insta..."
 31,subtask,kitchen-baseboard-2,  Baseboard Install,needs-scheduled,2026-01-26,2026-01-26,2026-01-26,Jerum,,"❓ Brandon: When should ""Baseboard Install"" be sc..."
-32,TASK,upper-cabinet-install,Upper Cabinet Install,scheduled,2026-01-26,2026-01-26,2026-01-27,Needs Assignment,finish-trim,No assignee; ❓ Brandon: Who should install the upper cabinets?
+32,TASK,upper-cabinet-install,Upper Cabinet Install,scheduled,2026-01-26,2026-01-26,2026-01-27,Needs Assignment,finish-trim,"No assignee; ❓ Brandon: Who should install the upper cabinets?; ❓ Tonia: ""Upper Cabinets"" was expected 2026-01...; ❓ Tonia: Has ""Upper Cabinets"" been delivered? ..."
 33,subtask,upper-cabinet-install-2,  Schedule Installation,needs-scheduled,2026-01-26,2026-01-26,2026-01-26,Brandon,,"❓ Brandon: When should ""Schedule Installation"" b..."
 34,subtask,upper-cabinet-install-3,  Install Upper Cabinets,needs-scheduled,2026-01-26,2026-01-26,2026-01-26,Needs Assignment,,"No assignee; ❓ Brandon: For ""Install Upper Cabinets"": When sh..."
 35,TASK,crest-prep,Crest Prep / Cleaning,needs-scheduled,2026-01-26,2026-01-26,2026-01-27,Needs Assignment,"kitchen-baseboard, upper-cabinet-install, finish-trim",Scheduled before kitchen-baseboard ends (2026-01-26); Scheduled before upper-cabinet-install ends (2026-01-26); No assignee; ❓ Brandon: Who is responsible for cleaning/prep ...
-36,TASK,finish-electrical,Finish Electrical,scheduled,2026-01-26,2026-01-26,2026-01-26,Craig Davenport,,❓ Brandon: Should Dave/Tonia order the receptacl...
+36,TASK,finish-electrical,Finish Electrical,scheduled,2026-01-26,2026-01-26,2026-01-26,Craig Davenport,,"❓ Brandon: Should Dave/Tonia order the receptacl...; ❓ Tonia: How many ""Receptacle and Light Switch..."
 37,subtask,finish-electrical-1,  Move Receptacle Over Mop Sink,needs-scheduled,2026-01-26,2026-01-26,2026-01-26,Dion Cahoon,,"❓ Brandon: When should ""Move Receptacle Over Mop..."
 38,subtask,finish-electrical-2,  Install Coach Lamp,needs-scheduled,2026-01-26,2026-01-26,2026-01-26,Dion Cahoon,,"❓ Brandon: When should ""Install Coach Lamp"" be s..."
 39,subtask,finish-electrical-3,  Install Receptacle for Light Strings,needs-scheduled,2026-01-26,2026-01-26,2026-01-26,Dion Cahoon,,"❓ Brandon: When should ""Install Receptacle for L..."
@@ -50,31 +50,31 @@ Order,Type,Task ID,Name,Status,Current Start,Current End,Proposed Start,Assignee
 49,TASK,crest-installation,Crest Installation,scheduled,2026-01-27,2026-01-27,2026-01-27,Crest Mechanical,"finish-trim, kitchen-baseboard, finish-electrical, propane, install-stainless-wall, upper-cabinet-install, crest-prep",❓ Brandon: Should we schedule an MEP coordinatio...
 50,subtask,crest-installation-1,  Verify Install Time,needs-scheduled,2026-01-27,2026-01-27,2026-01-27,Brandon,,"❓ Brandon: When should ""Verify Install Time"" be ..."
 51,TASK,finish-plumbing,Finish Plumbing,needs-scheduled,,,2026-01-28,Chris Bland,crest-installation,"No date set but blocks other tasks; ❓ Brandon: When should finish plumbing be schedu...; ❓ Brandon: When should ""Finish Plumbing"" be sche...; ❓ Brandon: ""Finish Plumbing"" has no scheduled da..."
-52,subtask,finish-plumbing-1,  Schedule Finish Plumbing,needs-scheduled,,,2026-01-22,Brandon,,"❓ Brandon: When should ""Schedule Finish Plumbing..."
-53,subtask,finish-plumbing-2,  Finish Plumbing,needs-scheduled,,,2026-01-22,Chris Bland,,"❓ Brandon: When should ""Finish Plumbing"" be sche..."
-54,subtask,finish-plumbing-3,  Install Existing Handsink in Laundry Room,needs-scheduled,,,2026-01-22,Chris Bland,,"❓ Brandon: When should ""Install Existing Handsin..."
+52,subtask,finish-plumbing-1,  Schedule Finish Plumbing,needs-scheduled,,,2026-01-23,Brandon,,"❓ Brandon: When should ""Schedule Finish Plumbing..."
+53,subtask,finish-plumbing-2,  Finish Plumbing,needs-scheduled,,,2026-01-23,Chris Bland,,"❓ Brandon: When should ""Finish Plumbing"" be sche..."
+54,subtask,finish-plumbing-3,  Install Existing Handsink in Laundry Room,needs-scheduled,,,2026-01-23,Chris Bland,,"❓ Brandon: When should ""Install Existing Handsin..."
 55,TASK,kitchen-put-back,Kitchen Put-Back,needs-scheduled,,,2026-01-29,Needs Assignment,"crest-installation, finish-plumbing","No assignee; No date set but blocks other tasks; ❓ Brandon: Who moves range, freezers and refrige...; ❓ Brandon: Who should install the ovens?; ❓ Brandon: ""Kitchen Put-Back"" has no scheduled d..."
 56,subtask,kitchen-put-back-1,  Install Dishwasher,needs-scheduled,,,2026-01-29,Dion Cahoon,"crest-installation, finish-plumbing","Waits for: crest-installation, finish-plumbing; ❓ Brandon: When should ""Install Dishwasher"" be s..."
-57,subtask,kitchen-put-back-2,  Install Ovens,needs-scheduled,,,2026-01-22,Needs Assignment,,"No assignee; ❓ Brandon: For ""Install Ovens"": When should this..."
-58,subtask,kitchen-put-back-3,"  Move Range, Freezers and Refrigerators",needs-scheduled,,,2026-01-22,Needs Assignment,,"No assignee; ❓ Brandon: For ""Move Range, Freezers and Refrige..."
-59,TASK,install-dryer-vents,Install Dryer Vents,needs-scheduled,,,2026-01-22,Needs Assignment,,No assignee; ❓ Brandon: Who should be assigned to install dry...
+57,subtask,kitchen-put-back-2,  Install Ovens,needs-scheduled,,,2026-01-23,Needs Assignment,,"No assignee; ❓ Brandon: For ""Install Ovens"": When should this..."
+58,subtask,kitchen-put-back-3,"  Move Range, Freezers and Refrigerators",needs-scheduled,,,2026-01-23,Needs Assignment,,"No assignee; ❓ Brandon: For ""Move Range, Freezers and Refrige..."
+59,TASK,install-dryer-vents,Install Dryer Vents,needs-scheduled,,,2026-01-23,Needs Assignment,,No assignee; ❓ Brandon: Who should be assigned to install dry...
 60,TASK,siding,Siding,needs-scheduled,,,2026-01-24,Sergio,propane,❓ Brandon: Does siding need to wait for dryer ve...
-61,subtask,siding-1,  Schedule Siding,needs-scheduled,,,2026-01-22,Brandon,,"❓ Brandon: When should ""Schedule Siding"" be sche..."
-62,subtask,siding-2,  Siding,needs-scheduled,,,2026-01-22,Sergio,,"❓ Brandon: When should ""Siding"" be scheduled?"
-63,TASK,inspection,Inspection,needs-scheduled,,,2026-01-22,Brandon,,"No date set but blocks other tasks; ❓ Brandon: What tasks must complete before inspe...; ❓ Brandon: ""Inspection"" has no scheduled dates b..."
-64,subtask,inspection-1,  Schedule Town of Manteo,needs-scheduled,,,2026-01-22,Brandon,,"❓ Brandon: When should ""Schedule Town of Manteo""..."
-65,subtask,inspection-2,  Schedule Dare County Health,needs-scheduled,,,2026-01-22,Brandon,,"❓ Brandon: When should ""Schedule Dare County Hea..."
-66,subtask,inspection-3,  Town of Manteo,needs-scheduled,,,2026-01-22,Brandon,,"❓ Brandon: For ""Town of Manteo"": When should thi..."
-67,subtask,inspection-4,  Dare County Health,needs-scheduled,,,2026-01-22,Brandon,,"❓ Brandon: For ""Dare County Health"": When should..."
-68,TASK,misc-equipment-install,Misc Equipment Install,needs-scheduled,,,2026-01-22,Needs Assignment,,No assignee; ❓ Brandon: Who should install the pot rack?
-69,subtask,misc-equipment-install-1,  Install Pot Rack,needs-scheduled,,,2026-01-22,Needs Assignment,,"No assignee; ❓ Brandon: For ""Install Pot Rack"": When should t..."
-70,subtask,misc-equipment-install-2,  Install Retractable Extension Cord,needs-scheduled,,,2026-01-22,Needs Assignment,,No assignee; ❓ Brandon: Who should install the retractable ex...
-71,TASK,close-permit,Close Building Permit,needs-scheduled,,,2026-01-23,Brandon,inspection,"No date set but blocks other tasks; ❓ Brandon: When should the building permit be cl...; ❓ Brandon: When should ""Close Building Permit"" b...; ❓ Brandon: ""Close Building Permit"" has no schedu..."
+61,subtask,siding-1,  Schedule Siding,needs-scheduled,,,2026-01-23,Brandon,,"❓ Brandon: When should ""Schedule Siding"" be sche..."
+62,subtask,siding-2,  Siding,needs-scheduled,,,2026-01-23,Sergio,,"❓ Brandon: When should ""Siding"" be scheduled?"
+63,TASK,inspection,Inspection,needs-scheduled,,,2026-01-23,Brandon,,"No date set but blocks other tasks; ❓ Brandon: What tasks must complete before inspe...; ❓ Brandon: ""Inspection"" has no scheduled dates b..."
+64,subtask,inspection-1,  Schedule Town of Manteo,needs-scheduled,,,2026-01-23,Brandon,,"❓ Brandon: When should ""Schedule Town of Manteo""..."
+65,subtask,inspection-2,  Schedule Dare County Health,needs-scheduled,,,2026-01-23,Brandon,,"❓ Brandon: When should ""Schedule Dare County Hea..."
+66,subtask,inspection-3,  Town of Manteo,needs-scheduled,,,2026-01-23,Brandon,,"❓ Brandon: For ""Town of Manteo"": When should thi..."
+67,subtask,inspection-4,  Dare County Health,needs-scheduled,,,2026-01-23,Brandon,,"❓ Brandon: For ""Dare County Health"": When should..."
+68,TASK,misc-equipment-install,Misc Equipment Install,needs-scheduled,,,2026-01-23,Needs Assignment,,No assignee; ❓ Brandon: Who should install the pot rack?
+69,subtask,misc-equipment-install-1,  Install Pot Rack,needs-scheduled,,,2026-01-23,Needs Assignment,,"No assignee; ❓ Brandon: For ""Install Pot Rack"": When should t..."
+70,subtask,misc-equipment-install-2,  Install Retractable Extension Cord,needs-scheduled,,,2026-01-23,Needs Assignment,,No assignee; ❓ Brandon: Who should install the retractable ex...
+71,TASK,close-permit,Close Building Permit,needs-scheduled,,,2026-01-24,Brandon,inspection,"No date set but blocks other tasks; ❓ Brandon: When should the building permit be cl...; ❓ Brandon: When should ""Close Building Permit"" b...; ❓ Brandon: ""Close Building Permit"" has no schedu..."
 72,TASK,project-finish,Project Finish,needs-scheduled,,,2026-01-30,Needs Assignment,"inspection, crest-installation, kitchen-put-back, close-permit","No assignee; ❓ Brandon: What is the target date for project c...; ❓ Brandon: For ""Project Finish"": When should thi..."
-73,subtask,project-finish-1,  Schedule Final Punch Walkthrough,needs-scheduled,,,2026-01-22,Brandon,,"❓ Brandon: When should ""Schedule Final Punch Wal..."
-74,subtask,project-finish-2,  Final Punch Walkthrough,needs-scheduled,,,2026-01-22,Dave,,"❓ Brandon: When should ""Final Punch Walkthrough""..."
-75,subtask,project-finish-3,  Punch List Remediation,needs-scheduled,,,2026-01-22,Brandon,,"No date set but blocks other tasks; ❓ Brandon: When should ""Punch List Remediation"" ...; ❓ Brandon: ""Punch List Remediation"" has no sched..."
-76,subtask,project-finish-4,  Final Clean,needs-scheduled,,,2026-01-23,Brandon,project-finish-3,"❓ Brandon: When should ""Final Clean"" be scheduled?"
-77,subtask,project-finish-5,  Final Acceptance,needs-scheduled,,,2026-01-22,Dave,,"❓ Brandon: When should ""Final Acceptance"" be sch..."
-78,TASK,install-hvac-registers,Install HVAC Registers,needs-scheduled,,,2026-01-22,Needs Assignment,,No assignee
-79,TASK,hvac-finish,Schedule HVAC Finish,needs-scheduled,,,2026-01-22,Joclar & Fields,,
+73,subtask,project-finish-1,  Schedule Final Punch Walkthrough,needs-scheduled,,,2026-01-23,Brandon,,"❓ Brandon: When should ""Schedule Final Punch Wal..."
+74,subtask,project-finish-2,  Final Punch Walkthrough,needs-scheduled,,,2026-01-23,Dave,,"❓ Brandon: When should ""Final Punch Walkthrough""..."
+75,subtask,project-finish-3,  Punch List Remediation,needs-scheduled,,,2026-01-23,Brandon,,"No date set but blocks other tasks; ❓ Brandon: When should ""Punch List Remediation"" ...; ❓ Brandon: ""Punch List Remediation"" has no sched..."
+76,subtask,project-finish-4,  Final Clean,needs-scheduled,,,2026-01-24,Brandon,project-finish-3,"❓ Brandon: When should ""Final Clean"" be scheduled?"
+77,subtask,project-finish-5,  Final Acceptance,needs-scheduled,,,2026-01-23,Dave,,"❓ Brandon: When should ""Final Acceptance"" be sch..."
+78,TASK,install-hvac-registers,Install HVAC Registers,needs-scheduled,,,2026-01-23,Needs Assignment,,"No assignee; ❓ Brandon: For ""Install HVAC Registers"": When sh..."
+79,TASK,hvac-finish,Schedule HVAC Finish,needs-scheduled,,,2026-01-23,Joclar & Fields,,"❓ Brandon: When should ""Schedule HVAC Finish"" be..."
