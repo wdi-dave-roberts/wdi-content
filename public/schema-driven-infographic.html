@@ -3,1333 +3,1531 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schema-Driven Development — QBO Integration</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            problem: '#3b82f6',
-            schema: '#22c55e',
-            impl: '#f97316',
-            ops: '#a855f7',
-            validation: '#ef4444',
-            neutral: '#6b7280',
-          }
-        }
-      }
-    }
-  </script>
+  <title>Enterprise Software @ WDI — Schema-Driven Development</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    * { box-sizing: border-box; }
-    body { font-family: 'Inter', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    @import url('https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap');
 
-    .stage-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep: #050810;
+      --bg-primary: #0a0f1a;
+      --bg-elevated: #111827;
+      --bg-hover: #1a2234;
+      --accent-coral: #ff4d4d;
+      --accent-cyan: #00e5cc;
+      --glow-coral: rgba(255, 77, 77, 0.4);
+      --glow-cyan: rgba(0, 229, 204, 0.4);
+      --text-primary: #f0f4ff;
+      --text-secondary: #8892b0;
+      --text-muted: #5a6480;
+      --border: rgba(136, 146, 176, 0.15);
+      --border-accent: rgba(0, 229, 204, 0.25);
+      --success: #00e5cc;
+      --warning: #fbbf24;
+      --error: #ff4d4d;
+      --info: #60a5fa;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: 'Satoshi', 'Inter', system-ui, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Clash Display', 'Inter', sans-serif; }
+    code, pre { font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace; }
+
+    /* Ambient gradient */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 15% 10%, rgba(255, 77, 77, 0.06), transparent),
+        radial-gradient(ellipse 50% 50% at 85% 90%, rgba(0, 229, 204, 0.05), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ===== HEADER ===== */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+      background: rgba(10, 15, 26, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .header h1 span { color: var(--accent-cyan); }
+    .header-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--border-accent);
+      color: var(--accent-cyan);
+      background: rgba(0, 229, 204, 0.08);
+    }
+    .header-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px var(--glow-cyan);
+    }
+
+    /* ===== TABS ===== */
+    .tab-bar {
+      display: flex;
+      gap: 2px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-primary);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: none;
+      border: none;
       cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      font-family: inherit;
     }
-    .stage-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    .tab-btn:hover { color: var(--text-secondary); background: var(--bg-hover); }
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+      background: rgba(0, 229, 204, 0.05);
     }
-    .stage-card:focus-visible {
-      outline: 2px solid #60a5fa;
-      outline-offset: 2px;
+    .tab-panel { display: none; padding: 40px 0 60px; }
+    .tab-panel.active { display: block; }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { border-color: var(--border-accent); }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .card-grid { display: grid; gap: 16px; }
+    .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card-grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .stat {
+      background: var(--bg-elevated);
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .stat-value {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
     }
 
-    .detail-panel { display: none; animation: fadeIn 0.3s ease; }
-    .detail-panel.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-    .arrow-connector {
+    /* ===== MATURITY SPECTRUM ===== */
+    .spectrum {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .spectrum-level {
+      padding: 20px 16px;
+      text-align: center;
       position: relative;
+      transition: transform 0.2s;
     }
-    .arrow-connector::after {
-      content: '';
-      position: absolute;
-      right: -20px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0; height: 0;
-      border-left: 10px solid #475569;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
+    .spectrum-level:hover { transform: translateY(-2px); }
+    .spectrum-level .level-num {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      opacity: 0.2;
+      line-height: 1;
+    }
+    .spectrum-level h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 4px 0;
+    }
+    .spectrum-level p {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      line-height: 1.4;
+    }
+    .spectrum-vibe { background: #1a1520; color: #c084fc; }
+    .spectrum-first { background: #151a20; color: var(--info); }
+    .spectrum-anchored {
+      background: linear-gradient(135deg, rgba(0, 229, 204, 0.12), rgba(0, 229, 204, 0.05));
+      color: var(--accent-cyan);
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 20px var(--glow-cyan), inset 0 0 20px rgba(0, 229, 204, 0.05);
+    }
+    .spectrum-anchored .wdi-marker {
+      display: inline-block;
+      background: var(--accent-cyan);
+      color: var(--bg-deep);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
+    .spectrum-source { background: #1a1a15; color: #fbbf24; }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-header {
+      margin-bottom: 24px;
+    }
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+    .section-header .cite {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 4px;
     }
 
-    .principle-card {
-      border-left: 4px solid;
-      transition: background 0.2s ease;
-    }
-    .principle-card:hover { background: rgba(255,255,255,0.05); }
-
-    .layer-row { transition: background 0.2s ease; }
-    .layer-row:hover { background: rgba(255,255,255,0.03); }
-
-    .pyramid-level {
-      transition: transform 0.2s ease;
-    }
-    .pyramid-level:hover {
-      transform: scale(1.02);
-    }
-
-    .back-btn {
-      transition: background 0.2s ease, transform 0.1s ease;
-    }
-    .back-btn:hover { background: rgba(255,255,255,0.1); }
-    .back-btn:active { transform: scale(0.97); }
-    .back-btn:focus-visible {
-      outline: 2px solid #60a5fa;
-      outline-offset: 2px;
-    }
-
-    .feedback-arrow {
-      position: absolute;
-      bottom: -40px;
-      left: 10%;
-      right: 10%;
-      height: 40px;
-      border-bottom: 2px dashed #a855f7;
-      border-left: 2px dashed #a855f7;
-      border-right: 2px dashed #3b82f6;
-      border-radius: 0 0 12px 12px;
-    }
-    .feedback-arrow::before {
-      content: '';
-      position: absolute;
-      left: -6px;
-      top: -6px;
-      width: 0; height: 0;
-      border-right: 8px solid #3b82f6;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-    }
-
+    /* ===== TAGS ===== */
     .tag {
       display: inline-block;
       padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.65rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+    .tag-cyan { background: rgba(0, 229, 204, 0.12); color: var(--accent-cyan); border: 1px solid rgba(0, 229, 204, 0.2); }
+    .tag-coral { background: rgba(255, 77, 77, 0.12); color: var(--accent-coral); border: 1px solid rgba(255, 77, 77, 0.2); }
+    .tag-blue { background: rgba(96, 165, 250, 0.12); color: var(--info); border: 1px solid rgba(96, 165, 250, 0.2); }
+    .tag-amber { background: rgba(251, 191, 36, 0.12); color: var(--warning); border: 1px solid rgba(251, 191, 36, 0.2); }
+    .tag-muted { background: rgba(136, 146, 176, 0.1); color: var(--text-secondary); border: 1px solid var(--border); }
 
-    @media print {
-      body { background: white; color: #1e293b; }
-      .detail-panel { display: block !important; page-break-before: always; }
-      .back-btn, .stage-card { cursor: default; }
-      .stage-card:hover { transform: none; box-shadow: none; }
-      #main-panel { page-break-after: always; }
+    /* ===== SCHEMA LAYERS ===== */
+    .layer-block {
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid;
+    }
+    .layer-block h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .layer-block h3 .layer-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .meta-layer { background: rgba(96, 165, 250, 0.05); border-color: rgba(96, 165, 250, 0.25); }
+    .meta-layer h3 { color: var(--info); }
+    .meta-layer .layer-dot { background: var(--info); box-shadow: 0 0 8px rgba(96, 165, 250, 0.5); }
+
+    .schema-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    .schema-pill:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-hover);
+    }
+    .schema-pill code { font-size: 0.7rem; color: var(--info); }
+    .schema-pill .pill-desc { color: var(--text-muted); font-size: 0.65rem; }
+    .pill-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* ===== SANDWICH ===== */
+    .sandwich { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(0, 229, 204, 0.2); }
+    .sandwich-layer {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sandwich-layer:last-child { border-bottom: none; }
+    .sandwich-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+    .sandwich-external { background: rgba(96, 165, 250, 0.06); }
+    .sandwich-external .sandwich-label { color: var(--info); }
+    .sandwich-internal { background: rgba(0, 229, 204, 0.06); }
+    .sandwich-internal .sandwich-label { color: var(--accent-cyan); }
+    .sandwich-mapping { background: rgba(251, 191, 36, 0.06); }
+    .sandwich-mapping .sandwich-label { color: var(--warning); }
+    .entity-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .entity-tag {
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    .entity-tag-ext { background: rgba(96, 165, 250, 0.1); color: var(--info); border: 1px solid rgba(96, 165, 250, 0.15); }
+    .entity-tag-int { background: rgba(0, 229, 204, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 229, 204, 0.15); }
+    .entity-tag-map { background: rgba(251, 191, 36, 0.1); color: var(--warning); border: 1px solid rgba(251, 191, 36, 0.15); }
+
+    /* ===== LIFECYCLE FLOW ===== */
+    .lifecycle {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .lifecycle-step {
+      text-align: center;
+      padding: 16px 8px;
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .lifecycle-step::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid var(--text-muted);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      z-index: 2;
+    }
+    .lifecycle-step:last-child::after { display: none; }
+    .lifecycle-step .step-icon {
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+    }
+    .lifecycle-step h4 {
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .lifecycle-step p {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .lifecycle-feedback {
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      border: 1px dashed var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      padding: 8px;
+      margin: 0 10%;
     }
 
-    @media (max-width: 640px) {
-      .arrow-connector::after { display: none; }
-      .feedback-arrow { display: none; }
+    /* ===== AGENTS ===== */
+    .agent-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: border-color 0.2s;
     }
+    .agent-card:hover { border-color: var(--border-accent); }
+    .agent-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .agent-name { font-weight: 600; font-size: 0.9rem; }
+    .agent-machine { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; }
+    .agent-role { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ===== ERD ===== */
+    .erd-canvas {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .erd-entity {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: inline-block;
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .erd-entity:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--glow-cyan);
+      transform: translateY(-2px);
+    }
+    .erd-entity-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .erd-entity-props {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .erd-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .erd-connectors {
+      text-align: center;
+      padding: 12px 0;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .erd-rel-label {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.6rem;
+      font-weight: 600;
+      margin: 0 4px;
+    }
+
+    /* ===== FLOW DRILL DOWN ===== */
+    .flow-list { display: grid; gap: 8px; }
+    .flow-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .flow-item:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-hover);
+    }
+    .flow-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .flow-id {
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      min-width: 120px;
+    }
+    .flow-name { font-size: 0.8rem; }
+    .flow-detail {
+      display: none;
+      margin-top: 12px;
+      padding: 16px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .flow-detail.open { display: block; }
+    .flow-detail pre {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+
+    /* ===== STORY LIST ===== */
+    .story-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .story-item:last-child { border-bottom: none; }
+    .story-id {
+      font-family: monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent-coral);
+      min-width: 40px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .story-text { font-size: 0.8rem; color: var(--text-secondary); flex: 1; }
+    .story-text em { color: var(--text-primary); font-style: normal; font-weight: 500; }
+
+    /* ===== PLUGIN ECOSYSTEM ===== */
+    .plugin-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .plugin-name { font-weight: 600; font-size: 0.85rem; }
+    .plugin-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .spectrum { grid-template-columns: repeat(2, 1fr); }
+      .lifecycle { grid-template-columns: repeat(3, 1fr); }
+      .lifecycle-step::after { display: none; }
+      .stats-bar { grid-template-columns: repeat(3, 1fr); }
+      .card-grid-2, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr; }
+      .header h1 { font-size: 1.3rem; }
+      .container { padding: 0 16px; }
+    }
+    @media (max-width: 480px) {
+      .spectrum { grid-template-columns: 1fr; }
+      .lifecycle { grid-template-columns: 1fr; }
+      .tab-btn { padding: 10px 14px; font-size: 0.75rem; }
+    }
+
+    /* ===== POPOVER ===== */
+    .popover-trigger { cursor: help; border-bottom: 1px dashed var(--text-muted); }
+    .popover {
+      display: none;
+      position: absolute;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      max-width: 300px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 200;
+    }
+    .popover.visible { display: block; }
+
+    /* ===== TOGGLE DETAIL ===== */
+    .expandable { cursor: pointer; }
+    .expandable .expand-icon { transition: transform 0.2s; display: inline-block; }
+    .expandable.open .expand-icon { transform: rotate(90deg); }
+
+    /* ===== SEPARATOR ===== */
+    .sep {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    /* ===== ANNOTATION ===== */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.6rem;
+      font-family: monospace;
+      font-weight: 600;
+    }
+    .ann-hint { background: rgba(0, 229, 204, 0.1); color: var(--accent-cyan); }
+    .ann-ref { background: rgba(96, 165, 250, 0.1); color: var(--info); }
+    .ann-bidir { background: rgba(251, 191, 36, 0.1); color: var(--warning); }
+    .ann-ctx { background: rgba(255, 77, 77, 0.1); color: var(--accent-coral); }
   </style>
 </head>
-<body class="min-h-screen">
+<body>
 
   <!-- ============================================================ -->
-  <!-- MAIN OVERVIEW PANEL                                          -->
+  <!-- HEADER                                                       -->
   <!-- ============================================================ -->
-  <div id="main-panel">
-    <!-- Header -->
-    <header class="border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <div>
+          <h1>Enterprise Software <span>@ WDI</span></h1>
+          <div class="header-subtitle">How a 2-person B&B builds production-grade software with spec-driven development</div>
+        </div>
+        <div class="header-badge">Spec-Anchored</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- TAB BAR                                                      -->
+  <!-- ============================================================ -->
+  <nav class="tab-bar">
+    <div class="container" style="display:flex;gap:2px;">
+      <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+      <button class="tab-btn" onclick="showTab('schemas')">Schema Architecture</button>
+      <button class="tab-btn" onclick="showTab('flows')">Flows & Stories</button>
+      <button class="tab-btn" onclick="showTab('erd')">ERD</button>
+      <button class="tab-btn" onclick="showTab('agents')">Agents & Plugins</button>
+    </div>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- TAB: OVERVIEW                                                -->
+  <!-- ============================================================ -->
+  <div id="tab-overview" class="tab-panel active">
+    <div class="container">
+
+      <!-- SDD Maturity Spectrum -->
+      <div class="section-header">
+        <h2>The SDD Maturity Spectrum</h2>
+        <p>From improvisational coding to fully machine-governed specs</p>
+        <div class="cite">Framework: Birgitta Böckeler, martinfowler.com (Oct 2025)</div>
+      </div>
+
+      <div class="spectrum">
+        <div class="spectrum-level spectrum-vibe">
+          <div class="level-num">0</div>
+          <h4>Vibe Coding</h4>
+          <p>Fast, improvisational. Great for prototypes. No specs.</p>
+        </div>
+        <div class="spectrum-level spectrum-first">
+          <div class="level-num">1</div>
+          <h4>Spec-First</h4>
+          <p>Write spec before code. Code may drift afterward.</p>
+        </div>
+        <div class="spectrum-level spectrum-anchored">
+          <div class="level-num">2</div>
+          <h4>Spec-Anchored</h4>
+          <p>Spec maintained with automated enforcement. The sweet spot.</p>
+          <div class="wdi-marker">WDI is here</div>
+        </div>
+        <div class="spectrum-level spectrum-source">
+          <div class="level-num">3</div>
+          <h4>Spec-as-Source</h4>
+          <p>Spec is the only human-edited artifact. Code is generated.</p>
+        </div>
+      </div>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-value" style="color: var(--info)">6</div>
+          <div class="stat-label">Meta-Schemas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color: var(--accent-cyan)">3</div>
+          <div class="stat-label">Domain Layers</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color: var(--accent-cyan)">13</div>
+          <div class="stat-label">User Stories</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color: var(--accent-cyan)">32</div>
+          <div class="stat-label">Flows</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color: var(--warning)">4</div>
+          <div class="stat-label">Personas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color: var(--accent-coral)">7</div>
+          <div class="stat-label">Principles</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" style="color: #c084fc">3</div>
+          <div class="stat-label">AI Agents</div>
+        </div>
+      </div>
+
+      <!-- Development Lifecycle -->
+      <div class="section-header">
+        <h2>Development Lifecycle</h2>
+        <p>Every change flows through this cycle — specs first, always</p>
+      </div>
+
+      <div class="lifecycle">
+        <div class="lifecycle-step" style="border-color: rgba(255, 77, 77, 0.3);">
+          <div class="step-icon" style="color: var(--accent-coral);">&#9888;</div>
+          <h4 style="color: var(--accent-coral);">Problem</h4>
+          <p>Identify need or gap</p>
+        </div>
+        <div class="lifecycle-step" style="border-color: rgba(96, 165, 250, 0.3);">
+          <div class="step-icon" style="color: var(--info);">&#9881;</div>
+          <h4 style="color: var(--info);">Schema</h4>
+          <p>Spec change first</p>
+        </div>
+        <div class="lifecycle-step" style="border-color: rgba(0, 229, 204, 0.3);">
+          <div class="step-icon" style="color: var(--accent-cyan);">&#9654;</div>
+          <h4 style="color: var(--accent-cyan);">Implement</h4>
+          <p>Code from spec</p>
+        </div>
+        <div class="lifecycle-step" style="border-color: rgba(251, 191, 36, 0.3);">
+          <div class="step-icon" style="color: var(--warning);">&#10003;</div>
+          <h4 style="color: var(--warning);">Validate</h4>
+          <p>Automated gates</p>
+        </div>
+        <div class="lifecycle-step" style="border-color: rgba(192, 132, 252, 0.3);">
+          <div class="step-icon" style="color: #c084fc;">&#8635;</div>
+          <h4 style="color: #c084fc;">Compound</h4>
+          <p>Learnings feed back</p>
+        </div>
+      </div>
+      <div class="lifecycle-feedback">&#8592; feedback loop: learnings compound into better specs &#8594;</div>
+
+      <hr class="sep">
+
+      <!-- Constitutional Principles -->
+      <div class="section-header">
+        <h2>Constitutional Principles</h2>
+        <p>7 rules that govern all schema and implementation decisions</p>
+      </div>
+
+      <div class="card-grid card-grid-2" style="margin-bottom: 24px;">
+        <div class="card" style="border-left: 3px solid var(--accent-cyan);">
+          <div class="card-title" style="color: var(--accent-cyan);">1. Spec-First, Always</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">No code changes without corresponding spec updates. Specs are the source of truth.</div>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--accent-cyan);">
+          <div class="card-title" style="color: var(--accent-cyan);">2. Idempotent from Schema</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">Application is a deterministic function of specs. Undocumented behavior is a bug.</div>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--warning);">
+          <div class="card-title" style="color: var(--warning);">3. Bidirectional Traceability</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">story.flowIds &harr; flow.implementsStories. Validated in CI.</div>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--warning);">
+          <div class="card-title" style="color: var(--warning);">4. Config-Driven Behavior</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">Business rules live in JSON, not code. Owners update rules directly.</div>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--info);">
+          <div class="card-title" style="color: var(--info);">5. Integration Contract</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">Reference external entities, don't reinvent them. Define mappings on top.</div>
+        </div>
+        <div class="card" style="border-left: 3px solid #c084fc;">
+          <div class="card-title" style="color: #c084fc;">6. Compounding</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">Learnings feed back into specs. Every solved problem makes the next easier.</div>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--accent-coral);">
+          <div class="card-title" style="color: var(--accent-coral);">7. Fail-Closed Security</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">Unmatched items flagged for review, never silently classified. Deny by default.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB: SCHEMA ARCHITECTURE                                     -->
+  <!-- ============================================================ -->
+  <div id="tab-schemas" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>Two Schema Layers</h2>
+        <p>Meta-schemas define structure. Domain schemas define the business. Everything else is governance, instances, or mechanisms.</p>
+      </div>
+
+      <!-- Layer 1: Meta-Schemas -->
+      <div class="layer-block meta-layer">
+        <h3><span class="layer-dot"></span> Layer 1: Meta-Schemas <span class="tag tag-blue" style="margin-left:auto;">Define Structure</span></h3>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px;">Schemas that define the <em>shape</em> of all other specs. These are the grammar of the system.</p>
+        <div class="pill-grid">
+          <div class="schema-pill" onclick="togglePopover(this, 'Story structure with persona refs, effort levels, acceptance criteria, and bidirectional flow links')">
+            <code>user-stories.schema.json</code>
+            <span class="pill-desc">Story structure</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Flow steps, entity refs, uiRequirements, surfaces (CLI/Web/API), trigger routes, and persona access')">
+            <code>flows.schema.json</code>
+            <span class="pill-desc">Operations & UI</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Term format, categories, abbreviations. Ubiquitous language for the domain.')">
+            <code>terminology.schema.json</code>
+            <span class="pill-desc">Domain language</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Actor roles, access levels (gc/purchaser/owner), permissions, default action categories')">
+            <code>personas.schema.json</code>
+            <span class="pill-desc">Actor roles</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Principles, constraints, quality standards. The constitutional rules that govern everything.')">
+            <code>constitution.schema.json</code>
+            <span class="pill-desc">Governance rules</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Entity definitions with x-ui-hints, x-reference, x-bidirectional, enums, relationships. The three-layer sandwich.')">
+            <code>domain-data.schema.json</code>
+            <span class="pill-desc">Entity definitions</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layer 2: Three-Layer Sandwich -->
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 1rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 8px var(--glow-cyan);flex-shrink:0;"></span>
+          Layer 2: Domain Schemas — The Three-Layer Sandwich
+          <span class="tag tag-cyan" style="margin-left:auto;">Business Model</span>
+        </h3>
+      </div>
+
+      <div class="sandwich">
+        <!-- External -->
+        <div class="sandwich-layer sandwich-external">
+          <div class="sandwich-label">External — API Entities (surfaces exposed by integrations)</div>
+          <div class="entity-tags">
+            <span class="entity-tag entity-tag-ext">Task</span>
+            <span class="entity-tag entity-tag-ext">Material</span>
+            <span class="entity-tag entity-tag-ext">Vendor</span>
+            <span class="entity-tag entity-tag-ext">Receipt</span>
+            <span class="entity-tag entity-tag-ext">Issue</span>
+            <span class="entity-tag entity-tag-ext">Milestone</span>
+            <span class="entity-tag entity-tag-ext">Note</span>
+            <span class="entity-tag entity-tag-ext">Contract</span>
+            <span class="entity-tag entity-tag-ext">Team Member</span>
+          </div>
+        </div>
+        <!-- Internal -->
+        <div class="sandwich-layer sandwich-internal">
+          <div class="sandwich-label">Internal — Computed / Derived Entities</div>
+          <div class="entity-tags">
+            <span class="entity-tag entity-tag-int">Notification</span>
+          </div>
+        </div>
+        <!-- Mapping -->
+        <div class="sandwich-layer sandwich-mapping">
+          <div class="sandwich-label">Mapping — Relationship & Config Entities</div>
+          <div class="entity-tags">
+            <span class="entity-tag entity-tag-map">Task Relationship</span>
+            <span class="entity-tag entity-tag-map">Material Relationship</span>
+            <span class="entity-tag entity-tag-map">Vendor Reference</span>
+            <span class="entity-tag entity-tag-map">Contact</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- NOT Schema Layers -->
+      <div class="section-header">
+        <h2>Not Schema Layers</h2>
+        <p>These are important but distinct from the schema taxonomy</p>
+      </div>
+
+      <div class="card-grid card-grid-3">
+        <div class="card" style="border-top: 3px solid #c084fc;">
+          <div class="card-title" style="color: #c084fc;">Governance</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">Constitutional principles are <em>rules that govern</em>, not schemas. They constrain how schemas evolve.</div>
+          <div class="tag tag-muted" style="margin-top:8px;">Rules, not structure</div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--warning);">
+          <div class="card-title" style="color: var(--warning);">Instances</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">User stories and flows are <em>data conforming to</em> meta-schemas. They're the content, not the container.</div>
+          <div class="tag tag-muted" style="margin-top:8px;">Data, not schemas</div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--accent-coral);">
+          <div class="card-title" style="color: var(--accent-coral);">Validation</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">Validation is a cross-cutting <em>mechanism</em> — a quality gate. It enforces schema conformance, it isn't a schema.</div>
+          <div class="tag tag-muted" style="margin-top:8px;">Mechanism, not layer</div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- Schema Extensions -->
+      <div class="section-header">
+        <h2>Schema Extensions</h2>
+        <p>Custom x- annotations that make schemas actionable</p>
+      </div>
+
+      <div class="card-grid card-grid-4">
+        <div class="card" style="padding: 16px;">
+          <div style="margin-bottom: 8px;"><span class="annotation ann-hint">x-ui-hints</span></div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Layout sections, field display modes, conditional visibility, widget selection</div>
+        </div>
+        <div class="card" style="padding: 16px;">
+          <div style="margin-bottom: 8px;"><span class="annotation ann-ref">x-reference</span></div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Cross-schema references — resource, field, displayField for entity lookups</div>
+        </div>
+        <div class="card" style="padding: 16px;">
+          <div style="margin-bottom: 8px;"><span class="annotation ann-bidir">x-bidirectional</span></div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Two-way relationship tracking — story &harr; flow links validated in CI</div>
+        </div>
+        <div class="card" style="padding: 16px;">
+          <div style="margin-bottom: 8px;"><span class="annotation ann-ctx">x-context-rules</span></div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Field availability by context — show/hide fields based on entity state</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB: FLOWS & STORIES                                         -->
+  <!-- ============================================================ -->
+  <div id="tab-flows" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>Flows: 32 Operations</h2>
+        <p>Every user interaction defined as a spec — CLI, Web, and API surfaces. Click any flow to drill down.</p>
+      </div>
+
+      <!-- Flow Type Legend -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
+        <span class="tag tag-cyan">list</span>
+        <span class="tag tag-blue">detail</span>
+        <span class="tag tag-muted">create</span>
+        <span class="tag tag-amber">edit</span>
+        <span class="tag tag-coral">delete</span>
+        <span class="tag" style="background:rgba(192,132,252,0.12);color:#c084fc;border:1px solid rgba(192,132,252,0.2);">relationship</span>
+        <span class="tag" style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.2);">workflow</span>
+        <span class="tag" style="background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.2);">dashboard</span>
+      </div>
+
+      <!-- Featured Flow: TASK-LIST -->
+      <div class="card" style="margin-bottom: 16px; border-color: rgba(0, 229, 204, 0.3);">
+        <div class="expandable" onclick="toggleFlowDetail('task-list-detail', this)">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span class="flow-id">TASK-LIST</span>
+              <span style="font-size:0.85rem;">View all tasks with filters and sorting</span>
+              <span class="tag tag-cyan">list</span>
+            </div>
+            <span class="expand-icon" style="color:var(--text-muted);">&#9654;</span>
+          </div>
+        </div>
+        <div id="task-list-detail" class="flow-detail">
+          <div class="card-grid card-grid-2" style="margin-bottom:16px;">
+            <div>
+              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Metadata</div>
+              <div style="font-size:0.8rem;color:var(--text-secondary);display:grid;gap:4px;">
+                <div><strong style="color:var(--text-primary)">Entity:</strong> task</div>
+                <div><strong style="color:var(--text-primary)">Route:</strong> <code>/tasks</code></div>
+                <div><strong style="color:var(--text-primary)">Persona:</strong> gc (read: gc, purchaser, owner)</div>
+                <div><strong style="color:var(--text-primary)">Implements:</strong> <span style="color:var(--accent-coral)">GC14, GC16, GC21, GC22</span></div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">uiRequirements</div>
+              <pre style="font-size:0.7rem;color:var(--text-secondary);background:var(--bg-deep);padding:12px;border-radius:var(--radius-md);">{
+  "columns": [
+    { "field": "name", "type": "text" },
+    { "field": "status", "type": "badge" },
+    { "field": "category", "type": "badge" },
+    { "field": "assignee", "type": "text" },
+    { "field": "start", "type": "date" },
+    { "field": "end", "type": "date" }
+  ],
+  "filters": [
+    { "field": "status", "type": "multi-select" },
+    { "field": "category", "type": "multi-select" },
+    { "field": "assignee", "type": "single-select" }
+  ]
+}</pre>
+            </div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:12px;">
+            <strong>Schema &rarr; UX:</strong> These uiRequirements are the spec that drives the actual list component. The schema IS the design document.
+          </div>
+        </div>
+      </div>
+
+      <!-- More Flows (grouped by type) -->
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-title">Task Flows</div>
+        <div class="flow-list">
+          <div class="flow-item expandable" onclick="toggleFlowDetail('task-create-detail', this)">
+            <div class="flow-item-left">
+              <span class="flow-id">TASK-CREATE</span>
+              <span class="flow-name">Create new task</span>
+              <span class="tag tag-muted">create</span>
+            </div>
+            <span class="expand-icon" style="color:var(--text-muted);">&#9654;</span>
+          </div>
+          <div id="task-create-detail" class="flow-detail">
+            <div style="font-size:0.8rem;color:var(--text-secondary);display:grid;gap:4px;">
+              <div><strong style="color:var(--text-primary)">Implements:</strong> <span style="color:var(--accent-coral)">GC6</span> — "Break down the project into tasks"</div>
+              <div><strong style="color:var(--text-primary)">Form fields:</strong> name, category, priority, estimatedDays, estimatedCost, start, end, assignee, notes</div>
+              <div><strong style="color:var(--text-primary)">Field types:</strong> text, dropdown, segmented, number, currency, date, vendor-picker, textarea</div>
+            </div>
+          </div>
+
+          <div class="flow-item">
+            <div class="flow-item-left">
+              <span class="flow-id">TASK-DETAIL</span>
+              <span class="flow-name">View task with dependencies & materials</span>
+              <span class="tag tag-blue">detail</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-item-left">
+              <span class="flow-id">TASK-EDIT</span>
+              <span class="flow-name">Update task details</span>
+              <span class="tag tag-amber">edit</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-item-left">
+              <span class="flow-id">TASK-DELETE</span>
+              <span class="flow-name">Remove task with dependency check</span>
+              <span class="tag tag-coral">delete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-2" style="margin-bottom: 16px;">
+        <div class="card">
+          <div class="card-title">Relationship Flows</div>
+          <div class="flow-list">
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-TASK-DEP</span><span class="flow-name">Task dependencies</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-TASK-MAT</span><span class="flow-name">Task materials</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-VENDOR-CONTACT</span><span class="flow-name">Vendor contacts</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-MAT-SUB</span><span class="flow-name">Material substitutes</span></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Dashboard & Workflow Flows</div>
+          <div class="flow-list">
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">GC-DASHBOARD</span><span class="flow-name">GC overview</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">PUNCH-LIST</span><span class="flow-name">Punch list workflow</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">ISSUE-TRIAGE</span><span class="flow-name">Issue triage workflow</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- User Stories -->
+      <div class="section-header">
+        <h2>User Stories: 13 Specs</h2>
+        <p>8 must-have + 5 bookkeeping stories. Each links bidirectionally to flows.</p>
+      </div>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-coral);">Must-Have Stories</div>
+          <div class="story-item">
+            <span class="story-id">GC1</span>
+            <span class="story-text">As the GC, I want to <em>add subcontractors</em> with their company info so I can manage my trade partners</span>
+            <span class="tag tag-muted">medium</span>
+          </div>
+          <div class="story-item">
+            <span class="story-id">GC2</span>
+            <span class="story-text">As the GC, I want to <em>add contacts</em> for each sub so I know who to call</span>
+            <span class="tag tag-muted">small</span>
+          </div>
+          <div class="story-item">
+            <span class="story-id">GC6</span>
+            <span class="story-text">As the GC, I want to <em>break down the project into tasks</em> so I can track progress</span>
+            <span class="tag tag-amber">large</span>
+          </div>
+          <div class="story-item">
+            <span class="story-id">GC10</span>
+            <span class="story-text">As the GC, I want to <em>set task dependencies</em> so the sequence is enforced</span>
+            <span class="tag tag-muted">medium</span>
+          </div>
+          <div class="story-item">
+            <span class="story-id">GC14</span>
+            <span class="story-text">As the GC, I want to see <em>today's scheduled work</em> so I know what's happening</span>
+            <span class="tag tag-muted">medium</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color: var(--warning);">Bookkeeping Stories</div>
+          <div class="story-item">
+            <span class="story-id">OP1</span>
+            <span class="story-text">As Owner/Purchaser, I want to <em>record receipt details</em> so expenses are tracked</span>
+            <span class="tag tag-muted">medium</span>
+          </div>
+          <div class="story-item">
+            <span class="story-id">OP2</span>
+            <span class="story-text">As Owner/Purchaser, I want to <em>attach receipt photos</em> for documentation</span>
+            <span class="tag tag-muted">small</span>
+          </div>
+          <div class="story-item">
+            <span class="story-id">OP3</span>
+            <span class="story-text">As Owner, I want to <em>see total project spend</em> vs budget at a glance</span>
+            <span class="tag tag-muted">medium</span>
+          </div>
+
+          <hr class="sep" style="margin: 16px 0;">
+
+          <!-- Personas -->
+          <div class="card-title" style="margin-top: 12px;">Personas</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+              <div style="font-weight:600;color:var(--accent-cyan);">Brandon (GC)</div>
+              <div style="color:var(--text-muted);font-size:0.65rem;">Full access &middot; ASSIGN, SCHEDULE</div>
+            </div>
+            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+              <div style="font-weight:600;color:var(--warning);">Tonia (Purchaser)</div>
+              <div style="color:var(--text-muted);font-size:0.65rem;">Order access &middot; ORDER, SPECIFY</div>
+            </div>
+            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+              <div style="font-weight:600;color:var(--info);">Dave (Owner)</div>
+              <div style="color:var(--text-muted);font-size:0.65rem;">View, approve &middot; DECIDE, TRACK</div>
+            </div>
+            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+              <div style="font-weight:600;color:#c084fc;">AI Agent (Claude)</div>
+              <div style="color:var(--text-muted);font-size:0.65rem;">Full API &middot; Triage, detect</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- Bidirectional Traceability Visual -->
+      <div class="section-header">
+        <h2>Bidirectional Traceability</h2>
+        <p>Every link is validated. Break a reference, break the build.</p>
+      </div>
+
+      <div class="card" style="text-align: center; padding: 32px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Persona</div>
+            <div style="background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.2);border-radius:var(--radius-md);padding:12px 20px;color:#c084fc;font-weight:600;font-size:0.85rem;">userStoryIds[]</div>
+          </div>
+          <div style="color:var(--text-muted);font-size:1.2rem;">&#8596;</div>
+          <div style="text-align:center;">
+            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Story</div>
+            <div style="background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.2);border-radius:var(--radius-md);padding:12px 20px;color:var(--accent-coral);font-weight:600;font-size:0.85rem;">flowIds[]</div>
+          </div>
+          <div style="color:var(--text-muted);font-size:1.2rem;">&#8596;</div>
+          <div style="text-align:center;">
+            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Flow</div>
+            <div style="background:rgba(0,229,204,0.1);border:1px solid rgba(0,229,204,0.2);border-radius:var(--radius-md);padding:12px 20px;color:var(--accent-cyan);font-weight:600;font-size:0.85rem;">implementsStories[]</div>
+          </div>
+          <div style="color:var(--text-muted);font-size:1.2rem;">&#8596;</div>
+          <div style="text-align:center;">
+            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Entity</div>
+            <div style="background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);border-radius:var(--radius-md);padding:12px 20px;color:var(--info);font-weight:600;font-size:0.85rem;">entityId</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;font-size:0.7rem;color:var(--text-muted);">
+          <span class="annotation ann-bidir">x-bidirectional</span> enforces these links at CI time
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB: ERD                                                     -->
+  <!-- ============================================================ -->
+  <div id="tab-erd" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>Entity Relationship Diagram</h2>
+        <p>Relationships are schema citizens with semantic meaning — typed join entities, not just foreign keys</p>
+      </div>
+
+      <div class="erd-canvas">
+
+        <!-- Top Row: Primary Entities -->
+        <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;text-align:center;">External Entities</div>
+        <div class="erd-row">
+          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
+            <div class="erd-entity-name" style="color:var(--info);">Milestone</div>
+            <div class="erd-entity-props">id, name, targetDate, status</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
+            <div class="erd-entity-name" style="color:var(--info);">Task</div>
+            <div class="erd-entity-props">id, name, status, category, priority, estimatedDays, estimatedCost, start, end</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
+            <div class="erd-entity-name" style="color:var(--info);">Material</div>
+            <div class="erd-entity-props">id, name, quantity, unit, estimatedCost, status</div>
+          </div>
+        </div>
+
+        <div class="erd-row">
+          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
+            <div class="erd-entity-name" style="color:var(--info);">Vendor</div>
+            <div class="erd-entity-props">id, company, trade, license, phone, email</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
+            <div class="erd-entity-name" style="color:var(--info);">Receipt</div>
+            <div class="erd-entity-props">id, vendor, amount, date, category, attachments</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
+            <div class="erd-entity-name" style="color:var(--info);">Issue</div>
+            <div class="erd-entity-props">id, prompt, type, status, priority, resolution</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
+            <div class="erd-entity-name" style="color:var(--info);">Contract</div>
+            <div class="erd-entity-props">id, vendor, amount, scope</div>
+          </div>
+        </div>
+
+        <!-- Relationship Labels -->
+        <div class="erd-connectors">
+          <div style="margin:12px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">dependency</span>
+            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">decomposition</span>
+            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">phase</span>
+            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">punch-item</span>
+            <span class="erd-rel-label" style="background:rgba(0,229,204,0.12);color:var(--accent-cyan);">substitutes</span>
+            <span class="erd-rel-label" style="background:rgba(0,229,204,0.12);color:var(--accent-cyan);">alternative</span>
+            <span class="erd-rel-label" style="background:rgba(0,229,204,0.12);color:var(--accent-cyan);">upgrade</span>
+          </div>
+          <div style="font-size:0.6rem;color:var(--text-muted);margin-top:4px;">
+            Dependency subtypes: finish-to-start &middot; finish-to-finish &middot; start-to-start &middot; start-to-finish
+          </div>
+        </div>
+
+        <!-- Relationship Entities -->
+        <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin:16px 0 12px;text-align:center;">Mapping Entities (Typed Joins)</div>
+        <div class="erd-row">
+          <div class="erd-entity" style="border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.03);">
+            <div class="erd-entity-name" style="color:var(--warning);">Task Relationship</div>
+            <div class="erd-entity-props">sourceId, targetId, type, subtype, lag</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(0,229,204,0.3);background:rgba(0,229,204,0.03);">
+            <div class="erd-entity-name" style="color:var(--accent-cyan);">Material Relationship</div>
+            <div class="erd-entity-props">sourceId, targetId, type, notes</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.03);">
+            <div class="erd-entity-name" style="color:var(--warning);">Vendor Reference</div>
+            <div class="erd-entity-props">vendorId, contactId</div>
+          </div>
+          <div class="erd-entity" style="border-color:rgba(0,229,204,0.3);background:rgba(0,229,204,0.03);">
+            <div class="erd-entity-name" style="color:var(--accent-cyan);">Contact</div>
+            <div class="erd-entity-props">name, role, phone, email</div>
+          </div>
+        </div>
+
+        <!-- Key Innovation callout -->
+        <div style="margin-top:24px;padding:16px 20px;background:rgba(0,229,204,0.05);border:1px solid rgba(0,229,204,0.15);border-radius:var(--radius-md);text-align:center;">
+          <div style="font-size:0.8rem;font-weight:600;color:var(--accent-cyan);margin-bottom:4px;">Key Innovation</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary);">Relationships are <strong>schema citizens</strong> with semantic meaning. The relationship entity IS the join table, but <strong>typed</strong> — dependency, decomposition, substitute. Not just foreign keys.</div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- Entity Detail: Task (example with x-ui-hints) -->
+      <div class="section-header">
+        <h2>Entity Detail: Task</h2>
+        <p>Showing schema extensions in action</p>
+      </div>
+
+      <div class="card">
+        <div class="card-grid card-grid-2">
           <div>
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Schema-Driven Development</h1>
-            <p class="text-slate-400 text-sm mt-1">QBO Integration &middot; White Doe Inn</p>
-          </div>
-          <div class="flex items-center gap-3 text-xs text-slate-500">
-            <span class="tag bg-blue-500/20 text-blue-300">Experiment</span>
-            <span>90-day lifecycle</span>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Stats Bar -->
-    <div class="bg-slate-800/50 border-b border-slate-700/30">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-center text-xs">
-          <div><span class="text-2xl font-bold text-blue-400">7</span><br><span class="text-slate-400">Principles</span></div>
-          <div><span class="text-2xl font-bold text-green-400">13</span><br><span class="text-slate-400">User Stories</span></div>
-          <div><span class="text-2xl font-bold text-green-400">32</span><br><span class="text-slate-400">Flows</span></div>
-          <div><span class="text-2xl font-bold text-green-400">4</span><br><span class="text-slate-400">Personas</span></div>
-          <div><span class="text-2xl font-bold text-green-400">68</span><br><span class="text-slate-400">Terms</span></div>
-          <div><span class="text-2xl font-bold text-orange-400">3</span><br><span class="text-slate-400">Schema Layers</span></div>
-          <div><span class="text-2xl font-bold text-purple-400">8</span><br><span class="text-slate-400">BPP Groups</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Flow -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      <p class="text-slate-400 text-sm mb-8 text-center">Click any stage to explore details</p>
-
-      <!-- 7-Stage Pipeline -->
-      <div class="relative">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 sm:gap-3">
-
-          <!-- Stage 1: Problem Space -->
-          <button class="stage-card bg-slate-800 border border-blue-500/30 rounded-xl p-4 text-left" onclick="showPanel('problem')" aria-label="View Problem Space details">
-            <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center mb-3">
-              <i data-lucide="alert-circle" class="w-5 h-5 text-blue-400"></i>
-            </div>
-            <div class="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Stage 1</div>
-            <h3 class="font-semibold text-sm mb-1">Identify Need</h3>
-            <p class="text-xs text-slate-400">QBO Integration for BPP tax filing</p>
-            <div class="mt-3 tag bg-blue-500/20 text-blue-300">Problem</div>
-          </button>
-
-          <!-- Stage 2: Pattern Selection -->
-          <button class="stage-card bg-slate-800 border border-blue-500/30 rounded-xl p-4 text-left" onclick="showPanel('constitutional')" aria-label="View Constitutional Development details">
-            <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center mb-3">
-              <i data-lucide="layers" class="w-5 h-5 text-blue-400"></i>
-            </div>
-            <div class="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Stage 2</div>
-            <h3 class="font-semibold text-sm mb-1">Choose Pattern</h3>
-            <p class="text-xs text-slate-400">Schema-Driven with 7 constitutional principles</p>
-            <div class="mt-3 tag bg-blue-500/20 text-blue-300">Pattern</div>
-          </button>
-
-          <!-- Stage 3: Schema Definition -->
-          <button class="stage-card bg-slate-800 border border-green-500/30 rounded-xl p-4 text-left" onclick="showPanel('schema-taxonomy')" aria-label="View Schema Taxonomy details">
-            <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center mb-3">
-              <i data-lucide="file-code" class="w-5 h-5 text-green-400"></i>
-            </div>
-            <div class="text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">Stage 3</div>
-            <h3 class="font-semibold text-sm mb-1">Define Schemas</h3>
-            <p class="text-xs text-slate-400">Meta &middot; Domain &middot; Process &middot; Mapping</p>
-            <div class="mt-3 tag bg-green-500/20 text-green-300">Schema</div>
-          </button>
-
-          <!-- Stage 4: Implementation -->
-          <button class="stage-card bg-slate-800 border border-orange-500/30 rounded-xl p-4 text-left" onclick="showPanel('tech-stack')" aria-label="View Tech Stack details">
-            <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center mb-3">
-              <i data-lucide="code" class="w-5 h-5 text-orange-400"></i>
-            </div>
-            <div class="text-xs font-semibold text-orange-400 uppercase tracking-wider mb-1">Stage 4</div>
-            <h3 class="font-semibold text-sm mb-1">Build &amp; Validate</h3>
-            <p class="text-xs text-slate-400">Python CLI + FastAPI + QBO API</p>
-            <div class="mt-3 tag bg-orange-500/20 text-orange-300">Implement</div>
-          </button>
-
-          <!-- Stage 5: CI/CD -->
-          <button class="stage-card bg-slate-800 border border-orange-500/30 rounded-xl p-4 text-left" onclick="showPanel('cicd')" aria-label="View CI/CD Pipeline details">
-            <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center mb-3">
-              <i data-lucide="git-branch" class="w-5 h-5 text-orange-400"></i>
-            </div>
-            <div class="text-xs font-semibold text-orange-400 uppercase tracking-wider mb-1">Stage 5</div>
-            <h3 class="font-semibold text-sm mb-1">Automated Pipeline</h3>
-            <p class="text-xs text-slate-400">Validate &rarr; Test &rarr; Build &rarr; Deploy</p>
-            <div class="mt-3 tag bg-orange-500/20 text-orange-300">CI/CD</div>
-          </button>
-
-          <!-- Stage 6: Deployment -->
-          <button class="stage-card bg-slate-800 border border-purple-500/30 rounded-xl p-4 text-left" onclick="showPanel('tech-stack')" aria-label="View Deployment details">
-            <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">
-              <i data-lucide="cloud" class="w-5 h-5 text-purple-400"></i>
-            </div>
-            <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-1">Stage 6</div>
-            <h3 class="font-semibold text-sm mb-1">Production</h3>
-            <p class="text-xs text-slate-400">Railway + PostgreSQL</p>
-            <div class="mt-3 tag bg-purple-500/20 text-purple-300">Deploy</div>
-          </button>
-
-          <!-- Stage 7: Operations -->
-          <button class="stage-card bg-slate-800 border border-purple-500/30 rounded-xl p-4 text-left" onclick="showPanel('operations')" aria-label="View Operations Loop details">
-            <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">
-              <i data-lucide="activity" class="w-5 h-5 text-purple-400"></i>
-            </div>
-            <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-1">Stage 7</div>
-            <h3 class="font-semibold text-sm mb-1">Monitor &amp; Iterate</h3>
-            <p class="text-xs text-slate-400">Feedback loop &rarr; Schema evolution</p>
-            <div class="mt-3 tag bg-purple-500/20 text-purple-300">Ops</div>
-          </button>
-        </div>
-
-        <!-- Feedback Arrow (desktop only) -->
-        <div class="feedback-arrow hidden lg:block" aria-hidden="true"></div>
-      </div>
-
-      <!-- Color Legend -->
-      <div class="mt-16 flex flex-wrap justify-center gap-4 sm:gap-6 text-xs text-slate-400">
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Problem &amp; Pattern</div>
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span> Schema Definition</div>
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-500"></span> Implementation</div>
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> Operations</div>
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span> Validation (cross-cutting)</div>
-      </div>
-
-      <!-- Additional nav links -->
-      <div class="mt-10 flex flex-wrap justify-center gap-3">
-        <button class="back-btn text-xs px-4 py-2 rounded-lg border border-slate-600 text-slate-300" onclick="showPanel('testing')" aria-label="View Testing Strategy">Testing Strategy</button>
-        <button class="back-btn text-xs px-4 py-2 rounded-lg border border-slate-600 text-slate-300" onclick="showPanel('future')" aria-label="View Future Vision">Future Vision</button>
-      </div>
-    </main>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- DETAIL PANEL: Problem Space                                  -->
-  <!-- ============================================================ -->
-  <div id="panel-problem" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-          <i data-lucide="alert-circle" class="w-6 h-6 text-blue-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Problem Space</h2>
-          <p class="text-slate-400 text-sm">Why this project exists</p>
-        </div>
-      </div>
-
-      <div class="grid sm:grid-cols-2 gap-6">
-        <!-- The Problem -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50">
-          <h3 class="font-semibold text-blue-400 mb-3">The Problem</h3>
-          <p class="text-sm text-slate-300 leading-relaxed">White Doe Inn needs to file NC Business Personal Property (BPP) tax annually. This requires extracting asset purchases from QuickBooks Online, classifying them into 8 Schedule A groups, and generating a compliant filing report. Currently manual and error-prone.</p>
-        </div>
-
-        <!-- Key Metrics -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50">
-          <h3 class="font-semibold text-blue-400 mb-3">Scope at a Glance</h3>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between"><span class="text-slate-400">User Stories</span><span class="font-mono text-green-400">13 (8 must-have)</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">Operations</span><span class="font-mono text-green-400">32 (CLI + Web + API)</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">Personas</span><span class="font-mono text-green-400">4 (Dave, Tonia, CPA, AI)</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">BPP Groups</span><span class="font-mono text-green-400">8 (Schedule A categories)</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">Capitalization Threshold</span><span class="font-mono text-orange-400">$1,000</span></div>
-          </div>
-        </div>
-
-        <!-- Personas -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50 sm:col-span-2">
-          <h3 class="font-semibold text-blue-400 mb-4">Personas</h3>
-          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-slate-900/50 rounded-lg p-4">
-              <div class="text-xs text-slate-500 font-mono mb-1">OD</div>
-              <div class="font-semibold text-sm">Dave (Owner)</div>
-              <div class="text-xs text-slate-400 mt-1">Full access &middot; CLI primary</div>
-              <div class="text-xs text-slate-500 mt-2">Daily tx coding, BPP filing, QBO management</div>
-            </div>
-            <div class="bg-slate-900/50 rounded-lg p-4">
-              <div class="text-xs text-slate-500 font-mono mb-1">PT</div>
-              <div class="font-semibold text-sm">Tonia (Purchaser)</div>
-              <div class="text-xs text-slate-400 mt-1">Bookkeeper access &middot; Web primary</div>
-              <div class="text-xs text-slate-500 mt-2">Purchasing context, invoice review</div>
-            </div>
-            <div class="bg-slate-900/50 rounded-lg p-4">
-              <div class="text-xs text-slate-500 font-mono mb-1">EC</div>
-              <div class="font-semibold text-sm">External CPA</div>
-              <div class="text-xs text-slate-400 mt-1">View only &middot; Reports primary</div>
-              <div class="text-xs text-slate-500 mt-2">Review exports, validate classifications</div>
-            </div>
-            <div class="bg-slate-900/50 rounded-lg p-4">
-              <div class="text-xs text-slate-500 font-mono mb-1">AC</div>
-              <div class="font-semibold text-sm">AI Agent (Claude)</div>
-              <div class="text-xs text-slate-400 mt-1">Full API access &middot; API primary</div>
-              <div class="text-xs text-slate-500 mt-2">Auto-classify, triage, anomaly detection</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Must-Have Stories -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50 sm:col-span-2">
-          <h3 class="font-semibold text-blue-400 mb-4">Must-Have User Stories</h3>
-          <div class="space-y-2 text-sm">
-            <div class="flex items-start gap-3 py-2 border-b border-slate-700/30">
-              <span class="font-mono text-xs text-slate-500 mt-0.5 shrink-0">OW1</span>
-              <span class="text-slate-300">Authenticate with QBO securely</span>
-              <span class="tag bg-orange-500/20 text-orange-300 ml-auto shrink-0">medium</span>
-            </div>
-            <div class="flex items-start gap-3 py-2 border-b border-slate-700/30">
-              <span class="font-mono text-xs text-slate-500 mt-0.5 shrink-0">OW2</span>
-              <span class="text-slate-300">Export fixed asset purchases by year</span>
-              <span class="tag bg-orange-500/20 text-orange-300 ml-auto shrink-0">medium</span>
-            </div>
-            <div class="flex items-start gap-3 py-2 border-b border-slate-700/30">
-              <span class="font-mono text-xs text-slate-500 mt-0.5 shrink-0">OW3</span>
-              <span class="text-slate-300">Triage Group 6 items (include/skip/review)</span>
-              <span class="tag bg-red-500/20 text-red-300 ml-auto shrink-0">large</span>
-            </div>
-            <div class="flex items-start gap-3 py-2 border-b border-slate-700/30">
-              <span class="font-mono text-xs text-slate-500 mt-0.5 shrink-0">OW6</span>
-              <span class="text-slate-300">Generate BPP report grouped by Schedule A categories</span>
-              <span class="tag bg-red-500/20 text-red-300 ml-auto shrink-0">large</span>
-            </div>
-            <div class="flex items-start gap-3 py-2 border-b border-slate-700/30">
-              <span class="font-mono text-xs text-slate-500 mt-0.5 shrink-0">AG1</span>
-              <span class="text-slate-300">Auto-classify Group 6 items using rules</span>
-              <span class="tag bg-orange-500/20 text-orange-300 ml-auto shrink-0">medium</span>
-            </div>
-            <div class="flex items-start gap-3 py-2">
-              <span class="font-mono text-xs text-slate-500 mt-0.5 shrink-0">AG2</span>
-              <span class="text-slate-300">Read QBO custom fields for manual overrides</span>
-              <span class="tag bg-green-500/20 text-green-300 ml-auto shrink-0">small</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- DETAIL PANEL: Schema Taxonomy                                -->
-  <!-- ============================================================ -->
-  <div id="panel-schema-taxonomy" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
-          <i data-lucide="file-code" class="w-6 h-6 text-green-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Schema Taxonomy</h2>
-          <p class="text-slate-400 text-sm">5 layers from principles to validation</p>
-        </div>
-      </div>
-
-      <!-- Layer 1: Constitutional -->
-      <div class="layer-row bg-slate-800 rounded-xl p-6 border border-purple-500/30 mb-4">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-          <h3 class="font-semibold text-purple-400">Layer 1: Constitutional Principles</h3>
-          <span class="tag bg-purple-500/20 text-purple-300 ml-auto">Governs All</span>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-purple-300 mb-1">Spec-First, Always</div>
-            <div class="text-slate-400">No code without spec change</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-purple-300 mb-1">Idempotent from Schema</div>
-            <div class="text-slate-400">Types & validation generated, not written</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-purple-300 mb-1">Bidirectional Traceability</div>
-            <div class="text-slate-400">story.flowIds &harr; flow.implementsStories</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-purple-300 mb-1">Config-Driven Behavior</div>
-            <div class="text-slate-400">BPP rules in JSON, not code</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-purple-300 mb-1">Integration Contract</div>
-            <div class="text-slate-400">Reference QBO entities, don't reinvent</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-purple-300 mb-1">Compounding</div>
-            <div class="text-slate-400">Learnings feed back into specs</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-purple-300 mb-1">Fail-Closed Security</div>
-            <div class="text-slate-400">Unmatched txns flagged, never silently classified</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Layer 2: Meta-Schemas -->
-      <div class="layer-row bg-slate-800 rounded-xl p-6 border border-blue-500/30 mb-4">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-          <h3 class="font-semibold text-blue-400">Layer 2: Meta-Schemas</h3>
-          <span class="tag bg-blue-500/20 text-blue-300 ml-auto">Define Structure</span>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <code class="text-blue-300">user-stories.schema.json</code>
-            <div class="text-slate-400 mt-1">Story structure, persona refs, effort levels</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <code class="text-blue-300">flows.schema.json</code>
-            <div class="text-slate-400 mt-1">Flow steps, entity refs, surfaces</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <code class="text-blue-300">terminology.schema.json</code>
-            <div class="text-slate-400 mt-1">Term format, categories, abbreviations</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <code class="text-blue-300">personas.schema.json</code>
-            <div class="text-slate-400 mt-1">Actor roles, access levels, permissions</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <code class="text-blue-300">constitution.schema.json</code>
-            <div class="text-slate-400 mt-1">Principles, constraints, quality standards</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <code class="text-blue-300">domain-data.schema.json</code>
-            <div class="text-slate-400 mt-1">3-layer entity definitions, enums</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Layer 3: Domain Schemas -->
-      <div class="layer-row bg-slate-800 rounded-xl p-6 border border-green-500/30 mb-4">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="w-2 h-2 rounded-full bg-green-500"></span>
-          <h3 class="font-semibold text-green-400">Layer 3: Domain Schemas (Three-Layer Sandwich)</h3>
-          <span class="tag bg-green-500/20 text-green-300 ml-auto">3 Sub-Layers</span>
-        </div>
-        <div class="space-y-4">
-          <!-- External -->
-          <div>
-            <div class="text-xs font-semibold text-green-300 mb-2 uppercase tracking-wider">External (QBO API Entities)</div>
-            <div class="flex flex-wrap gap-2">
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">Account</span>
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">Purchase</span>
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">Bill</span>
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">JournalEntry</span>
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">Expense</span>
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">Vendor</span>
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">Customer</span>
-              <span class="tag bg-green-500/10 text-green-300 border border-green-500/20">Item</span>
-            </div>
-          </div>
-          <!-- Internal -->
-          <div>
-            <div class="text-xs font-semibold text-emerald-300 mb-2 uppercase tracking-wider">Internal (WDI Business Logic)</div>
-            <div class="flex flex-wrap gap-2">
-              <span class="tag bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">BPP Item</span>
-              <span class="tag bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Classification</span>
-              <span class="tag bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Vendor Onboarding</span>
-              <span class="tag bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Account Review</span>
-              <span class="tag bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">OAuth Token</span>
-              <span class="tag bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Disposal</span>
-            </div>
-          </div>
-          <!-- Mapping -->
-          <div>
-            <div class="text-xs font-semibold text-teal-300 mb-2 uppercase tracking-wider">Mapping (Config-Driven Rules)</div>
-            <div class="flex flex-wrap gap-2">
-              <span class="tag bg-teal-500/10 text-teal-300 border border-teal-500/20">Account Mapping</span>
-              <span class="tag bg-teal-500/10 text-teal-300 border border-teal-500/20">Triage Rule</span>
-              <span class="tag bg-teal-500/10 text-teal-300 border border-teal-500/20">Vendor Classification</span>
-              <span class="tag bg-teal-500/10 text-teal-300 border border-teal-500/20">Period Attribution</span>
-              <span class="tag bg-teal-500/10 text-teal-300 border border-teal-500/20">Capitalization Rule</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Layer 4: Process Schemas -->
-      <div class="layer-row bg-slate-800 rounded-xl p-6 border border-orange-500/30 mb-4">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="w-2 h-2 rounded-full bg-orange-500"></span>
-          <h3 class="font-semibold text-orange-400">Layer 4: Process Schemas</h3>
-          <span class="tag bg-orange-500/20 text-orange-300 ml-auto">Stories &amp; Flows</span>
-        </div>
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div class="bg-slate-900/50 rounded-lg p-4">
-            <div class="text-xs font-semibold text-orange-300 mb-2">User Story Example: OW1</div>
-            <p class="text-xs text-slate-300 italic mb-2">"As owner-dave, I want to authenticate with QBO so that I can access financial data securely"</p>
-            <div class="text-xs text-slate-400 space-y-1">
-              <div>Links to: <code class="text-orange-300">AUTH-CLI, AUTH-TEST, AUTH-WEB, HOME, API-STATUS</code></div>
-              <div>Priority: <span class="text-green-400">must-have</span> &middot; Effort: <span class="text-orange-400">medium</span></div>
-            </div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-4">
-            <div class="text-xs font-semibold text-orange-300 mb-2">Flow Example: AUTH-CLI</div>
-            <div class="text-xs text-slate-300 space-y-1">
-              <div>Steps: Check --test &rarr; Run OAuth &rarr; Exchange tokens &rarr; Store</div>
-              <div class="text-slate-400 mt-2">Implements: <code class="text-orange-300">OW1</code></div>
-              <div class="text-slate-400">Entity: <code class="text-green-300">oauth-token</code></div>
-              <div class="text-slate-400">Surface: <code class="text-blue-300">cli</code></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Layer 5: Validation -->
-      <div class="layer-row bg-slate-800 rounded-xl p-6 border border-red-500/30">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="w-2 h-2 rounded-full bg-red-500"></span>
-          <h3 class="font-semibold text-red-400">Layer 5: Validation (Cross-Cutting)</h3>
-          <span class="tag bg-red-500/20 text-red-300 ml-auto">Enforces All</span>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 mb-1">Python Validation</div>
-            <div class="text-slate-400">validate-specs.py &middot; jsonschema</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 mb-1">Bidirectional Checks</div>
-            <div class="text-slate-400">story &harr; flow cross-refs validated</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 mb-1">Pre-Commit Hooks</div>
-            <div class="text-slate-400">Block invalid specs at commit time</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 mb-1">CI Pipeline</div>
-            <div class="text-slate-400">Validation gate blocks build on failure</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Relationship Arrows -->
-      <div class="mt-6 bg-slate-800/50 rounded-xl p-6 border border-slate-700/30">
-        <h4 class="text-sm font-semibold text-slate-300 mb-3">Layer Relationships</h4>
-        <div class="space-y-2 text-xs text-slate-400">
-          <div class="flex items-center gap-2"><span class="text-purple-400">&rarr;</span> Constitution <span class="text-slate-500">GOVERNS</span> all layers</div>
-          <div class="flex items-center gap-2"><span class="text-blue-400">&rarr;</span> Meta-Schemas <span class="text-slate-500">DEFINE</span> Domain + Process schemas</div>
-          <div class="flex items-center gap-2"><span class="text-green-400">&rarr;</span> Domain Schemas <span class="text-slate-500">GENERATE</span> types &amp; validation</div>
-          <div class="flex items-center gap-2"><span class="text-orange-400">&rarr;</span> Process Schemas <span class="text-slate-500">REFERENCE</span> Domain entities + Personas</div>
-          <div class="flex items-center gap-2"><span class="text-red-400">&rarr;</span> Validation <span class="text-slate-500">ENFORCES</span> all layers</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- DETAIL PANEL: Constitutional Development                     -->
-  <!-- ============================================================ -->
-  <div id="panel-constitutional" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-          <i data-lucide="layers" class="w-6 h-6 text-blue-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Constitutional Development</h2>
-          <p class="text-slate-400 text-sm">7 principles + P3 discipline + anti-patterns</p>
-        </div>
-      </div>
-
-      <!-- Principles -->
-      <div class="space-y-3 mb-8">
-        <div class="principle-card bg-slate-800 rounded-xl p-5 border-purple-500">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl font-bold text-purple-400/30">1</span>
-            <div>
-              <h4 class="font-semibold text-purple-300">Spec-First, Always</h4>
-              <p class="text-sm text-slate-400 mt-1">No code changes without corresponding spec updates. Specs are the source of truth.</p>
-              <div class="mt-2 text-xs text-slate-500 italic">Example: CLI command requires flow spec first &rarr; then implementation</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="principle-card bg-slate-800 rounded-xl p-5 border-purple-500">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl font-bold text-purple-400/30">2</span>
-            <div>
-              <h4 class="font-semibold text-purple-300">Idempotent from Schema</h4>
-              <p class="text-sm text-slate-400 mt-1">Application is a deterministic function of specifications. Any undocumented behavior is a bug.</p>
-              <div class="mt-2 text-xs text-slate-500 italic">Example: Types generated via json-schema-to-ts, never hand-written</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="principle-card bg-slate-800 rounded-xl p-5 border-purple-500">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl font-bold text-purple-400/30">3</span>
-            <div>
-              <h4 class="font-semibold text-purple-300">Bidirectional Traceability</h4>
-              <p class="text-sm text-slate-400 mt-1">Every flow links to stories; every story links to flows. Validation enforces this in CI.</p>
-              <div class="mt-2 text-xs text-slate-500 italic">Example: story.flowIds &harr; flow.implementsStories &mdash; both validated</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="principle-card bg-slate-800 rounded-xl p-5 border-purple-500">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl font-bold text-purple-400/30">4</span>
-            <div>
-              <h4 class="font-semibold text-purple-300">Config-Driven Behavior</h4>
-              <p class="text-sm text-slate-400 mt-1">Business rules live in JSON, not code. Dave can update triage rules without touching Python.</p>
-              <div class="mt-2 text-xs text-slate-500 italic">Example: bpp-config.json contains account mappings, skip rules, keyword rules</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="principle-card bg-slate-800 rounded-xl p-5 border-purple-500">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl font-bold text-purple-400/30">5</span>
-            <div>
-              <h4 class="font-semibold text-purple-300">Integration Contract, Not Domain Invention</h4>
-              <p class="text-sm text-slate-400 mt-1">Reference QBO's entities, don't reinvent them. Define mappings and extensions on top.</p>
-              <div class="mt-2 text-xs text-slate-500 italic">Example: External layer uses QBO Account, Purchase, Bill directly</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="principle-card bg-slate-800 rounded-xl p-5 border-purple-500">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl font-bold text-purple-400/30">6</span>
-            <div>
-              <h4 class="font-semibold text-purple-300">Compounding</h4>
-              <p class="text-sm text-slate-400 mt-1">Feed learnings back into specs and docs on issue closure. Every solved problem makes future problems easier.</p>
-              <div class="mt-2 text-xs text-slate-500 italic">Example: COMPOUND-LEARNINGS.md files created after each feature</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="principle-card bg-slate-800 rounded-xl p-5 border-purple-500">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl font-bold text-purple-400/30">7</span>
-            <div>
-              <h4 class="font-semibold text-purple-300">Fail-Closed Security</h4>
-              <p class="text-sm text-slate-400 mt-1">Security defaults to deny. Unmatched transactions flagged for review, never silently classified.</p>
-              <div class="mt-2 text-xs text-slate-500 italic">Example: OAuth scopes explicitly listed; unknown tx types &rarr; "needs-review"</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- P3 Discipline -->
-      <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50 mb-6">
-        <h3 class="font-semibold text-blue-400 mb-4">P3 Discipline Workflow</h3>
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-sm">
-          <div class="bg-slate-900/50 px-4 py-2 rounded-lg text-slate-300 font-mono text-xs">P3 Identified</div>
-          <span class="text-slate-500 hidden sm:inline">&rarr;</span>
-          <div class="bg-slate-900/50 px-4 py-2 rounded-lg text-slate-300 font-mono text-xs">Assess Triviality</div>
-          <span class="text-slate-500 hidden sm:inline">&rarr;</span>
-          <div class="space-y-2">
-            <div class="flex items-center gap-2">
-              <span class="text-green-400 text-xs">Trivial &rarr;</span>
-              <span class="bg-green-500/10 text-green-300 px-3 py-1 rounded text-xs">Fix immediately</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-orange-400 text-xs">Non-trivial &rarr;</span>
-              <span class="bg-orange-500/10 text-orange-300 px-3 py-1 rounded text-xs">Link to natural resolution point</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Anti-Patterns -->
-      <div class="bg-slate-800 rounded-xl p-6 border border-red-500/20">
-        <h3 class="font-semibold text-red-400 mb-4">Anti-Patterns (Warnings)</h3>
-        <div class="grid sm:grid-cols-2 gap-3">
-          <div class="bg-red-500/5 border border-red-500/10 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 flex items-center gap-2 mb-1">
-              <i data-lucide="alert-triangle" class="w-3 h-3"></i> Implementation Anchoring
-            </div>
-            <div class="text-slate-400">Reading code instead of specs/handbook</div>
-          </div>
-          <div class="bg-red-500/5 border border-red-500/10 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 flex items-center gap-2 mb-1">
-              <i data-lucide="alert-triangle" class="w-3 h-3"></i> Spec Drift
-            </div>
-            <div class="text-slate-400">Updating code without updating spec</div>
-          </div>
-          <div class="bg-red-500/5 border border-red-500/10 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 flex items-center gap-2 mb-1">
-              <i data-lucide="alert-triangle" class="w-3 h-3"></i> Manual Types
-            </div>
-            <div class="text-slate-400">Writing TypeScript types instead of generating</div>
-          </div>
-          <div class="bg-red-500/5 border border-red-500/10 rounded-lg p-3 text-xs">
-            <div class="font-semibold text-red-300 flex items-center gap-2 mb-1">
-              <i data-lucide="alert-triangle" class="w-3 h-3"></i> Hardcoded Config
-            </div>
-            <div class="text-slate-400">Logic in code instead of config files</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- DETAIL PANEL: Tech Stack                                     -->
-  <!-- ============================================================ -->
-  <div id="panel-tech-stack" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-          <i data-lucide="code" class="w-6 h-6 text-orange-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Tech Stack</h2>
-          <p class="text-slate-400 text-sm">Current QBO implementation stack</p>
-        </div>
-      </div>
-
-      <div class="grid sm:grid-cols-2 gap-4">
-        <!-- Backend -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-orange-500/20">
-          <div class="flex items-center gap-2 mb-4">
-            <i data-lucide="server" class="w-4 h-4 text-orange-400"></i>
-            <h3 class="font-semibold text-orange-400">Backend</h3>
-          </div>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">Python 3.11+</span>
-              <span class="tag bg-orange-500/20 text-orange-300">Runtime</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">FastAPI</span>
-              <span class="tag bg-orange-500/20 text-orange-300">Web</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">Click</span>
-              <span class="tag bg-orange-500/20 text-orange-300">CLI</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">python-quickbooks</span>
-              <span class="tag bg-orange-500/20 text-orange-300">QBO API</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Database -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-green-500/20">
-          <div class="flex items-center gap-2 mb-4">
-            <i data-lucide="database" class="w-4 h-4 text-green-400"></i>
-            <h3 class="font-semibold text-green-400">Database</h3>
-          </div>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">PostgreSQL</span>
-              <span class="tag bg-green-500/20 text-green-300">Production</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">JSON Files</span>
-              <span class="tag bg-slate-500/20 text-slate-300">Local Dev</span>
-            </div>
-            <div class="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-700/30">
-              Stores: OAuth tokens, classifications, disposals, audit trail
-            </div>
-          </div>
-        </div>
-
-        <!-- Infrastructure -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-purple-500/20">
-          <div class="flex items-center gap-2 mb-4">
-            <i data-lucide="cloud" class="w-4 h-4 text-purple-400"></i>
-            <h3 class="font-semibold text-purple-400">Infrastructure</h3>
-          </div>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">Railway</span>
-              <span class="tag bg-purple-500/20 text-purple-300">Hosting</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">Railway PostgreSQL</span>
-              <span class="tag bg-purple-500/20 text-purple-300">Database</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">OAuth 2.0 (Intuit)</span>
-              <span class="tag bg-purple-500/20 text-purple-300">Auth</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Validation & Dev -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-red-500/20">
-          <div class="flex items-center gap-2 mb-4">
-            <i data-lucide="shield-check" class="w-4 h-4 text-red-400"></i>
-            <h3 class="font-semibold text-red-400">Validation &amp; Dev</h3>
-          </div>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">jsonschema (Python)</span>
-              <span class="tag bg-red-500/20 text-red-300">Schema</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">pytest</span>
-              <span class="tag bg-red-500/20 text-red-300">Tests</span>
-            </div>
-            <div class="flex justify-between items-start">
-              <span class="text-slate-300">validate-specs.py</span>
-              <span class="tag bg-red-500/20 text-red-300">CI Gate</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Project Structure -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50 sm:col-span-2">
-          <div class="flex items-center gap-2 mb-4">
-            <i data-lucide="folder-tree" class="w-4 h-4 text-slate-400"></i>
-            <h3 class="font-semibold text-slate-300">Project Structure</h3>
-          </div>
-          <div class="grid sm:grid-cols-2 gap-4">
-            <pre class="text-xs text-slate-400 bg-slate-900/50 rounded-lg p-4 overflow-x-auto"><code>src/qbo/
-  cli.py          # Click commands
-  auth.py         # OAuth management
-  client.py       # QBO API wrapper
-  db.py           # Token/data storage
-  web.py          # FastAPI + OAuth callback
-  triage.py       # Classification engine
-  bpp.py          # BPP report generation
-  account_review.py
-  config.py       # Config loader
-  memo.py         # BPP memo parsing
-  templates/      # Jinja2 HTML
-  static/         # CSS, JS</code></pre>
-            <pre class="text-xs text-slate-400 bg-slate-900/50 rounded-lg p-4 overflow-x-auto"><code>specs/
-  meta/           # Meta-schemas
-  data/           # Instance data (stories, flows...)
-  constitution.json
-  domain-data.json
-config/
-  bpp-config.json # Runtime rules
-  bpp-config.schema.json
-schema/
-  bpp-2026-schema.json  # Filing output</code></pre>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- DETAIL PANEL: CI/CD Pipeline                                 -->
-  <!-- ============================================================ -->
-  <div id="panel-cicd" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-          <i data-lucide="git-branch" class="w-6 h-6 text-orange-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">CI/CD Pipeline</h2>
-          <p class="text-slate-400 text-sm">6-stage automated pipeline with validation gates</p>
-        </div>
-      </div>
-
-      <!-- Pipeline Stages -->
-      <div class="space-y-3">
-        <!-- Stage 1 -->
-        <div class="bg-slate-800 rounded-xl p-5 border border-blue-500/20 flex flex-col sm:flex-row items-start gap-4">
-          <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center shrink-0">
-            <span class="text-blue-400 font-bold text-sm">1</span>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-blue-300">Push to GitHub</h4>
-            <p class="text-xs text-slate-400 mt-1">Trigger GitHub Actions workflow on push or PR</p>
-          </div>
-          <div class="tag bg-blue-500/20 text-blue-300">Trigger</div>
-        </div>
-
-        <!-- Stage 2 -->
-        <div class="bg-slate-800 rounded-xl p-5 border border-red-500/20 flex flex-col sm:flex-row items-start gap-4">
-          <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center shrink-0">
-            <span class="text-red-400 font-bold text-sm">2</span>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-red-300">Validation Gate</h4>
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span class="tag bg-red-500/10 text-red-300 border border-red-500/20">validate-specs.py</span>
-              <span class="tag bg-red-500/10 text-red-300 border border-red-500/20">Schema conformance</span>
-              <span class="tag bg-red-500/10 text-red-300 border border-red-500/20">Bidir traceability</span>
-            </div>
-          </div>
-          <div class="tag bg-red-500/20 text-red-300">Gate</div>
-        </div>
-
-        <!-- Stage 3 -->
-        <div class="bg-slate-800 rounded-xl p-5 border border-orange-500/20 flex flex-col sm:flex-row items-start gap-4">
-          <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
-            <span class="text-orange-400 font-bold text-sm">3</span>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-orange-300">Test Gate</h4>
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span class="tag bg-orange-500/10 text-orange-300 border border-orange-500/20">pytest (unit)</span>
-              <span class="tag bg-orange-500/10 text-orange-300 border border-orange-500/20">Integration tests</span>
-            </div>
-          </div>
-          <div class="tag bg-orange-500/20 text-orange-300">Gate</div>
-        </div>
-
-        <!-- Stage 4 -->
-        <div class="bg-slate-800 rounded-xl p-5 border border-orange-500/20 flex flex-col sm:flex-row items-start gap-4">
-          <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
-            <span class="text-orange-400 font-bold text-sm">4</span>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-orange-300">Build</h4>
-            <p class="text-xs text-slate-400 mt-1">Docker multi-stage build &rarr; Push image to registry</p>
-          </div>
-          <div class="tag bg-orange-500/20 text-orange-300">Build</div>
-        </div>
-
-        <!-- Stage 5 -->
-        <div class="bg-slate-800 rounded-xl p-5 border border-purple-500/20 flex flex-col sm:flex-row items-start gap-4">
-          <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0">
-            <span class="text-purple-400 font-bold text-sm">5</span>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-purple-300">Deploy</h4>
-            <p class="text-xs text-slate-400 mt-1">Railway deployment &rarr; Health check (/health endpoint)</p>
-          </div>
-          <div class="tag bg-purple-500/20 text-purple-300">Deploy</div>
-        </div>
-
-        <!-- Stage 6 -->
-        <div class="bg-slate-800 rounded-xl p-5 border border-purple-500/20 flex flex-col sm:flex-row items-start gap-4">
-          <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0">
-            <span class="text-purple-400 font-bold text-sm">6</span>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-purple-300">Post-Deploy</h4>
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span class="tag bg-purple-500/10 text-purple-300 border border-purple-500/20">Smoke tests</span>
-              <span class="tag bg-purple-500/10 text-purple-300 border border-purple-500/20">Monitoring</span>
-              <span class="tag bg-purple-500/10 text-purple-300 border border-purple-500/20">Notifications</span>
-            </div>
-          </div>
-          <div class="tag bg-purple-500/20 text-purple-300">Verify</div>
-        </div>
-      </div>
-
-      <!-- Branch Strategy -->
-      <div class="mt-6 bg-slate-800/50 rounded-xl p-6 border border-slate-700/30">
-        <h4 class="text-sm font-semibold text-slate-300 mb-3">Branch Strategy</h4>
-        <div class="grid sm:grid-cols-3 gap-3 text-xs">
-          <div class="bg-slate-900/50 rounded-lg p-3">
-            <div class="font-mono text-green-300 mb-1">main</div>
-            <div class="text-slate-400">Auto-deploy to production</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3">
-            <div class="font-mono text-blue-300 mb-1">feature/*</div>
-            <div class="text-slate-400">Preview environments</div>
-          </div>
-          <div class="bg-slate-900/50 rounded-lg p-3">
-            <div class="font-mono text-orange-300 mb-1">Pull Requests</div>
-            <div class="text-slate-400">Validation + tests only</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- DETAIL PANEL: Operations Loop                                -->
-  <!-- ============================================================ -->
-  <div id="panel-operations" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-          <i data-lucide="activity" class="w-6 h-6 text-purple-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Operations Loop</h2>
-          <p class="text-slate-400 text-sm">Continuous monitor &rarr; identify &rarr; evolve &rarr; deploy cycle</p>
-        </div>
-      </div>
-
-      <!-- Circular Flow -->
-      <div class="bg-slate-800 rounded-xl p-6 border border-purple-500/20 mb-6">
-        <h3 class="font-semibold text-purple-400 mb-4">Operations Cycle</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
-          <div class="bg-purple-500/10 rounded-lg p-4 text-center">
-            <i data-lucide="monitor" class="w-6 h-6 text-purple-400 mx-auto mb-2"></i>
-            <div class="text-xs font-semibold text-purple-300">1. Monitor</div>
-            <div class="text-xs text-slate-400 mt-1">Dashboard, alerts, user feedback</div>
-          </div>
-          <div class="bg-blue-500/10 rounded-lg p-4 text-center">
-            <i data-lucide="search" class="w-6 h-6 text-blue-400 mx-auto mb-2"></i>
-            <div class="text-xs font-semibold text-blue-300">2. Identify Need</div>
-            <div class="text-xs text-slate-400 mt-1">New feature, bug, schema evolution</div>
-          </div>
-          <div class="bg-green-500/10 rounded-lg p-4 text-center">
-            <i data-lucide="file-edit" class="w-6 h-6 text-green-400 mx-auto mb-2"></i>
-            <div class="text-xs font-semibold text-green-300">3. Schema Update</div>
-            <div class="text-xs text-slate-400 mt-1">Modify specs &rarr; validate &rarr; propagate</div>
-          </div>
-          <div class="bg-orange-500/10 rounded-lg p-4 text-center">
-            <i data-lucide="code" class="w-6 h-6 text-orange-400 mx-auto mb-2"></i>
-            <div class="text-xs font-semibold text-orange-300">4. Implement</div>
-            <div class="text-xs text-slate-400 mt-1">Code changes &rarr; tests &rarr; PR</div>
-          </div>
-          <div class="bg-purple-500/10 rounded-lg p-4 text-center">
-            <i data-lucide="rocket" class="w-6 h-6 text-purple-400 mx-auto mb-2"></i>
-            <div class="text-xs font-semibold text-purple-300">5. Deploy</div>
-            <div class="text-xs text-slate-400 mt-1">CI/CD &rarr; health checks &rarr; live</div>
-          </div>
-        </div>
-        <div class="text-center text-xs text-slate-500 mt-3">
-          &larr; Continuous loop: Deploy feeds back into Monitor &rarr;
-        </div>
-      </div>
-
-      <!-- Schema Evolution -->
-      <div class="bg-slate-800 rounded-xl p-6 border border-green-500/20 mb-6">
-        <h3 class="font-semibold text-green-400 mb-4">Schema Evolution Pattern</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div class="space-y-2">
-            <div class="font-semibold text-green-300">Domain Schema Change</div>
-            <div class="text-slate-500">&darr;</div>
-            <div class="bg-green-500/10 rounded px-2 py-1 text-green-300">flows.json</div>
-            <div class="bg-green-500/10 rounded px-2 py-1 text-green-300">user-stories.json</div>
-          </div>
-          <div class="space-y-2">
-            <div class="font-semibold text-blue-300">Regenerate Types</div>
-            <div class="text-slate-500">&darr;</div>
-            <div class="bg-blue-500/10 rounded px-2 py-1 text-blue-300">TypeScript types</div>
-            <div class="bg-blue-500/10 rounded px-2 py-1 text-blue-300">Ajv validators</div>
-          </div>
-          <div class="space-y-2">
-            <div class="font-semibold text-orange-300">Update Tests</div>
-            <div class="text-slate-500">&darr;</div>
-            <div class="bg-orange-500/10 rounded px-2 py-1 text-orange-300">pytest</div>
-            <div class="bg-orange-500/10 rounded px-2 py-1 text-orange-300">Integration</div>
-          </div>
-          <div class="space-y-2">
-            <div class="font-semibold text-purple-300">Deploy</div>
-            <div class="text-slate-500">&darr;</div>
-            <div class="bg-purple-500/10 rounded px-2 py-1 text-purple-300">Production</div>
-            <div class="bg-purple-500/10 rounded px-2 py-1 text-purple-300">(Live)</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Security Model -->
-      <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50">
-        <h3 class="font-semibold text-slate-300 mb-4">Security &amp; Data Governance</h3>
-        <div class="grid sm:grid-cols-2 gap-4 text-sm">
-          <div>
-            <div class="text-xs font-semibold text-red-300 mb-2 uppercase tracking-wider">Security Model</div>
-            <div class="space-y-1 text-xs text-slate-400">
-              <div>OAuth 2.0 + session-based auth</div>
-              <div>RBAC: Owner / Bookkeeper / Read-Only</div>
-              <div>30-min session timeout, 8h absolute</div>
-              <div>5 auth attempts/min, 100 API req/min</div>
-              <div>CSP headers, CORS allowlist, X-Frame DENY</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Properties</div>
+            <div style="display:grid;gap:4px;">
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+                <code style="color:var(--accent-cyan);min-width:120px;">id</code>
+                <span style="color:var(--text-muted);">string</span>
+                <span class="tag tag-coral" style="margin-left:auto;">required</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+                <code style="color:var(--accent-cyan);min-width:120px;">name</code>
+                <span style="color:var(--text-muted);">string</span>
+                <span class="tag tag-coral" style="margin-left:auto;">required</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+                <code style="color:var(--accent-cyan);min-width:120px;">status</code>
+                <span style="color:var(--text-muted);">enum</span>
+                <span class="annotation ann-hint" style="margin-left:auto;">x-ui-hints: badge</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+                <code style="color:var(--accent-cyan);min-width:120px;">assignee</code>
+                <span style="color:var(--text-muted);">ref</span>
+                <span class="annotation ann-ref" style="margin-left:auto;">x-reference: vendor</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+                <code style="color:var(--accent-cyan);min-width:120px;">dependencies</code>
+                <span style="color:var(--text-muted);">ref[]</span>
+                <span class="annotation ann-bidir" style="margin-left:auto;">x-bidirectional</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
+                <code style="color:var(--accent-cyan);min-width:120px;">estimatedCost</code>
+                <span style="color:var(--text-muted);">currency</span>
+                <span class="annotation ann-ctx" style="margin-left:auto;">x-context</span>
+              </div>
             </div>
           </div>
           <div>
-            <div class="text-xs font-semibold text-green-300 mb-2 uppercase tracking-wider">Data Governance</div>
-            <div class="space-y-1 text-xs text-slate-400">
-              <div>System of Record: QBO (query, never modify)</div>
-              <div>OAuth tokens: 100-day retention</div>
-              <div>Reports: 7-year retention (NC tax law)</div>
-              <div>Full audit trail: who, what, when, confidence</div>
-            </div>
+            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">x-ui-hints (Layout)</div>
+            <pre style="font-size:0.7rem;color:var(--text-secondary);background:var(--bg-primary);padding:12px;border-radius:var(--radius-md);line-height:1.5;">{
+  "sections": [
+    {
+      "title": "Details",
+      "fields": ["name", "category", "priority"]
+    },
+    {
+      "title": "Schedule",
+      "fields": ["start", "end", "estimatedDays"]
+    },
+    {
+      "title": "Assignment",
+      "fields": ["assignee", "dependencies"]
+    }
+  ],
+  "fieldDisplay": {
+    "status": { "widget": "badge" },
+    "category": { "widget": "badge" },
+    "assignee": { "widget": "vendor-picker" }
+  }
+}</pre>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
   <!-- ============================================================ -->
-  <!-- DETAIL PANEL: Future Vision                                  -->
+  <!-- TAB: AGENTS & PLUGINS                                        -->
   <!-- ============================================================ -->
-  <div id="panel-future" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
+  <div id="tab-agents" class="tab-panel">
+    <div class="container">
 
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-          <i data-lucide="telescope" class="w-6 h-6 text-purple-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Future Vision</h2>
-          <p class="text-slate-400 text-sm">Pattern evolution roadmap</p>
-        </div>
+      <!-- Agent Orchestra -->
+      <div class="section-header">
+        <h2>The Agent Orchestra</h2>
+        <p>AI agents that operate the schema system — not tools, but team members</p>
       </div>
 
-      <div class="space-y-4">
-        <!-- Current -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-green-500/30">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-              <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-green-400">Current State</h3>
-              <span class="text-xs text-slate-500">Now</span>
-            </div>
-          </div>
-          <div class="ml-11 text-sm text-slate-300 space-y-1">
-            <div>1 pattern: <span class="text-green-300">Schema-Driven</span></div>
-            <div>1 project: <span class="text-green-300">QBO Integration</span></div>
-            <div>Manual pattern selection</div>
-          </div>
-        </div>
-
-        <!-- Near-Term -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-blue-500/30">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-              <i data-lucide="target" class="w-4 h-4 text-blue-400"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-blue-400">Near-Term: Pattern Library</h3>
-              <span class="text-xs text-slate-500">3&ndash;6 months &middot; <a href="https://github.com/whitedoeinn/dev-plugins-workflow/issues/86" class="text-blue-400 hover:underline" target="_blank" rel="noopener">#86</a></span>
+      <div class="card-grid card-grid-3" style="margin-bottom: 32px;">
+        <div class="agent-card">
+          <div class="agent-avatar" style="background:linear-gradient(135deg, rgba(0,229,204,0.2), rgba(0,229,204,0.05)); color:var(--accent-cyan);">R</div>
+          <div>
+            <div class="agent-name">Reid</div>
+            <div class="agent-machine">Hart (Mac Mini M4)</div>
+            <div class="agent-role">Strategic partner, orchestrator, memory keeper. Coordinates all agent work and maintains institutional context.</div>
+            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="tag tag-cyan">orchestrator</span>
+              <span class="tag tag-cyan">memory</span>
             </div>
           </div>
-          <div class="ml-11 text-sm text-slate-300 space-y-1">
-            <div>Multiple patterns: Schema-Driven + Event-Driven + CQRS + Microservices</div>
-            <div>CLI selection: <code class="text-blue-300 text-xs">/wdi:workflow-feature "name" --pattern schema-driven</code></div>
-            <div>Each pattern has documented infographic + scaffolding</div>
-          </div>
         </div>
-
-        <!-- Medium-Term -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-purple-500/30">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-              <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold text-purple-400">Medium-Term: UX Composability</h3>
-              <span class="text-xs text-slate-500">6&ndash;12 months &middot; <a href="https://github.com/whitedoeinn/dev-plugins-workflow/issues/108" class="text-purple-400 hover:underline" target="_blank" rel="noopener">#108</a></span>
+        <div class="agent-card">
+          <div class="agent-avatar" style="background:linear-gradient(135deg, rgba(96,165,250,0.2), rgba(96,165,250,0.05)); color:var(--info);">W</div>
+          <div>
+            <div class="agent-name">Wren</div>
+            <div class="agent-machine">dave-mac</div>
+            <div class="agent-role">Research and synthesis. Deep dives into documentation, competitive analysis, and technical exploration.</div>
+            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="tag tag-blue">research</span>
+              <span class="tag tag-blue">synthesis</span>
             </div>
           </div>
-          <div class="ml-11 text-sm text-slate-300 space-y-1">
-            <div>Design Language Library: Precision, Warmth, Sophistication, Boldness, Utility, Data</div>
-            <div>Fuzzy intent &rarr; Concrete design tokens</div>
-            <div>Composable: <code class="text-purple-300 text-xs">--pattern schema-driven --ux warmth</code></div>
-          </div>
         </div>
-
-        <!-- Long-Term -->
-        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/30">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-full bg-slate-500/20 flex items-center justify-center">
-              <i data-lucide="globe" class="w-4 h-4 text-slate-400"></i>
+        <div class="agent-card">
+          <div class="agent-avatar" style="background:linear-gradient(135deg, rgba(251,191,36,0.2), rgba(251,191,36,0.05)); color:var(--warning);">T</div>
+          <div>
+            <div class="agent-name">Todd</div>
+            <div class="agent-machine">tonias-laptop</div>
+            <div class="agent-role">Tonia's partner for hospitality operations, recipes, menu planning, and guest experience.</div>
+            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="tag tag-amber">planned</span>
+              <span class="tag tag-amber">hospitality</span>
             </div>
-            <div>
-              <h3 class="font-semibold text-slate-300">Long-Term</h3>
-              <span class="text-xs text-slate-500">12+ months</span>
-            </div>
-          </div>
-          <div class="ml-11 text-sm text-slate-400 space-y-1">
-            <div>Pattern Marketplace</div>
-            <div>Multi-Pattern Projects</div>
-            <div>Educational component</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- DETAIL PANEL: Testing Strategy                               -->
-  <!-- ============================================================ -->
-  <div id="panel-testing" class="detail-panel">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <button class="back-btn flex items-center gap-2 text-sm text-slate-400 mb-6 px-3 py-2 rounded-lg" onclick="backToMain()" aria-label="Back to overview">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
-      </button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
-          <i data-lucide="flask-conical" class="w-6 h-6 text-red-400"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Testing Strategy</h2>
-          <p class="text-slate-400 text-sm">4-layer pyramid: validation &rarr; unit &rarr; integration &rarr; E2E</p>
-        </div>
-      </div>
-
-      <!-- Testing Pyramid -->
-      <div class="space-y-3 mb-8">
-        <!-- E2E (narrowest) -->
-        <div class="pyramid-level bg-slate-800 rounded-xl p-5 border border-purple-500/20 max-w-md mx-auto">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-semibold text-purple-300 text-sm">E2E Tests</h4>
-            <span class="tag bg-purple-500/20 text-purple-300">Top</span>
-          </div>
-          <div class="text-xs text-slate-400 space-y-1">
-            <div>Critical user flows only (must-have stories)</div>
-            <div>Tool: <span class="text-purple-300">Playwright</span></div>
-            <div>When: CI/CD + pre-deploy</div>
-          </div>
-        </div>
-
-        <!-- Integration -->
-        <div class="pyramid-level bg-slate-800 rounded-xl p-5 border border-orange-500/20 max-w-lg mx-auto">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-semibold text-orange-300 text-sm">Integration Tests</h4>
-            <span class="tag bg-orange-500/20 text-orange-300">Layer 3</span>
-          </div>
-          <div class="text-xs text-slate-400 space-y-1">
-            <div>API endpoints + database interactions</div>
-            <div>Tool: <span class="text-orange-300">pytest + httpx</span></div>
-            <div>When: CI/CD &middot; All routes covered</div>
-          </div>
-        </div>
-
-        <!-- Unit -->
-        <div class="pyramid-level bg-slate-800 rounded-xl p-5 border border-green-500/20 max-w-xl mx-auto">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-semibold text-green-300 text-sm">Unit Tests</h4>
-            <span class="tag bg-green-500/20 text-green-300">Layer 2</span>
-          </div>
-          <div class="text-xs text-slate-400 space-y-1">
-            <div>Functions, modules, business logic</div>
-            <div>Tool: <span class="text-green-300">pytest</span></div>
-            <div>When: CI/CD + local dev &middot; 80% coverage target</div>
-          </div>
-        </div>
-
-        <!-- Validation (widest) -->
-        <div class="pyramid-level bg-slate-800 rounded-xl p-5 border border-red-500/20 max-w-2xl mx-auto">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-semibold text-red-300 text-sm">Validation Tests</h4>
-            <span class="tag bg-red-500/20 text-red-300">Base (widest)</span>
-          </div>
-          <div class="text-xs text-slate-400 space-y-1">
-            <div>Schema conformance, bidirectional traceability, config validation</div>
-            <div>Tool: <span class="text-red-300">Python + jsonschema + validate-specs.py</span></div>
-            <div>When: Pre-commit + CI/CD &middot; 100% coverage</div>
           </div>
         </div>
       </div>
 
-      <!-- Principles -->
-      <div class="bg-slate-800 rounded-xl p-6 border border-slate-700/50">
-        <h3 class="font-semibold text-slate-300 mb-4">Testing Principles</h3>
-        <div class="grid sm:grid-cols-3 gap-4">
-          <div class="bg-slate-900/50 rounded-lg p-4">
-            <div class="text-sm font-semibold text-blue-300 mb-2">Test the Contract</div>
-            <div class="text-xs text-slate-400">Test schemas (the what), not implementation (the how). If the schema is valid, the output is correct.</div>
+      <!-- Agent Data Flows -->
+      <div class="card" style="margin-bottom: 32px; text-align: center; padding: 32px;">
+        <div class="card-title" style="text-align: left;">Agent Data Flows</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:16px;">
+          <div style="padding:12px 20px;background:rgba(0,229,204,0.08);border:1px solid rgba(0,229,204,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:var(--accent-cyan);font-weight:600;">Agents</div>
+          <div style="color:var(--text-muted);">&#8596;</div>
+          <div style="padding:12px 20px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:var(--info);font-weight:600;">Centralized Learnings</div>
+          <div style="color:var(--text-muted);">&#8596;</div>
+          <div style="padding:12px 20px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:var(--warning);font-weight:600;">Repo-Specific Data</div>
+          <div style="color:var(--text-muted);">&#8596;</div>
+          <div style="padding:12px 20px;background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:#c084fc;font-weight:600;">Compounding Skills</div>
+        </div>
+        <div style="margin-top:12px;font-size:0.7rem;color:var(--text-muted);">Every agent reads from and writes to shared learnings — knowledge compounds across sessions and machines</div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- Plugin Ecosystem -->
+      <div class="section-header">
+        <h2>Plugin Ecosystem</h2>
+        <p>Extending the development system with composable capabilities</p>
+      </div>
+
+      <div class="card-grid card-grid-3">
+        <!-- Core -->
+        <div class="plugin-card" style="border-left: 3px solid var(--accent-cyan);">
+          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Core</div>
+          <div class="plugin-name" style="color:var(--accent-cyan);">dev-plugins-workflow</div>
+          <div class="plugin-desc">The foundation. Workflow automation, feature lifecycle, commit quality gates, documentation sync.</div>
+          <div style="margin-top:8px;">
+            <span class="tag tag-cyan">wdi:workflow-feature</span>
+            <span class="tag tag-cyan">wdi:workflow-commit</span>
           </div>
-          <div class="bg-slate-900/50 rounded-lg p-4">
-            <div class="text-sm font-semibold text-red-300 mb-2">Fail Fast, Fail Loud</div>
-            <div class="text-xs text-slate-400">Validation failures block the pipeline immediately. No silent errors, no soft warnings.</div>
+        </div>
+
+        <!-- 3rd Party -->
+        <div class="plugin-card" style="border-left: 3px solid var(--info);">
+          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Critical 3rd Party</div>
+          <div class="plugin-name" style="color:var(--info);">Compound Engineering</div>
+          <div class="plugin-desc">Learnings compounding, multi-agent reviews, pattern recognition, deployment verification.</div>
+          <div style="margin-top:8px;">
+            <span class="tag tag-blue">compound</span>
+            <span class="tag tag-blue">review</span>
           </div>
-          <div class="bg-slate-900/50 rounded-lg p-4">
-            <div class="text-sm font-semibold text-green-300 mb-2">Tests as Documentation</div>
-            <div class="text-xs text-slate-400">E2E tests mirror user stories. Reading tests tells you what the system does.</div>
+        </div>
+
+        <div class="plugin-card" style="border-left: 3px solid #c084fc;">
+          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Critical 3rd Party</div>
+          <div class="plugin-name" style="color:#c084fc;">frontend-design</div>
+          <div class="plugin-desc">Production-grade UI generation with design tokens, avoiding generic AI aesthetics.</div>
+          <div style="margin-top:8px;">
+            <span class="tag" style="background:rgba(192,132,252,0.12);color:#c084fc;border:1px solid rgba(192,132,252,0.2);">design</span>
           </div>
         </div>
       </div>
+
+      <hr class="sep">
+
+      <!-- How It Compounds -->
+      <div class="section-header">
+        <h2>The Compounding Loop</h2>
+        <p>Every feature solved feeds the system that solves the next one</p>
+      </div>
+
+      <div class="card" style="padding: 32px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:16px;text-align:center;">
+          <div>
+            <div style="font-size:2rem;margin-bottom:8px;">&#128736;</div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Build Feature</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);">Schema &rarr; Implementation &rarr; Deploy</div>
+          </div>
+          <div>
+            <div style="font-size:2rem;margin-bottom:8px;">&#128218;</div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Document Learnings</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);">COMPOUND-LEARNINGS.md on issue close</div>
+          </div>
+          <div>
+            <div style="font-size:2rem;margin-bottom:8px;">&#129504;</div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Agents Absorb</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);">Centralized learnings &rarr; all agents</div>
+          </div>
+          <div>
+            <div style="font-size:2rem;margin-bottom:8px;">&#128640;</div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Next Feature Faster</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);">Patterns, pitfalls, and solutions pre-loaded</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:16px;font-size:0.7rem;color:var(--text-muted);border-top:1px dashed var(--border);padding-top:12px;">
+          &#8592; This is why a 2-person B&B can build production-grade software &#8594;
+        </div>
+      </div>
+
     </div>
   </div>
 
   <!-- ============================================================ -->
   <!-- FOOTER                                                       -->
   <!-- ============================================================ -->
-  <footer class="border-t border-slate-700/30 mt-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 text-center text-xs text-slate-500">
-      <div>Schema-Driven Development &middot; QBO Integration Experiment &middot; White Doe Inn</div>
-      <div class="mt-1">90-day lifecycle &middot; Graduation target: <code>business-ops/tools/qbo/</code></div>
+  <footer class="footer">
+    <div class="container">
+      <div>Enterprise Software @ WDI &middot; Schema-Driven Development &middot; Spec-Anchored</div>
+      <div style="margin-top:4px;">White Doe Inn &middot; Manteo, NC &middot; Built with specs, not vibes</div>
     </div>
   </footer>
 
@@ -1337,47 +1535,69 @@ schema/
   <!-- JAVASCRIPT                                                   -->
   <!-- ============================================================ -->
   <script>
-    // Initialize Lucide icons
-    document.addEventListener('DOMContentLoaded', function() {
-      lucide.createIcons();
-    });
-
-    // Panel navigation
-    function showPanel(panelId) {
-      document.getElementById('main-panel').style.display = 'none';
-      // Hide all detail panels
-      document.querySelectorAll('.detail-panel').forEach(function(p) {
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(function(p) {
         p.classList.remove('active');
       });
-      // Show target panel
-      var target = document.getElementById('panel-' + panelId);
-      if (target) {
-        target.classList.add('active');
-        // Re-initialize icons for the newly visible panel
-        lucide.createIcons();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        // Focus the back button for accessibility
-        var backBtn = target.querySelector('.back-btn');
-        if (backBtn) backBtn.focus();
+      document.querySelectorAll('.tab-btn').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      var panel = document.getElementById('tab-' + tabId);
+      if (panel) panel.classList.add('active');
+      // Find and activate the correct tab button
+      var buttons = document.querySelectorAll('.tab-btn');
+      var tabMap = { 'overview': 0, 'schemas': 1, 'flows': 2, 'erd': 3, 'agents': 4 };
+      if (tabMap[tabId] !== undefined && buttons[tabMap[tabId]]) {
+        buttons[tabMap[tabId]].classList.add('active');
       }
-    }
-
-    function backToMain() {
-      // Hide all detail panels
-      document.querySelectorAll('.detail-panel').forEach(function(p) {
-        p.classList.remove('active');
-      });
-      document.getElementById('main-panel').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Keyboard navigation
+    function toggleFlowDetail(detailId, trigger) {
+      var detail = document.getElementById(detailId);
+      if (detail) {
+        detail.classList.toggle('open');
+        if (trigger) trigger.classList.toggle('open');
+      }
+    }
+
+    function togglePopover(el, text) {
+      // Remove any existing popovers
+      document.querySelectorAll('.popover').forEach(function(p) { p.remove(); });
+
+      var pop = document.createElement('div');
+      pop.className = 'popover visible';
+      pop.textContent = text;
+
+      // Position near the element
+      var rect = el.getBoundingClientRect();
+      pop.style.position = 'fixed';
+      pop.style.top = (rect.bottom + 8) + 'px';
+      pop.style.left = Math.max(16, rect.left) + 'px';
+      document.body.appendChild(pop);
+
+      // Auto-dismiss
+      setTimeout(function() {
+        pop.classList.remove('visible');
+        setTimeout(function() { pop.remove(); }, 200);
+      }, 4000);
+
+      // Click elsewhere to dismiss
+      function dismiss(e) {
+        if (!pop.contains(e.target) && e.target !== el) {
+          pop.remove();
+          document.removeEventListener('click', dismiss);
+        }
+      }
+      setTimeout(function() {
+        document.addEventListener('click', dismiss);
+      }, 10);
+    }
+
+    // Keyboard nav
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        var activePanel = document.querySelector('.detail-panel.active');
-        if (activePanel) {
-          backToMain();
-        }
+        document.querySelectorAll('.popover').forEach(function(p) { p.remove(); });
       }
     });
   </script>
