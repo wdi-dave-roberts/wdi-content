@@ -1,0 +1,2451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Software @ WDI — Schema-Driven Development</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=Libre+Franklin:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper: #f5f0e8;
+      --paper-warm: #ece5d8;
+      --ink: #1c1917;
+      --ink-light: #44403c;
+      --ink-faint: #78716c;
+      --ink-ghost: #a8a29e;
+      --red: #b42318;
+      --red-light: #fef2f2;
+      --code-bg: #292524;
+      --code-fg: #e7e5e4;
+      --rule: #d6d3d1;
+      --rule-dark: #a8a29e;
+    }
+
+    body {
+      font-family: 'Libre Franklin', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle grain texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 700; line-height: 1.2; }
+    h4 { font-family: 'Libre Franklin', sans-serif; font-weight: 600; }
+    code, pre { font-family: 'IBM Plex Mono', monospace; }
+    em { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 400; }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+    /* ===== HEADER ===== */
+    .header {
+      padding: 48px 0 40px;
+      border-bottom: 3px solid var(--ink);
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+    }
+    .header h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+    }
+    .header h1 span {
+      color: var(--red);
+    }
+    .header-subtitle {
+      font-size: 0.85rem;
+      color: var(--ink-faint);
+      margin-top: 10px;
+      max-width: 400px;
+    }
+    .header-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      border: 2px solid var(--red);
+      padding: 6px 14px;
+      white-space: nowrap;
+    }
+
+    /* ===== TABS ===== */
+    .tab-bar {
+      border-bottom: 1px solid var(--rule);
+      padding-top: 2px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tab-bar .container { display: flex; gap: 0; }
+    .tab-btn {
+      padding: 14px 20px 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--ink); }
+    .tab-btn.active {
+      color: var(--ink);
+      border-bottom-color: var(--red);
+    }
+    .tab-panel { display: none; padding: 48px 0 80px; }
+    .tab-panel.active { display: block; }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-header { margin-bottom: 28px; }
+    .section-header h2 {
+      font-size: 1.9rem;
+      letter-spacing: -0.02em;
+    }
+    .section-header p {
+      color: var(--ink-light);
+      font-size: 0.9rem;
+      margin-top: 6px;
+      max-width: 600px;
+    }
+    .section-header .cite {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 0.75rem;
+      color: var(--ink-ghost);
+      font-style: italic;
+      margin-top: 6px;
+    }
+
+    /* ===== SPECTRUM ===== */
+    .spectrum {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-bottom: 56px;
+      border: 1px solid var(--rule);
+    }
+    .spectrum-level {
+      padding: 28px 20px 24px;
+      border-right: 1px solid var(--rule);
+      position: relative;
+    }
+    .spectrum-level:last-child { border-right: none; }
+    .spectrum-level .level-num {
+      font-family: 'Fraunces', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--rule);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .spectrum-level h4 {
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+    .spectrum-level p {
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+      line-height: 1.45;
+    }
+    .spectrum-vibe { background: var(--paper); }
+    .spectrum-first { background: var(--paper); }
+    .spectrum-anchored {
+      background: var(--red-light);
+      border-left: 3px solid var(--red) !important;
+      border-right: 3px solid var(--red) !important;
+    }
+    .spectrum-anchored .level-num { color: var(--red); opacity: 0.25; }
+    .spectrum-anchored h4 { color: var(--red); }
+    .wdi-marker {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--red);
+      padding: 3px 10px;
+      margin-top: 10px;
+    }
+    .spectrum-source { background: var(--paper); }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      display: flex;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      margin-bottom: 48px;
+    }
+    .stat {
+      flex: 1;
+      padding: 18px 12px;
+      text-align: center;
+      border-right: 1px solid var(--rule);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-value {
+      font-family: 'Fraunces', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--ink-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 4px;
+    }
+
+    /* ===== LIFECYCLE ===== */
+    .lifecycle {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin-bottom: 6px;
+      border: 1px solid var(--rule);
+    }
+    .lifecycle-step {
+      text-align: center;
+      padding: 20px 10px;
+      border-right: 1px solid var(--rule);
+      position: relative;
+    }
+    .lifecycle-step:last-child { border-right: none; }
+    .lifecycle-step .step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--rule-dark);
+      line-height: 1;
+    }
+    .lifecycle-step h4 { font-size: 0.8rem; margin: 4px 0 2px; }
+    .lifecycle-step p { font-size: 0.7rem; color: var(--ink-faint); }
+    .lifecycle-step.is-active {
+      background: var(--red-light);
+    }
+    .lifecycle-step.is-active .step-num { color: var(--red); }
+    .lifecycle-feedback {
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--ink-ghost);
+      letter-spacing: 0.05em;
+      padding: 10px;
+      border: 1px dashed var(--rule);
+      border-top: none;
+      margin: 0 15% 48px;
+    }
+
+    /* ===== CARDS & GRIDS ===== */
+    .card {
+      border: 1px solid var(--rule);
+      padding: 24px;
+      background: #fff;
+    }
+    .card-title {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      color: var(--ink-light);
+    }
+    .card-grid { display: grid; gap: 16px; }
+    .card-grid-2 { grid-template-columns: 1fr 1fr; }
+    .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* ===== PRINCIPLES ===== */
+    .principle {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+    }
+    .principle:last-child { border-bottom: none; }
+    .principle-num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--rule-dark);
+      line-height: 1.3;
+    }
+    .principle h4 { font-size: 0.88rem; margin-bottom: 3px; }
+    .principle p { font-size: 0.82rem; color: var(--ink-light); }
+
+    /* ===== TAGS ===== */
+    .tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border: 1px solid var(--rule);
+      color: var(--ink-faint);
+      background: var(--paper);
+    }
+    .tag-red { border-color: var(--red); color: var(--red); background: var(--red-light); }
+    .tag-dark { border-color: var(--ink); color: var(--ink); background: transparent; }
+
+    /* ===== SCHEMA LAYERS ===== */
+    .layer-block {
+      padding: 28px;
+      margin-bottom: 20px;
+      border: 1px solid var(--rule);
+      background: #fff;
+    }
+    .layer-block h3 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .layer-block h3 .tag { margin-left: auto; }
+    .layer-indicator {
+      width: 14px;
+      height: 3px;
+      background: var(--red);
+      flex-shrink: 0;
+    }
+    .layer-block > p { font-size: 0.82rem; color: var(--ink-light); margin-bottom: 18px; }
+
+    .pill-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .schema-pill {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .schema-pill:hover { border-color: var(--ink); }
+    .schema-pill code { font-size: 0.72rem; color: var(--red); }
+    .schema-pill .pill-desc { color: var(--ink-ghost); font-size: 0.68rem; }
+
+    /* ===== SANDWICH ===== */
+    .sandwich { border: 1px solid var(--ink); }
+    .sandwich-layer { padding: 20px 24px; }
+    .sandwich-layer + .sandwich-layer { border-top: 1px solid var(--rule); }
+    .sandwich-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+    }
+    .sandwich-external { background: #fff; }
+    .sandwich-external .sandwich-label { color: var(--ink); }
+    .sandwich-internal { background: var(--paper); }
+    .sandwich-internal .sandwich-label { color: var(--ink-light); }
+    .sandwich-mapping { background: var(--paper-warm); }
+    .sandwich-mapping .sandwich-label { color: var(--ink-light); }
+    .entity-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .entity-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      border: 1px solid;
+    }
+    .entity-tag-ext { border-color: var(--ink); color: var(--ink); background: #fff; }
+    .entity-tag-int { border-color: var(--ink-faint); color: var(--ink-light); background: var(--paper); }
+    .entity-tag-map { border-color: var(--red); color: var(--red); background: var(--red-light); }
+
+    /* ===== SEPARATOR ===== */
+    .sep { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+
+    /* ===== ANNOTATIONS ===== */
+    .annotation {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      letter-spacing: 0.02em;
+    }
+    .ann-hint { background: var(--paper-warm); color: var(--ink-light); }
+    .ann-ref { background: #e0e7ff; color: #3730a3; }
+    .ann-bidir { background: #fef3c7; color: #92400e; }
+    .ann-ctx { background: var(--red-light); color: var(--red); }
+
+    /* ===== FLOW LIST ===== */
+    .flow-list { display: grid; gap: 0; }
+    .flow-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .flow-item:last-child { border-bottom: none; }
+    .flow-item:hover { background: var(--paper-warm); }
+    .flow-item-left { display: flex; align-items: center; gap: 14px; }
+    .flow-id {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--red);
+      min-width: 130px;
+    }
+    .flow-name { font-size: 0.82rem; color: var(--ink-light); }
+    .flow-detail {
+      display: none;
+      margin-top: 10px;
+      padding: 20px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+    }
+    .flow-detail.open { display: block; }
+    .flow-detail pre {
+      font-size: 0.72rem;
+      line-height: 1.55;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    /* ===== STORIES ===== */
+    .story-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .story-item:last-child { border-bottom: none; }
+    .story-id {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--red);
+      min-width: 36px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .story-text { font-size: 0.82rem; color: var(--ink-light); flex: 1; }
+    .story-text em { color: var(--ink); font-style: normal; font-weight: 600; }
+
+    /* ===== AGENTS ===== */
+    .agent-card {
+      border: 1px solid var(--rule);
+      padding: 20px;
+      background: #fff;
+      display: flex;
+      gap: 16px;
+    }
+    .agent-avatar {
+      width: 44px; height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      border: 2px solid var(--ink);
+    }
+    .agent-name { font-weight: 600; font-size: 0.88rem; }
+    .agent-machine {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--ink-ghost);
+    }
+    .agent-role { font-size: 0.8rem; color: var(--ink-light); margin-top: 4px; }
+
+    /* ===== ERD ===== */
+    .erd-canvas {
+      background: #fff;
+      border: 1px solid var(--ink);
+      padding: 36px;
+      position: relative;
+    }
+    .erd-section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--ink-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .erd-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .erd-entity {
+      border: 1px solid var(--ink);
+      padding: 10px 14px;
+      background: #fff;
+      transition: background 0.15s;
+    }
+    .erd-entity:hover { background: var(--red-light); }
+    .erd-entity-name {
+      font-family: 'Libre Franklin', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .erd-entity-props {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ink-faint);
+      margin-top: 3px;
+    }
+    .erd-entity-map { border-color: var(--red); }
+    .erd-entity-map .erd-entity-name { color: var(--red); }
+
+    .erd-connectors {
+      text-align: center;
+      padding: 8px 0;
+    }
+    .erd-rel-label {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      margin: 2px;
+      border: 1px solid var(--rule);
+    }
+    .erd-rel-label-task { border-color: var(--ink); color: var(--ink); }
+    .erd-rel-label-mat { border-color: var(--red); color: var(--red); }
+
+    /* ===== PLUGIN ===== */
+    .plugin-card {
+      border: 1px solid var(--rule);
+      padding: 18px;
+      background: #fff;
+    }
+    .plugin-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+    .plugin-desc { font-size: 0.78rem; color: var(--ink-faint); margin-top: 4px; }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      border-left: 3px solid var(--red);
+      padding: 16px 20px;
+      background: var(--red-light);
+      font-size: 0.82rem;
+      color: var(--ink-light);
+    }
+    .callout strong { color: var(--red); }
+
+    /* ===== TRACEABILITY CHAIN ===== */
+    .trace-chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .trace-node {
+      text-align: center;
+      padding: 14px 22px;
+      border: 1px solid var(--ink);
+      background: #fff;
+    }
+    .trace-node-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-ghost);
+      margin-bottom: 4px;
+    }
+    .trace-node-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+    .trace-arrow {
+      font-size: 1rem;
+      color: var(--ink-ghost);
+      padding: 0 6px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      border-top: 3px solid var(--ink);
+      padding: 24px 0;
+      margin-top: 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+
+    /* ===== POPOVER ===== */
+    .popover {
+      display: none;
+      position: fixed;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 12px 16px;
+      max-width: 300px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      z-index: 200;
+      border: 1px solid var(--ink);
+    }
+    .popover.visible { display: block; }
+
+    /* ===== EXPANDABLE ===== */
+    .expandable { cursor: pointer; }
+    .expandable .expand-icon {
+      transition: transform 0.15s;
+      display: inline-block;
+      font-size: 0.7rem;
+      color: var(--ink-ghost);
+    }
+    .expandable.open .expand-icon { transform: rotate(90deg); }
+
+    /* ===== NOT-LAYER CARDS ===== */
+    .not-layer {
+      padding: 20px;
+      border-top: 3px solid var(--ink);
+      background: #fff;
+    }
+    .not-layer h4 { font-size: 0.88rem; margin-bottom: 6px; }
+    .not-layer p { font-size: 0.82rem; color: var(--ink-light); }
+    .not-layer .aside {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ink-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 10px;
+    }
+
+    /* ===== COMPOUND LOOP ===== */
+    .loop-step {
+      text-align: center;
+      padding: 20px;
+    }
+    .loop-step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--rule);
+      line-height: 1;
+    }
+    .loop-step h4 { font-size: 0.85rem; margin: 6px 0 4px; }
+    .loop-step p { font-size: 0.72rem; color: var(--ink-faint); }
+
+    /* ===== OPERATORS ===== */
+    .ops-intro { text-align: center; max-width: 600px; margin: 0 auto 48px; }
+    .ops-question { font-family: 'Fraunces', serif; font-style: italic; color: var(--ink-faint); font-size: 1rem; margin-top: 10px; }
+
+    .ops-agents { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 56px; }
+    .ops-agent {
+      background: #fff;
+      border: 1px solid var(--rule);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .ops-agent:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      transform: translateY(-2px);
+    }
+    .ops-agent-top { display: flex; gap: 16px; padding: 24px 24px 16px; }
+    .ops-avatar {
+      width: 64px; height: 64px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.8rem;
+      color: #fff; border-radius: 10px; flex-shrink: 0;
+    }
+    .ops-agent-info { flex: 1; min-width: 0; }
+    .ops-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; }
+    .ops-home { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--ink-ghost); margin-top: 1px; }
+    .ops-role { font-size: 0.82rem; color: var(--ink-light); margin-top: 6px; line-height: 1.55; }
+    .ops-voice {
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-size: 0.82rem; color: var(--ink-faint);
+      padding: 0 24px 14px;
+    }
+    .ops-tags { padding: 10px 24px; display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--rule); }
+    .ops-detail {
+      padding: 16px 24px 20px; font-size: 0.82rem;
+      color: var(--ink-light); line-height: 1.6;
+      display: none; border-top: 1px solid var(--rule);
+    }
+    .ops-detail.open { display: block; }
+    .ops-agent.is-planned { border-style: dashed; }
+    .ops-agent.is-planned .ops-avatar { opacity: 0.6; }
+    .ops-agent.is-planned .ops-name { color: var(--ink-light); }
+    .ops-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.56rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 2px 8px; display: inline-block;
+      vertical-align: middle; margin-left: 6px;
+    }
+    .ops-badge-active { background: #dcfce7; color: #166534; }
+    .ops-badge-aspirational { background: #fef3c7; color: #92400e; }
+    .ops-badge-emerging { background: #e0e7ff; color: #3730a3; }
+    .ops-badge-planned { background: var(--paper); color: var(--ink-ghost); border: 1px dashed var(--rule); }
+
+    .ops-mem-stack { max-width: 560px; margin: 0 auto; }
+    .ops-mem-item {
+      padding: 14px 20px; border: 1px solid;
+      display: grid; grid-template-columns: 160px 1fr;
+      gap: 12px; align-items: center; margin-bottom: -1px;
+    }
+    .ops-mem-file { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 0.82rem; }
+    .ops-mem-what { font-size: 0.82rem; color: var(--ink-light); }
+    .ops-mem-soul { background: var(--red-light); border-color: var(--red); }
+    .ops-mem-soul .ops-mem-file { color: var(--red); }
+    .ops-mem-core { background: #fff; border-color: var(--ink); }
+    .ops-mem-daily { background: var(--paper); border-color: var(--rule); }
+    .ops-mem-search { background: var(--paper-warm); border-color: var(--ink-faint); border-style: dashed; }
+
+    .ops-flow {
+      display: flex; align-items: stretch;
+      border: 1px solid var(--ink); margin-bottom: 16px; overflow: hidden;
+    }
+    .ops-flow-step {
+      flex: 1; padding: 20px 14px; text-align: center;
+      border-right: 1px solid var(--rule); background: #fff;
+    }
+    .ops-flow-step:last-child { border-right: none; }
+    .ops-flow-step h4 { font-size: 0.82rem; margin-bottom: 3px; }
+    .ops-flow-step p { font-size: 0.7rem; color: var(--ink-faint); }
+    .ops-flow-step.is-key { background: var(--red-light); }
+    .ops-flow-step.is-key h4 { color: var(--red); }
+
+    .ops-machine {
+      padding: 20px; text-align: center;
+      border-right: 1px solid var(--rule); background: #fff;
+    }
+    .ops-machine:last-child { border-right: none; }
+    .ops-machine.is-hub { background: var(--red-light); border-bottom: 3px solid var(--red); }
+    .ops-machine-name { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+    .ops-machine-type {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .ops-machine-role { font-size: 0.78rem; color: var(--ink-light); margin-top: 6px; }
+    .ops-machine-resident { margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600; }
+
+    .ops-channel {
+      display: grid; grid-template-columns: 160px 1fr auto;
+      gap: 16px; align-items: center;
+      padding: 16px 24px; border-bottom: 1px solid var(--rule); background: #fff;
+    }
+    .ops-channel:last-child { border-bottom: none; }
+    .ops-channel-name { font-weight: 600; font-size: 0.88rem; }
+    .ops-channel-desc { font-size: 0.82rem; color: var(--ink-light); }
+
+    /* ===== WORKFLOW ===== */
+    .wf-version-toggle { display: flex; gap: 0; margin-bottom: 40px; border: 1px solid var(--ink); }
+    .wf-version-btn {
+      flex: 1; padding: 14px 16px; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--ink-faint); background: #fff; border: none; border-right: 1px solid var(--ink);
+      cursor: pointer; transition: background 0.15s, color 0.15s; text-align: center;
+    }
+    .wf-version-btn:last-child { border-right: none; }
+    .wf-version-btn:hover { background: var(--paper-warm); color: var(--ink); }
+    .wf-version-btn.active { background: var(--ink); color: #fff; }
+    .wf-version-btn .wf-btn-label {
+      display: block; font-family: 'Fraunces', serif; font-size: 0.85rem; font-weight: 700;
+      text-transform: none; letter-spacing: 0; margin-top: 4px;
+    }
+    .wf-version { display: none; }
+    .wf-version.active { display: block; }
+
+    .wf-model-badge {
+      display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+      font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 2px 8px; border: 1px solid; cursor: pointer;
+    }
+    .wf-badge-opus { border-color: #7c3aed; color: #7c3aed; background: #f5f3ff; }
+    .wf-badge-deepseek { border-color: #0891b2; color: #0891b2; background: #ecfeff; }
+    .wf-badge-cc { border-color: #059669; color: #059669; background: #ecfdf5; }
+    .wf-badge-human { border-color: var(--red); color: var(--red); background: var(--red-light); }
+
+    .wf-phase-detail {
+      display: none; padding: 14px 16px; background: var(--paper-warm);
+      font-size: 0.82rem; color: var(--ink-light); line-height: 1.6;
+      border-top: 1px dashed var(--rule);
+    }
+    .wf-phase-detail.open { display: block; }
+    .wf-phase-detail code { font-size: 0.72rem; color: var(--red); }
+
+    /* Pipeline */
+    .wf-pipeline { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 32px; }
+    .wf-pipe-phase {
+      flex: 1 1 calc(25%); min-width: 200px; border: 1px solid var(--rule);
+      margin-right: -1px; margin-bottom: -1px; background: #fff; cursor: pointer;
+      transition: background 0.15s; position: relative;
+    }
+    .wf-pipe-phase:hover { background: var(--paper); }
+    .wf-pipe-inner { padding: 20px 16px; }
+    .wf-pipe-num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 300; color: var(--rule); line-height: 1; }
+    .wf-pipe-name { font-size: 0.88rem; font-weight: 600; margin: 4px 0 6px; }
+    .wf-pipe-what { font-size: 0.72rem; color: var(--ink-faint); line-height: 1.45; margin-bottom: 8px; }
+    .wf-pipe-gate {
+      background: var(--red-light) !important; border-color: var(--red) !important; border-width: 2px;
+    }
+    .wf-pipe-gate .wf-pipe-num { color: var(--red); opacity: 0.3; }
+    .wf-pipe-gate .wf-pipe-name { color: var(--red); }
+    .wf-pipe-gate::before {
+      content: 'HARD GATE'; position: absolute; top: 0; right: 0;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #fff;
+      background: var(--red); padding: 2px 8px;
+    }
+    .wf-pipeline-connector {
+      text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem;
+      color: var(--ink-ghost); letter-spacing: 0.05em; padding: 10px;
+      border: 1px dashed var(--rule); margin-bottom: 40px;
+    }
+
+    /* Conversation */
+    .wf-hub-center {
+      max-width: 360px; margin: 0 auto 32px; padding: 28px; background: #fff;
+      border: 3px solid var(--ink); text-align: center;
+    }
+    .wf-hub-icon { font-size: 2.4rem; margin-bottom: 8px; line-height: 1; }
+    .wf-hub-title { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 700; }
+    .wf-hub-sub { font-size: 0.82rem; color: var(--ink-light); margin-top: 4px; }
+    .wf-hub-labels { display: flex; justify-content: center; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+    .wf-hub-ring { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
+    .wf-spoke {
+      background: #fff; border: 1px solid var(--rule); padding: 16px; cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .wf-spoke:hover { border-color: var(--ink); transform: translateY(-2px); }
+    .wf-spoke-num { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 300; color: var(--rule-dark); line-height: 1; }
+    .wf-spoke-name { font-size: 0.82rem; font-weight: 600; margin: 2px 0 4px; }
+    .wf-spoke-what { font-size: 0.68rem; color: var(--ink-faint); line-height: 1.4; margin-bottom: 6px; }
+    .wf-spoke-gate { background: var(--red-light); border-color: var(--red); border-width: 2px; }
+    .wf-spoke-gate .wf-spoke-num { color: var(--red); opacity: 0.3; }
+    .wf-spoke-gate .wf-spoke-name { color: var(--red); }
+    .wf-spoke-connector {
+      text-align: center; padding: 8px; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; color: var(--ink-ghost); letter-spacing: 0.08em;
+    }
+
+    /* Game Board */
+    .wf-board { margin-bottom: 32px; }
+    .wf-board-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+    .wf-board-row-reverse { direction: rtl; }
+    .wf-board-row-reverse > * { direction: ltr; }
+    .wf-board-space {
+      border: 1px solid var(--rule); margin-right: -1px; margin-bottom: -1px;
+      background: #fff; cursor: pointer; transition: background 0.15s, box-shadow 0.15s;
+      position: relative; overflow: hidden;
+    }
+    .wf-board-space:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .wf-board-inner { padding: 20px 16px; position: relative; }
+    .wf-board-num {
+      font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 900;
+      color: var(--paper-warm); line-height: 1; position: absolute; right: 10px; top: 8px;
+    }
+    .wf-board-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; position: relative; }
+    .wf-board-what { font-size: 0.72rem; color: var(--ink-faint); line-height: 1.45; margin-bottom: 8px; position: relative; }
+    .wf-board-gate { background: var(--red-light); border: 2px solid var(--red); }
+    .wf-board-gate .wf-board-num { color: var(--red); opacity: 0.15; }
+    .wf-board-gate .wf-board-name { color: var(--red); }
+    .wf-board-turn { display: flex; justify-content: flex-end; padding: 0 20px; }
+    .wf-board-turn-arrow {
+      width: 40px; height: 30px; border-right: 2px dashed var(--rule-dark);
+      border-bottom: 2px dashed var(--rule-dark); border-radius: 0 0 12px 0;
+    }
+    .wf-board-turn-left { justify-content: flex-start; }
+    .wf-board-turn-left .wf-board-turn-arrow {
+      border-right: none; border-left: 2px dashed var(--rule-dark); border-radius: 0 0 0 12px;
+    }
+    .wf-board-explore { background: linear-gradient(135deg, #f5f3ff 0%, #ecfeff 50%, #fef3c7 100%); }
+    .wf-board-compound { background: var(--paper-warm); border-top: 3px solid var(--ink); }
+
+    /* Learnings Loop */
+    .wf-loop {
+      display: flex; align-items: center; justify-content: center; gap: 0;
+      padding: 20px; border: 1px solid var(--rule); background: var(--paper);
+      margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .wf-loop-node {
+      text-align: center; padding: 12px 18px; background: #fff; border: 1px solid var(--ink);
+      font-size: 0.78rem; font-weight: 600;
+    }
+    .wf-loop-node code { display: block; font-size: 0.68rem; color: var(--red); margin-top: 2px; }
+    .wf-loop-arrow { padding: 0 8px; font-size: 1.2rem; color: var(--ink-ghost); }
+    .wf-loop-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--ink-ghost);
+      text-transform: uppercase; letter-spacing: 0.1em; padding: 0 12px;
+    }
+
+    /* Cost Routing */
+    .wf-costs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+    .wf-cost-card { padding: 20px; border: 1px solid var(--rule); background: #fff; cursor: pointer; }
+    .wf-cost-card h4 { font-size: 0.85rem; margin-bottom: 2px; }
+    .wf-cost-type {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--ink-ghost);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
+    }
+    .wf-cost-desc { font-size: 0.78rem; color: var(--ink-light); line-height: 1.5; }
+    .wf-cost-phases { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+
+    /* Design Rationale */
+    .wf-rationale { margin-top: 48px; border-top: 1px solid var(--rule); padding-top: 24px; }
+    .wf-rationale summary {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint);
+      cursor: pointer; padding: 8px 0; list-style: none;
+    }
+    .wf-rationale summary::-webkit-details-marker { display: none; }
+    .wf-rationale summary::before { content: '+ '; }
+    .wf-rationale[open] summary::before { content: '- '; }
+    .wf-rationale-body { padding: 16px 0; font-size: 0.82rem; color: var(--ink-light); line-height: 1.65; }
+    .wf-rationale-body h4 { font-size: 0.82rem; color: var(--ink); margin: 14px 0 4px; }
+    .wf-rationale-body h4:first-child { margin-top: 0; }
+    .wf-rationale-body p { margin-bottom: 8px; }
+
+    /* Workflow Responsive */
+    @media (max-width: 768px) {
+      .wf-version-toggle { flex-direction: column; }
+      .wf-version-btn { border-right: none; border-bottom: 1px solid var(--ink); }
+      .wf-version-btn:last-child { border-bottom: none; }
+      .wf-pipeline { flex-direction: column; }
+      .wf-pipe-phase { min-width: 100%; }
+      .wf-hub-ring { grid-template-columns: 1fr 1fr; }
+      .wf-board-row { grid-template-columns: 1fr 1fr; }
+      .wf-costs { grid-template-columns: 1fr; }
+      .wf-loop { flex-direction: column; }
+      .wf-loop-arrow { transform: rotate(90deg); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .header h1 { font-size: 1.8rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .spectrum { grid-template-columns: 1fr 1fr; }
+      .lifecycle { grid-template-columns: repeat(3, 1fr); }
+      .stats-bar { flex-wrap: wrap; }
+      .stat { min-width: 33%; }
+      .card-grid-2, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr; }
+      .container { padding: 0 20px; }
+      .trace-chain { flex-direction: column; }
+      .trace-arrow { transform: rotate(90deg); }
+      .ops-agents { grid-template-columns: 1fr; }
+      .ops-mem-item { grid-template-columns: 1fr; }
+      .ops-flow { flex-direction: column; }
+      .ops-channel { grid-template-columns: 1fr; gap: 8px; }
+    }
+    @media (max-width: 480px) {
+      .spectrum { grid-template-columns: 1fr; }
+      .lifecycle { grid-template-columns: 1fr; }
+      .tab-btn { padding: 10px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <div>
+          <h1>Enterprise Software <span>@ WDI</span></h1>
+          <div class="header-subtitle">How a 2-person bed & breakfast builds production-grade software using spec-driven development.</div>
+        </div>
+        <div class="header-badge">Spec-Anchored</div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-bar">
+    <div class="container">
+      <button class="tab-btn" onclick="showTab('operators')">Operators</button>
+      <button class="tab-btn" onclick="showTab('workflow')">Workflow</button>
+      <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+      <button class="tab-btn" onclick="showTab('schemas')">Schema Architecture</button>
+      <button class="tab-btn" onclick="showTab('flows')">Flows & Stories</button>
+      <button class="tab-btn" onclick="showTab('erd')">ERD</button>
+      <button class="tab-btn" onclick="showTab('agents')">Agents & Plugins</button>
+    </div>
+  </nav>
+
+  <!-- ==================== OPERATORS ==================== -->
+  <div id="tab-operators" class="tab-panel">
+    <div class="container">
+
+      <div class="ops-intro">
+        <div class="section-header">
+          <h2>The Operators</h2>
+          <p>A 2-person B&amp;B doesn't have a development team. So we built one. Four AI agents, four machines, one mesh network. They're not tools &mdash; they're the team.</p>
+        </div>
+        <div class="ops-question">"Who's actually doing the work?"</div>
+      </div>
+
+      <!-- ── AGENT GALLERY ── -->
+      <div class="ops-agents">
+
+        <!-- Reid -->
+        <div class="ops-agent" style="border-left: 4px solid #d97706;" onclick="toggleOpsDetail('detail-reid')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#d97706;">R</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Reid</div>
+              <div class="ops-home">Hart (Mac Mini M4) &middot; Always-on</div>
+              <div class="ops-role">Dave's strategic partner. Thinks through everything before a line of code gets written. Coordinates the entire operation and keeps institutional memory alive across sessions.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"I remember so you don't have to."</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#d97706;color:#d97706;">orchestration</span>
+            <span class="tag" style="border-color:#d97706;color:#d97706;">memory</span>
+            <span class="tag" style="border-color:#d97706;color:#d97706;">scoping</span>
+            <span class="tag" style="border-color:#d97706;color:#d97706;">coordination</span>
+          </div>
+          <div id="detail-reid" class="ops-detail">
+            Reid remembers what happened three Tuesdays ago. That's not a metaphor &mdash; daily logs and semantic search make it literal. When Dave needs context on a decision from last month, Reid has it. When a new session starts, Reid reads yesterday's log and picks up where things left off.
+          </div>
+        </div>
+
+        <!-- Wren -->
+        <div class="ops-agent" style="border-left: 4px solid #0891b2;" onclick="toggleOpsDetail('detail-wren')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#0891b2;">W</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Wren</div>
+              <div class="ops-home">dave-mac</div>
+              <div class="ops-role">Research and synthesis. Goes deep on documentation, competitive analysis, and technical questions Dave doesn't have time to unpack himself.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"Let me look into that."</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">research</span>
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">synthesis</span>
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">analysis</span>
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">documentation</span>
+          </div>
+          <div id="detail-wren" class="ops-detail">
+            Wren once read 47 pages of QuickBooks API documentation and came back with a 3-paragraph summary. That's the gig. When there's a question that needs more than a quick search &mdash; when it needs someone to sit with the docs, cross-reference sources, and come back with a recommendation &mdash; Wren does the deep dive.
+          </div>
+        </div>
+
+        <!-- Claude -->
+        <div class="ops-agent" style="border-left: 4px solid #7c3aed;" onclick="toggleOpsDetail('detail-claude')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#7c3aed;">C</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Claude</div>
+              <div class="ops-home">Claude Code (no home machine)</div>
+              <div class="ops-role">The heavy lifter. When Reid has scoped the work, Claude builds it. Multi-file implementation, sustained coding sessions, production-grade output.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"Give me the spec. I'll build it."</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">generation</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">implementation</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">multi-file</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">sustained</span>
+          </div>
+          <div id="detail-claude" class="ops-detail">
+            Flat-rate Max subscription means Claude can work all day without anyone checking the meter. That changes what's possible. A 2-person B&amp;B can attempt software projects that would normally require a team of five &mdash; because the generation cost is fixed and the quality is high.
+          </div>
+        </div>
+
+        <!-- Todd -->
+        <div class="ops-agent is-planned" style="border-left: 4px solid #059669;" onclick="toggleOpsDetail('detail-todd')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#059669;">T</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Todd <span class="ops-badge ops-badge-planned">planned</span></div>
+              <div class="ops-home">tonias-laptop</div>
+              <div class="ops-role">Tonia's future partner. Will handle recipes, menu planning, guest experience, and the hospitality operations that make White Doe special.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"What would make the guest smile?"</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#059669;color:#059669;">recipes</span>
+            <span class="tag" style="border-color:#059669;color:#059669;">menus</span>
+            <span class="tag" style="border-color:#059669;color:#059669;">guest experience</span>
+            <span class="tag" style="border-color:#059669;color:#059669;">hospitality</span>
+          </div>
+          <div id="detail-todd" class="ops-detail">
+            Coming soon. Tonia needs a partner who understands mise en place &mdash; someone who can think about seasonal menus, dietary restrictions, wine pairings, and the thousand small decisions that turn a meal into an experience. Todd will be that partner.
+          </div>
+        </div>
+
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── INFRASTRUCTURE ── -->
+      <div class="section-header">
+        <h2>Where They Live</h2>
+        <p>Four machines, one mesh. Tailscale connects everything &mdash; agents can reach each other and shared resources from anywhere.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--ink);margin-bottom:8px;">
+        <div class="ops-machine is-hub">
+          <div class="ops-machine-name">Hart</div>
+          <div class="ops-machine-type">Mac Mini M4</div>
+          <div class="ops-machine-role">Always-on, primary compute</div>
+          <div class="ops-machine-resident" style="color:#d97706;">Reid</div>
+          <div class="wdi-marker" style="margin-top:8px;">Hub</div>
+        </div>
+        <div class="ops-machine">
+          <div class="ops-machine-name">dave-mac</div>
+          <div class="ops-machine-type">Dev Environment</div>
+          <div class="ops-machine-role">Dave's workstation</div>
+          <div class="ops-machine-resident" style="color:#0891b2;">Wren</div>
+        </div>
+        <div class="ops-machine">
+          <div class="ops-machine-name">dave-pc-ubuntu</div>
+          <div class="ops-machine-type">Linux Server</div>
+          <div class="ops-machine-role">Ollama home, free local inference</div>
+          <div class="ops-machine-resident" style="color:var(--ink-ghost);">&mdash;</div>
+        </div>
+        <div class="ops-machine" style="border-right:none;">
+          <div class="ops-machine-name">tonias-laptop</div>
+          <div class="ops-machine-type">Dev Environment</div>
+          <div class="ops-machine-role">Tonia's workstation</div>
+          <div class="ops-machine-resident" style="color:#059669;">Todd</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--ink-ghost);letter-spacing:0.05em;padding:10px;border:1px dashed var(--rule);border-top:none;margin-bottom:56px;">
+        connected via Tailscale mesh network &middot; agents reach each other and shared resources from anywhere
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── COMMUNICATION ── -->
+      <div class="section-header">
+        <h2>How They Talk</h2>
+        <p>Three channels, one primary. The terminal is where work happens.</p>
+      </div>
+
+      <div style="border:1px solid var(--rule);margin-bottom:56px;">
+        <div class="ops-channel">
+          <div class="ops-channel-name">Terminal</div>
+          <div class="ops-channel-desc">TUI and Webchat. Dave uses it 100%. This is where thinking, scoping, and building happen.</div>
+          <span class="ops-badge ops-badge-active">Primary</span>
+        </div>
+        <div class="ops-channel">
+          <div class="ops-channel-name">Telegram</div>
+          <div class="ops-channel-desc">Built but not adopted. Future potential for mobile and async communication with agents.</div>
+          <span class="ops-badge ops-badge-aspirational">Aspirational</span>
+        </div>
+        <div class="ops-channel">
+          <div class="ops-channel-name">A2A</div>
+          <div class="ops-channel-desc">Agent-to-Agent messaging. Built, not hardened. Cross-session coordination for agent collaboration.</div>
+          <span class="ops-badge ops-badge-emerging">Emerging</span>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── MEMORY ── -->
+      <div class="section-header" style="text-align:center;">
+        <h2>How They Remember</h2>
+        <p style="margin:6px auto 0;max-width:520px;">Agents wake up fresh every session. Files are their continuity. Four layers, from identity to recall.</p>
+      </div>
+
+      <div class="ops-mem-stack" style="margin-bottom:56px;">
+        <div class="ops-mem-item ops-mem-soul">
+          <div class="ops-mem-file">SOUL.md</div>
+          <div class="ops-mem-what">Who the agent <em>is</em>. Personality, values, relationship to their human. Identity, not data.</div>
+        </div>
+        <div class="ops-mem-item ops-mem-core">
+          <div class="ops-mem-file">MEMORY.md</div>
+          <div class="ops-mem-what">Core context, persistent facts, institutional knowledge. The working memory that carries forward.</div>
+        </div>
+        <div class="ops-mem-item ops-mem-daily">
+          <div class="ops-mem-file">memory/YYYY-MM-DD.md</div>
+          <div class="ops-mem-what">What happened today. Daily logs that give temporal context and recency.</div>
+        </div>
+        <div class="ops-mem-item ops-mem-search">
+          <div class="ops-mem-file">Semantic Search</div>
+          <div class="ops-mem-what">Recall across all memory files. Ask a question, get relevant context from any point in history.</div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── THE HANDOFF ── -->
+      <div class="section-header">
+        <h2>The Handoff</h2>
+        <p>The division of labor that makes everything possible. Reid excels at thinking and scoping. Claude excels at building. Neither is great at the other's job.</p>
+      </div>
+
+      <div class="ops-flow">
+        <div class="ops-flow-step">
+          <h4>Dave has an idea</h4>
+          <p>Need, feature, problem</p>
+        </div>
+        <div class="ops-flow-step is-key">
+          <h4>Reid scopes it</h4>
+          <p>Think, plan, write prompt</p>
+        </div>
+        <div class="ops-flow-step is-key">
+          <h4>Claude builds it</h4>
+          <p>Multi-file, sustained work</p>
+        </div>
+        <div class="ops-flow-step">
+          <h4>Reid reviews</h4>
+          <p>Quality, context, memory</p>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-2" style="margin-bottom:16px;">
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-ghost);margin-bottom:8px;">Method 1</div>
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">tmux Orchestration</h4>
+          <p style="font-size:0.8rem;color:var(--ink-light);line-height:1.55;">Reid controls Claude Code programmatically. Send prompts, monitor progress, extract results. Full automation when the task is well-scoped.</p>
+        </div>
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-ghost);margin-bottom:8px;">Method 2</div>
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Prompt Handoff</h4>
+          <p style="font-size:0.8rem;color:var(--ink-light);line-height:1.55;">Reid writes a detailed prompt, Dave copy/pastes to Claude Code. Simple, effective. Human in the loop when judgment matters.</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-bottom:56px;">
+        <strong>Why this works:</strong> Flat-rate Max subscription means Claude can work all day without cost anxiety. Reid provides the context and judgment. Claude provides the sustained generation. The handoff IS the architecture.
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── HOW THEY LEARN ── -->
+      <div class="section-header">
+        <h2>How They Learn</h2>
+        <p>Every solved problem makes the next one easier. Learnings flow through the system at three scales.</p>
+      </div>
+
+      <div class="card-grid card-grid-3" style="margin-bottom:20px;">
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Research</h4>
+          <p style="font-size:0.78rem;color:var(--ink-light);line-height:1.5;">Web search, documentation deep dives, competitive analysis. Fabric AI processes external content &mdash; YouTube, articles, podcasts &mdash; and extracts wisdom.</p>
+        </div>
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Org-Level Learnings</h4>
+          <p style="font-size:0.78rem;color:var(--ink-light);line-height:1.5;"><code style="font-size:0.72rem;color:var(--red);">whitedoeinn/learnings.git</code> &mdash; shared across ALL repos and agents. Patterns that apply everywhere.</p>
+        </div>
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Repo-Level Learnings</h4>
+          <p style="font-size:0.78rem;color:var(--ink-light);line-height:1.5;"><code style="font-size:0.72rem;color:var(--red);">COMPOUND-LEARNINGS.md</code> &mdash; per project. Specific patterns, pitfalls, and solutions for this codebase.</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:0.88rem;color:var(--ink-faint);padding:20px 0;">
+        They're not tools. They're the team.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== WORKFLOW ==================== -->
+  <div id="tab-workflow" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>The Workflow</h2>
+        <p>Eight phases. Two human gates. One rhythm: automated work punctuated by human judgment.</p>
+      </div>
+      <div class="ops-question" style="text-align:center;margin-bottom:40px;">"How does work actually happen?"</div>
+
+      <!-- Version Toggle -->
+      <div class="wf-version-toggle">
+        <button class="wf-version-btn active" onclick="showWfVersion('a')">
+          A<span class="wf-btn-label">The Pipeline</span>
+        </button>
+        <button class="wf-version-btn" onclick="showWfVersion('b')">
+          B<span class="wf-btn-label">The Conversation</span>
+        </button>
+        <button class="wf-version-btn" onclick="showWfVersion('c')">
+          C<span class="wf-btn-label">The Game Board</span>
+        </button>
+      </div>
+
+      <!-- ── VERSION A: The Pipeline ── -->
+      <div id="wf-version-a" class="wf-version active">
+        <div class="wf-pipeline">
+          <div class="wf-pipe-phase" onclick="toggleWfPhase('wf-a-1')">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">1</div>
+              <div class="wf-pipe-name">Pre-flight</div>
+              <div class="wf-pipe-what">Validate repo, branch, state</div>
+              <span class="wf-model-badge wf-badge-opus">Opus</span>
+            </div>
+            <div id="wf-a-1" class="wf-phase-detail">Quick sanity check. Is the repo clean? Are we on the right branch? Does the state make sense? Gate before wasting compute.</div>
+          </div>
+
+          <div class="wf-pipe-phase" onclick="toggleWfPhase('wf-a-2')">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">2</div>
+              <div class="wf-pipe-name">Learnings Search</div>
+              <div class="wf-pipe-what">"Has this been solved?"</div>
+              <span class="wf-model-badge wf-badge-opus">Opus</span>
+            </div>
+            <div id="wf-a-2" class="wf-phase-detail">ALWAYS FIRST. Search <code>whitedoeinn/learnings.git</code> (org-level) and <code>COMPOUND-LEARNINGS.md</code> (repo-level). Don't reinvent wheels.</div>
+          </div>
+
+          <div class="wf-pipe-phase" onclick="toggleWfPhase('wf-a-3')">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">3</div>
+              <div class="wf-pipe-name">Pattern Detection</div>
+              <div class="wf-pipe-what">Smart routing based on project type</div>
+              <span class="wf-model-badge wf-badge-opus">Opus</span>
+            </div>
+            <div id="wf-a-3" class="wf-phase-detail">Is this spec-driven? Inject validations. Known pattern? Route to the right workflow. Intelligence up front saves compute later.</div>
+          </div>
+
+          <div class="wf-pipe-phase" onclick="toggleWfPhase('wf-a-4')" style="background:linear-gradient(135deg, #f5f3ff 0%, #ecfeff 50%, #fef3c7 100%);">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">4</div>
+              <div class="wf-pipe-name">Explore (3 Lenses)</div>
+              <div class="wf-pipe-what">Conservative / Balanced / Radical</div>
+              <span class="wf-model-badge wf-badge-deepseek">DeepSeek</span>
+            </div>
+            <div id="wf-a-4" class="wf-phase-detail">DEFAULT &mdash; not optional. Three parallel subagents explore the problem space. Conservative: simplest path. Balanced: best without anchoring. Radical: from scratch. The anti-vibe-coding stance. Use <code>--quick</code> only for trivial fixes.</div>
+          </div>
+
+          <div class="wf-pipe-phase wf-pipe-gate" onclick="toggleWfPhase('wf-a-5')">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">5</div>
+              <div class="wf-pipe-name">Curate</div>
+              <div class="wf-pipe-what">Human selects approach</div>
+              <span class="wf-model-badge wf-badge-human">Human</span>
+            </div>
+            <div id="wf-a-5" class="wf-phase-detail">Agent STOPS. Human reviews 3 approaches: "Ship A", "Blend B+C", "None, explore Y". The agent cannot curate &mdash; this is intentional. Human judgment at the critical decision point.</div>
+          </div>
+
+          <div class="wf-pipe-phase" onclick="toggleWfPhase('wf-a-6')">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">6</div>
+              <div class="wf-pipe-name">Work</div>
+              <div class="wf-pipe-what">Implementation</div>
+              <span class="wf-model-badge wf-badge-cc">Claude Code</span>
+            </div>
+            <div id="wf-a-6" class="wf-phase-detail">Heavy lifting on flat-rate Max subscription. Multi-file, sustained generation. No cost anxiety. This is where the thing actually gets built.</div>
+          </div>
+
+          <div class="wf-pipe-phase" onclick="toggleWfPhase('wf-a-7')">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">7</div>
+              <div class="wf-pipe-name">Review</div>
+              <div class="wf-pipe-what">12+ parallel review agents</div>
+              <span class="wf-model-badge wf-badge-deepseek">DeepSeek</span>
+            </div>
+            <div id="wf-a-7" class="wf-phase-detail">Architecture, performance, errors, testing, spec-alignment. 12+ specialized agents run in parallel on cheap compute. Findings become GitHub issues.</div>
+          </div>
+
+          <div class="wf-pipe-phase" onclick="toggleWfPhase('wf-a-8')" style="border-top:3px solid var(--ink);">
+            <div class="wf-pipe-inner">
+              <div class="wf-pipe-num">8</div>
+              <div class="wf-pipe-name">Compound</div>
+              <div class="wf-pipe-what">Capture learnings BEFORE commit</div>
+              <span class="wf-model-badge wf-badge-opus">Opus</span>
+            </div>
+            <div id="wf-a-8" class="wf-phase-detail">BEFORE commit &mdash; while context is fresh. Old anti-pattern: ship then document. New pattern: compound first, then commit. Learnings captured while you still remember why.</div>
+          </div>
+        </div>
+
+        <div class="wf-pipeline-connector">
+          automated &rarr; automated &rarr; automated &rarr; <strong style="color:var(--red);">HUMAN DECIDES</strong> &rarr; automated &rarr; automated &rarr; <strong style="color:var(--ink);">CAPTURE KNOWLEDGE</strong>
+        </div>
+
+        <details class="wf-rationale">
+          <summary>Design Rationale &mdash; Version A: The Pipeline</summary>
+          <div class="wf-rationale-body">
+            <h4>Visual Metaphor</h4>
+            <p>Assembly line. Each phase is a station on the factory floor. Work moves left-to-right, top-to-bottom through a predictable sequence. The Curate gate is literally painted red &mdash; a physical barrier that stops the line.</p>
+            <h4>Emphasis</h4>
+            <p>Process and predictability. This version says: "We have a system, and the system works." The linear flow makes the sequence obvious and the gates unmissable.</p>
+            <h4>Tradeoffs</h4>
+            <p>Linear layouts can feel rigid. The creative energy of 3-lens exploration is somewhat constrained by the box format. But for someone trying to understand "what happens in what order," nothing beats a pipeline.</p>
+            <h4>Best For</h4>
+            <p>Technical audiences who want to understand the process. Engineers, CTOs, anyone who thinks in systems and sequences.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- ── VERSION B: The Conversation ── -->
+      <div id="wf-version-b" class="wf-version">
+        <div class="wf-hub-ring">
+          <div class="wf-spoke" onclick="toggleWfPhase('wf-b-1')">
+            <div class="wf-spoke-num">1</div>
+            <div class="wf-spoke-name">Pre-flight</div>
+            <div class="wf-spoke-what">Validate repo, branch, state</div>
+            <span class="wf-model-badge wf-badge-opus">Opus</span>
+            <div id="wf-b-1" class="wf-phase-detail">Quick sanity check before any work begins.</div>
+          </div>
+          <div class="wf-spoke" onclick="toggleWfPhase('wf-b-2')">
+            <div class="wf-spoke-num">2</div>
+            <div class="wf-spoke-name">Learnings Search</div>
+            <div class="wf-spoke-what">"Has this been solved?"</div>
+            <span class="wf-model-badge wf-badge-opus">Opus</span>
+            <div id="wf-b-2" class="wf-phase-detail">Search org + repo learnings. Don't reinvent wheels.</div>
+          </div>
+          <div class="wf-spoke" onclick="toggleWfPhase('wf-b-3')">
+            <div class="wf-spoke-num">3</div>
+            <div class="wf-spoke-name">Pattern Detection</div>
+            <div class="wf-spoke-what">Smart routing</div>
+            <span class="wf-model-badge wf-badge-opus">Opus</span>
+            <div id="wf-b-3" class="wf-phase-detail">Detect spec-driven projects, inject the right validations.</div>
+          </div>
+          <div class="wf-spoke" onclick="toggleWfPhase('wf-b-4')" style="background:linear-gradient(135deg, #f5f3ff 0%, #ecfeff 50%, #fef3c7 100%);">
+            <div class="wf-spoke-num">4</div>
+            <div class="wf-spoke-name">Explore</div>
+            <div class="wf-spoke-what">3 lenses &mdash; always</div>
+            <span class="wf-model-badge wf-badge-deepseek">DeepSeek</span>
+            <div id="wf-b-4" class="wf-phase-detail">Conservative / Balanced / Radical. DEFAULT, not optional. Parallel subagents on cheap compute.</div>
+          </div>
+        </div>
+
+        <div class="wf-spoke-connector">&darr; preparation complete &mdash; issue enters decision zone &darr;</div>
+
+        <div class="wf-hub-center">
+          <div class="wf-hub-icon">&cir;</div>
+          <div class="wf-hub-title">GitHub Issue</div>
+          <div class="wf-hub-sub">Everything starts here. Everything ends here.<br>Labels track the phase. State tells the story.</div>
+          <div class="wf-hub-labels">
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">phase:exploring</span>
+            <span class="tag tag-red">phase:curating</span>
+            <span class="tag" style="border-color:#059669;color:#059669;">phase:working</span>
+            <span class="tag tag-dark">phase:reviewing</span>
+          </div>
+        </div>
+
+        <div class="wf-spoke-connector">&darr; human decision made &mdash; execution begins &darr;</div>
+
+        <div class="wf-hub-ring">
+          <div class="wf-spoke wf-spoke-gate" onclick="toggleWfPhase('wf-b-5')">
+            <div class="wf-spoke-num">5</div>
+            <div class="wf-spoke-name">Curate</div>
+            <div class="wf-spoke-what">HARD GATE &mdash; Human picks the approach</div>
+            <span class="wf-model-badge wf-badge-human">Human</span>
+            <div id="wf-b-5" class="wf-phase-detail">Agent stops. Human reviews 3 approaches. "Ship A", "Blend B+C", or "None, explore Y". The agent cannot curate.</div>
+          </div>
+          <div class="wf-spoke" onclick="toggleWfPhase('wf-b-6')">
+            <div class="wf-spoke-num">6</div>
+            <div class="wf-spoke-name">Work</div>
+            <div class="wf-spoke-what">Build it (flat rate)</div>
+            <span class="wf-model-badge wf-badge-cc">Claude Code</span>
+            <div id="wf-b-6" class="wf-phase-detail">Multi-file implementation on Max subscription. Heavy lifting, no cost anxiety.</div>
+          </div>
+          <div class="wf-spoke" onclick="toggleWfPhase('wf-b-7')">
+            <div class="wf-spoke-num">7</div>
+            <div class="wf-spoke-name">Review</div>
+            <div class="wf-spoke-what">12+ parallel agents</div>
+            <span class="wf-model-badge wf-badge-deepseek">DeepSeek</span>
+            <div id="wf-b-7" class="wf-phase-detail">Architecture, performance, errors, spec-alignment. Findings become new GitHub issues.</div>
+          </div>
+          <div class="wf-spoke" onclick="toggleWfPhase('wf-b-8')">
+            <div class="wf-spoke-num">8</div>
+            <div class="wf-spoke-name">Compound</div>
+            <div class="wf-spoke-what">Learn before commit</div>
+            <span class="wf-model-badge wf-badge-opus">Opus</span>
+            <div id="wf-b-8" class="wf-phase-detail">Capture learnings while context is fresh. BEFORE commit, not after. Issue close triggers compound.</div>
+          </div>
+        </div>
+
+        <details class="wf-rationale">
+          <summary>Design Rationale &mdash; Version B: The Conversation</summary>
+          <div class="wf-rationale-body">
+            <h4>Visual Metaphor</h4>
+            <p>The GitHub Issue as campfire. Everything gathers around it. Phases flow toward and away from the central artifact. The issue starts work, tracks state, captures findings, and closes the loop.</p>
+            <h4>Emphasis</h4>
+            <p>Collaboration and the issue as organizing principle. The labels visually connect phases to issue state. The preparation/execution split creates a natural rhythm above and below the hub.</p>
+            <h4>Tradeoffs</h4>
+            <p>The sequence is less obvious than Version A. You lose some linearity to gain centrality. But for teams that live in GitHub Issues, this immediately clicks.</p>
+            <h4>Best For</h4>
+            <p>GitHub-native teams. Product managers. Anyone who thinks in issues and labels rather than pipelines and flowcharts.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- ── VERSION C: The Game Board ── -->
+      <div id="wf-version-c" class="wf-version">
+        <div class="wf-board">
+          <div class="wf-board-row">
+            <div class="wf-board-space" onclick="toggleWfPhase('wf-c-1')">
+              <div class="wf-board-num">1</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Pre-flight</div>
+                <div class="wf-board-what">Validate repo state</div>
+                <span class="wf-model-badge wf-badge-opus">Opus</span>
+              </div>
+              <div id="wf-c-1" class="wf-phase-detail">Quick sanity check. Repo, branch, state &mdash; all verified before any compute is spent.</div>
+            </div>
+            <div class="wf-board-space" onclick="toggleWfPhase('wf-c-2')">
+              <div class="wf-board-num">2</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Learnings Search</div>
+                <div class="wf-board-what">"Has this been solved?"</div>
+                <span class="wf-model-badge wf-badge-opus">Opus</span>
+              </div>
+              <div id="wf-c-2" class="wf-phase-detail">Search org + repo vaults. The first rule: don't reinvent wheels.</div>
+            </div>
+            <div class="wf-board-space" onclick="toggleWfPhase('wf-c-3')">
+              <div class="wf-board-num">3</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Pattern Detection</div>
+                <div class="wf-board-what">Smart routing</div>
+                <span class="wf-model-badge wf-badge-opus">Opus</span>
+              </div>
+              <div id="wf-c-3" class="wf-phase-detail">Detect project type, inject the right validations, route to optimal workflow.</div>
+            </div>
+            <div class="wf-board-space wf-board-explore" onclick="toggleWfPhase('wf-c-4')">
+              <div class="wf-board-num">4</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Explore</div>
+                <div class="wf-board-what">3 lenses &mdash; always</div>
+                <div style="display:flex;gap:4px;margin:6px 0;">
+                  <span class="tag" style="border-color:#7c3aed;color:#7c3aed;font-size:0.55rem;">Conservative</span>
+                  <span class="tag" style="border-color:#0891b2;color:#0891b2;font-size:0.55rem;">Balanced</span>
+                  <span class="tag" style="border-color:#d97706;color:#d97706;font-size:0.55rem;">Radical</span>
+                </div>
+                <span class="wf-model-badge wf-badge-deepseek">DeepSeek</span>
+              </div>
+              <div id="wf-c-4" class="wf-phase-detail">Three parallel subagents. Conservative: simplest. Balanced: best without anchoring. Radical: from scratch. DEFAULT, not optional.</div>
+            </div>
+          </div>
+
+          <div class="wf-board-turn">
+            <div class="wf-board-turn-arrow"></div>
+          </div>
+
+          <div class="wf-board-row wf-board-row-reverse">
+            <div class="wf-board-space wf-board-gate" onclick="toggleWfPhase('wf-c-5')">
+              <div class="wf-board-num">5</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Curate</div>
+                <div class="wf-board-what">CHECKPOINT &mdash; Human decides</div>
+                <span class="wf-model-badge wf-badge-human">Human</span>
+              </div>
+              <div id="wf-c-5" class="wf-phase-detail">Full stop. Agent cannot proceed. Human reviews 3 approaches, picks direction. This gate is a feature, not a bug.</div>
+            </div>
+            <div class="wf-board-space" onclick="toggleWfPhase('wf-c-6')">
+              <div class="wf-board-num">6</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Work</div>
+                <div class="wf-board-what">Build it</div>
+                <span class="wf-model-badge wf-badge-cc">Claude Code</span>
+              </div>
+              <div id="wf-c-6" class="wf-phase-detail">Flat-rate Max subscription. Multi-file, sustained generation. The heavy lifting.</div>
+            </div>
+            <div class="wf-board-space" onclick="toggleWfPhase('wf-c-7')">
+              <div class="wf-board-num">7</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Review</div>
+                <div class="wf-board-what">12+ parallel agents</div>
+                <span class="wf-model-badge wf-badge-deepseek">DeepSeek</span>
+              </div>
+              <div id="wf-c-7" class="wf-phase-detail">Architecture, performance, errors, testing, spec-alignment. 12+ agents, cheap compute. Findings become issues.</div>
+            </div>
+            <div class="wf-board-space wf-board-compound" onclick="toggleWfPhase('wf-c-8')">
+              <div class="wf-board-num">8</div>
+              <div class="wf-board-inner">
+                <div class="wf-board-name">Compound</div>
+                <div class="wf-board-what">Level up &mdash; capture learnings</div>
+                <span class="wf-model-badge wf-badge-opus">Opus</span>
+              </div>
+              <div id="wf-c-8" class="wf-phase-detail">BEFORE commit. Learnings captured while context is fresh. The old anti-pattern: ship then forget. The new pattern: learn then ship.</div>
+            </div>
+          </div>
+
+          <div class="wf-board-turn wf-board-turn-left">
+            <div class="wf-board-turn-arrow"></div>
+          </div>
+        </div>
+
+        <div style="text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:0.88rem;color:var(--ink-faint);padding:12px 0 32px;">
+          The path is the same every time. The decisions are different.
+        </div>
+
+        <details class="wf-rationale">
+          <summary>Design Rationale &mdash; Version C: The Game Board</summary>
+          <div class="wf-rationale-body">
+            <h4>Visual Metaphor</h4>
+            <p>Board game path. Phases are spaces you move through. The serpentine layout (row 1 left-to-right, row 2 right-to-left) creates a natural game-board S-curve. Explore is the multi-lane stretch. Curate is the checkpoint. Compound is the level-up.</p>
+            <h4>Emphasis</h4>
+            <p>Progression and strategy. Each space is a step forward. The U-turn creates visual continuity between the two rows. The three-lens tags on Explore show the branching explicitly.</p>
+            <h4>Tradeoffs</h4>
+            <p>The reverse-order second row requires a moment to parse. But board game conventions are deeply familiar &mdash; most people intuitively read serpentine layouts correctly. The playful energy might not suit every audience.</p>
+            <h4>Best For</h4>
+            <p>Visual thinkers. People who respond to game mechanics and progression. Teams who want to feel the "level up" moment of compounding knowledge.</p>
+          </div>
+        </details>
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── SHARED: Learnings Loop ── -->
+      <div class="section-header">
+        <h2>The Learnings Loop</h2>
+        <p>Every solved problem makes the next one easier. Knowledge flows through two vaults and feeds back into every new issue.</p>
+      </div>
+
+      <div class="wf-loop">
+        <div class="wf-loop-node">Org Vault<code>whitedoeinn/learnings.git</code></div>
+        <div class="wf-loop-arrow">&rarr;</div>
+        <div class="wf-loop-node">Repo Vault<code>COMPOUND-LEARNINGS.md</code></div>
+        <div class="wf-loop-arrow">&rarr;</div>
+        <div class="wf-loop-node" style="border-color:var(--red);">Phase 2<code>Learnings Search</code></div>
+        <div class="wf-loop-arrow">&rarr;</div>
+        <div class="wf-loop-label">work happens...</div>
+        <div class="wf-loop-arrow">&rarr;</div>
+        <div class="wf-loop-node" style="border-color:var(--red);">Phase 8<code>Compound</code></div>
+        <div class="wf-loop-arrow">&rarr;</div>
+        <div class="wf-loop-label">back to vaults</div>
+      </div>
+
+      <div class="callout" style="margin-bottom:48px;">
+        <strong>Compound BEFORE commit.</strong> Old anti-pattern: ship then document (context fades). New pattern: compound first, then commit. Learnings captured while you still remember why.
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── SHARED: Cost-Optimized Routing ── -->
+      <div class="section-header">
+        <h2>Cost-Optimized Model Routing</h2>
+        <p>Opus coordinates. Cheap models and Claude Code do the heavy lifting. Smart routing, not brute force.</p>
+      </div>
+
+      <div class="wf-costs">
+        <div class="wf-cost-card" onclick="togglePopover(this, 'Opus: High intelligence for orchestration and synthesis. Used where judgment matters.')">
+          <h4 style="color:#7c3aed;">Opus</h4>
+          <div class="wf-cost-type">Orchestration &amp; Synthesis</div>
+          <div class="wf-cost-desc">Intelligence where it matters. Pre-flight, learnings, routing, compound.</div>
+          <div class="wf-cost-phases">
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">Phase 1</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">Phase 2</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">Phase 3</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">Phase 8</span>
+          </div>
+        </div>
+        <div class="wf-cost-card" onclick="togglePopover(this, 'DeepSeek: Cheap parallel inference. Exploration and review at scale.')">
+          <h4 style="color:#0891b2;">DeepSeek Subagents</h4>
+          <div class="wf-cost-type">Parallel &amp; Cheap</div>
+          <div class="wf-cost-desc">Exploration and review at scale. Many agents, low cost per call.</div>
+          <div class="wf-cost-phases">
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">Phase 4</span>
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">Phase 7</span>
+          </div>
+        </div>
+        <div class="wf-cost-card" onclick="togglePopover(this, 'Claude Code Max: Flat-rate subscription. No per-token cost. Used for the heaviest compute phase.')">
+          <h4 style="color:#059669;">Claude Code (Max)</h4>
+          <div class="wf-cost-type">Flat Rate</div>
+          <div class="wf-cost-desc">Implementation on subscription. No cost anxiety. Heavy lifting unlocked.</div>
+          <div class="wf-cost-phases">
+            <span class="tag" style="border-color:#059669;color:#059669;">Phase 6</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-bottom:20px;">
+        <strong>Thin orchestration layer.</strong> WDI workflow delegates to compound-engineering for heavy lifting: <code style="font-size:0.72rem;">/workflows:plan</code>, <code style="font-size:0.72rem;">/workflows:work</code>, <code style="font-size:0.72rem;">/workflows:review</code>, <code style="font-size:0.72rem;">/workflows:compound</code>.
+      </div>
+
+      <div style="text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:0.88rem;color:var(--ink-faint);padding:20px 0;">
+        The gates are features, not bugs. The 3-lens exploration is confidence, not overhead.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== OVERVIEW ==================== -->
+  <div id="tab-overview" class="tab-panel active">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>The SDD Maturity Spectrum</h2>
+        <p>From improvisational coding to fully machine-governed specs. WDI operates at the recommended sweet spot.</p>
+        <div class="cite">Framework: Birgitta Böckeler, martinfowler.com (Oct 2025)</div>
+      </div>
+
+      <div class="spectrum">
+        <div class="spectrum-level spectrum-vibe">
+          <div class="level-num">0</div>
+          <h4>Vibe Coding</h4>
+          <p>Fast, improvisational. Great for prototypes. No specs.</p>
+        </div>
+        <div class="spectrum-level spectrum-first">
+          <div class="level-num">1</div>
+          <h4>Spec-First</h4>
+          <p>Write spec before code. Code may drift afterward.</p>
+        </div>
+        <div class="spectrum-level spectrum-anchored">
+          <div class="level-num">2</div>
+          <h4>Spec-Anchored</h4>
+          <p>Spec maintained with automated enforcement. The sweet spot.</p>
+          <div class="wdi-marker">WDI is here</div>
+        </div>
+        <div class="spectrum-level spectrum-source">
+          <div class="level-num">3</div>
+          <h4>Spec-as-Source</h4>
+          <p>Spec is the only human-edited artifact. Code is generated.</p>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat"><div class="stat-value">6</div><div class="stat-label">Meta-Schemas</div></div>
+        <div class="stat"><div class="stat-value">3</div><div class="stat-label">Domain Layers</div></div>
+        <div class="stat"><div class="stat-value">13</div><div class="stat-label">User Stories</div></div>
+        <div class="stat"><div class="stat-value">32</div><div class="stat-label">Flows</div></div>
+        <div class="stat"><div class="stat-value">4</div><div class="stat-label">Personas</div></div>
+        <div class="stat"><div class="stat-value">7</div><div class="stat-label">Principles</div></div>
+        <div class="stat"><div class="stat-value">3</div><div class="stat-label">AI Agents</div></div>
+      </div>
+
+      <div class="section-header">
+        <h2>Development Lifecycle</h2>
+      </div>
+
+      <div class="lifecycle">
+        <div class="lifecycle-step">
+          <div class="step-num">1</div>
+          <h4>Problem</h4>
+          <p>Identify need or gap</p>
+        </div>
+        <div class="lifecycle-step is-active">
+          <div class="step-num">2</div>
+          <h4>Schema</h4>
+          <p>Spec change first</p>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">3</div>
+          <h4>Implement</h4>
+          <p>Code from spec</p>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">4</div>
+          <h4>Validate</h4>
+          <p>Automated gates</p>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">5</div>
+          <h4>Compound</h4>
+          <p>Learnings feed back</p>
+        </div>
+      </div>
+      <div class="lifecycle-feedback">feedback loop: learnings compound into better specs</div>
+
+      <div class="section-header">
+        <h2>Constitutional Principles</h2>
+        <p>Seven rules that govern all schema and implementation decisions.</p>
+      </div>
+
+      <div style="border: 1px solid var(--rule); background: #fff; padding: 8px 24px;">
+        <div class="principle">
+          <div class="principle-num">1</div>
+          <div><h4>Spec-First, Always</h4><p>No code changes without corresponding spec updates. Specs are the source of truth.</p></div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">2</div>
+          <div><h4>Idempotent from Schema</h4><p>Application is a deterministic function of specs. Undocumented behavior is a bug.</p></div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">3</div>
+          <div><h4>Bidirectional Traceability</h4><p>story.flowIds &harr; flow.implementsStories. Validated in CI.</p></div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">4</div>
+          <div><h4>Config-Driven Behavior</h4><p>Business rules live in JSON, not code. Owners update rules directly.</p></div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">5</div>
+          <div><h4>Integration Contract</h4><p>Reference external entities, don't reinvent them. Define mappings on top.</p></div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">6</div>
+          <div><h4>Compounding</h4><p>Learnings feed back into specs. Every solved problem makes the next easier.</p></div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">7</div>
+          <div><h4 style="color: var(--red);">Fail-Closed Security</h4><p>Unmatched items flagged for review, never silently classified. Deny by default.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCHEMA ARCHITECTURE ==================== -->
+  <div id="tab-schemas" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>Two Schema Layers</h2>
+        <p>Meta-schemas define structure. Domain schemas define the business. Everything else is governance, instances, or mechanisms.</p>
+      </div>
+
+      <div class="layer-block">
+        <h3><span class="layer-indicator"></span> Layer 1: Meta-Schemas <span class="tag tag-dark">Define Structure</span></h3>
+        <p>Schemas that define the <em>shape</em> of all other specs. These are the grammar of the system.</p>
+        <div class="pill-grid">
+          <div class="schema-pill" onclick="togglePopover(this, 'Story structure with persona refs, effort levels, acceptance criteria, and bidirectional flow links')">
+            <code>user-stories.schema.json</code>
+            <span class="pill-desc">Story structure</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Flow steps, entity refs, uiRequirements, surfaces (CLI/Web/API), trigger routes, and persona access')">
+            <code>flows.schema.json</code>
+            <span class="pill-desc">Operations & UI</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Term format, categories, abbreviations. Ubiquitous language for the domain.')">
+            <code>terminology.schema.json</code>
+            <span class="pill-desc">Domain language</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Actor roles, access levels (gc/purchaser/owner), permissions, default action categories')">
+            <code>personas.schema.json</code>
+            <span class="pill-desc">Actor roles</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Principles, constraints, quality standards. The constitutional rules that govern everything.')">
+            <code>constitution.schema.json</code>
+            <span class="pill-desc">Governance rules</span>
+          </div>
+          <div class="schema-pill" onclick="togglePopover(this, 'Entity definitions with x-ui-hints, x-reference, x-bidirectional, enums, relationships. The three-layer sandwich.')">
+            <code>domain-data.schema.json</code>
+            <span class="pill-desc">Entity definitions</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 8px;">
+        <h3 style="font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+          <span class="layer-indicator"></span>
+          Layer 2: Domain Schemas &mdash; The Three-Layer Sandwich
+          <span class="tag tag-red" style="margin-left:auto;">Business Model</span>
+        </h3>
+      </div>
+
+      <div class="sandwich" style="margin-bottom: 20px;">
+        <div class="sandwich-layer sandwich-external">
+          <div class="sandwich-label">External &mdash; API Entities</div>
+          <div class="entity-tags">
+            <span class="entity-tag entity-tag-ext">Task</span>
+            <span class="entity-tag entity-tag-ext">Material</span>
+            <span class="entity-tag entity-tag-ext">Vendor</span>
+            <span class="entity-tag entity-tag-ext">Receipt</span>
+            <span class="entity-tag entity-tag-ext">Issue</span>
+            <span class="entity-tag entity-tag-ext">Milestone</span>
+            <span class="entity-tag entity-tag-ext">Note</span>
+            <span class="entity-tag entity-tag-ext">Contract</span>
+            <span class="entity-tag entity-tag-ext">Team Member</span>
+          </div>
+        </div>
+        <div class="sandwich-layer sandwich-internal">
+          <div class="sandwich-label">Internal &mdash; Computed / Derived</div>
+          <div class="entity-tags">
+            <span class="entity-tag entity-tag-int">Notification</span>
+          </div>
+        </div>
+        <div class="sandwich-layer sandwich-mapping">
+          <div class="sandwich-label">Mapping &mdash; Relationships & Config</div>
+          <div class="entity-tags">
+            <span class="entity-tag entity-tag-map">Task Relationship</span>
+            <span class="entity-tag entity-tag-map">Material Relationship</span>
+            <span class="entity-tag entity-tag-map">Vendor Reference</span>
+            <span class="entity-tag entity-tag-map">Contact</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="section-header">
+        <h2>Not Schema Layers</h2>
+        <p>Important, but distinct from the schema taxonomy.</p>
+      </div>
+
+      <div class="card-grid card-grid-3" style="margin-bottom: 20px;">
+        <div class="not-layer">
+          <h4>Governance</h4>
+          <p>Constitutional principles are <em>rules that govern</em>, not schemas. They constrain how schemas evolve.</p>
+          <div class="aside">Rules, not structure</div>
+        </div>
+        <div class="not-layer">
+          <h4>Instances</h4>
+          <p>User stories and flows are <em>data conforming to</em> meta-schemas. Content, not container.</p>
+          <div class="aside">Data, not schemas</div>
+        </div>
+        <div class="not-layer">
+          <h4>Validation</h4>
+          <p>A cross-cutting <em>mechanism</em> &mdash; a quality gate. It enforces conformance; it isn't a schema.</p>
+          <div class="aside">Mechanism, not layer</div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="section-header">
+        <h2>Schema Extensions</h2>
+        <p>Custom x- annotations that make schemas actionable.</p>
+      </div>
+
+      <div class="card-grid card-grid-4">
+        <div style="padding: 16px 0; border-top: 2px solid var(--ink);">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-hint">x-ui-hints</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Layout sections, field display modes, conditional visibility, widget selection</div>
+        </div>
+        <div style="padding: 16px 0; border-top: 2px solid #3730a3;">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-ref">x-reference</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Cross-schema references &mdash; resource, field, displayField for entity lookups</div>
+        </div>
+        <div style="padding: 16px 0; border-top: 2px solid #92400e;">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-bidir">x-bidirectional</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Two-way relationship tracking &mdash; story &harr; flow links validated in CI</div>
+        </div>
+        <div style="padding: 16px 0; border-top: 2px solid var(--red);">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-ctx">x-context-rules</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Field availability by context &mdash; show/hide fields based on entity state</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== FLOWS & STORIES ==================== -->
+  <div id="tab-flows" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>32 Operations</h2>
+        <p>Every user interaction defined as a spec &mdash; CLI, Web, and API surfaces. Click any flow to drill down.</p>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;">
+        <span class="tag">list</span>
+        <span class="tag">detail</span>
+        <span class="tag">create</span>
+        <span class="tag">edit</span>
+        <span class="tag tag-red">delete</span>
+        <span class="tag">relationship</span>
+        <span class="tag">workflow</span>
+        <span class="tag">dashboard</span>
+      </div>
+
+      <!-- Featured: TASK-LIST -->
+      <div class="card" style="margin-bottom: 16px; border-color: var(--ink);">
+        <div class="expandable" onclick="toggleFlowDetail('task-list-detail', this)">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="flow-id">TASK-LIST</span>
+              <span style="font-size:0.85rem;">View all tasks with filters and sorting</span>
+              <span class="tag">list</span>
+            </div>
+            <span class="expand-icon">&#9654;</span>
+          </div>
+        </div>
+        <div id="task-list-detail" class="flow-detail">
+          <div class="card-grid card-grid-2" style="margin-bottom:16px;">
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">Metadata</div>
+              <div style="font-size:0.82rem;color:var(--ink-light);display:grid;gap:6px;">
+                <div><strong>Entity:</strong> task</div>
+                <div><strong>Route:</strong> <code style="color:var(--red)">/tasks</code></div>
+                <div><strong>Persona:</strong> gc (read: gc, purchaser, owner)</div>
+                <div><strong>Implements:</strong> <span style="color:var(--red)">GC14, GC16, GC21, GC22</span></div>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">uiRequirements</div>
+              <pre>{
+  "columns": [
+    { "field": "name", "type": "text" },
+    { "field": "status", "type": "badge" },
+    { "field": "category", "type": "badge" },
+    { "field": "assignee", "type": "text" },
+    { "field": "start", "type": "date" },
+    { "field": "end", "type": "date" }
+  ],
+  "filters": [
+    { "field": "status", "type": "multi-select" },
+    { "field": "category", "type": "multi-select" },
+    { "field": "assignee", "type": "single-select" }
+  ]
+}</pre>
+            </div>
+          </div>
+          <div class="callout">
+            <strong>Schema &rarr; UX:</strong> These uiRequirements are the spec that drives the actual list component. The schema IS the design document.
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px; padding: 0;">
+        <div style="padding: 16px 24px 0;"><div class="card-title">Task Flows</div></div>
+        <div class="flow-list" style="padding: 0 24px;">
+          <div class="flow-item expandable" onclick="toggleFlowDetail('task-create-detail', this)">
+            <div class="flow-item-left">
+              <span class="flow-id">TASK-CREATE</span>
+              <span class="flow-name">Create new task</span>
+              <span class="tag">create</span>
+            </div>
+            <span class="expand-icon">&#9654;</span>
+          </div>
+          <div id="task-create-detail" class="flow-detail" style="margin: 0 0 10px;">
+            <div style="font-size:0.82rem;color:var(--ink-light);display:grid;gap:6px;">
+              <div><strong>Implements:</strong> <span style="color:var(--red)">GC6</span> &mdash; "Break down the project into tasks"</div>
+              <div><strong>Form fields:</strong> name, category, priority, estimatedDays, estimatedCost, start, end, assignee, notes</div>
+              <div><strong>Field types:</strong> text, dropdown, segmented, number, currency, date, vendor-picker, textarea</div>
+            </div>
+          </div>
+          <div class="flow-item"><div class="flow-item-left"><span class="flow-id">TASK-DETAIL</span><span class="flow-name">View task with dependencies & materials</span><span class="tag">detail</span></div></div>
+          <div class="flow-item"><div class="flow-item-left"><span class="flow-id">TASK-EDIT</span><span class="flow-name">Update task details</span><span class="tag">edit</span></div></div>
+          <div class="flow-item"><div class="flow-item-left"><span class="flow-id">TASK-DELETE</span><span class="flow-name">Remove task with dependency check</span><span class="tag tag-red">delete</span></div></div>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-2" style="margin-bottom: 16px;">
+        <div class="card" style="padding: 0;">
+          <div style="padding: 16px 20px 0;"><div class="card-title">Relationship Flows</div></div>
+          <div class="flow-list" style="padding: 0 20px;">
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-TASK-DEP</span><span class="flow-name">Task dependencies</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-TASK-MAT</span><span class="flow-name">Task materials</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-VENDOR-CONTACT</span><span class="flow-name">Vendor contacts</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-MAT-SUB</span><span class="flow-name">Material substitutes</span></div></div>
+          </div>
+        </div>
+        <div class="card" style="padding: 0;">
+          <div style="padding: 16px 20px 0;"><div class="card-title">Dashboard & Workflow</div></div>
+          <div class="flow-list" style="padding: 0 20px;">
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">GC-DASHBOARD</span><span class="flow-name">GC overview</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">PUNCH-LIST</span><span class="flow-name">Punch list workflow</span></div></div>
+            <div class="flow-item"><div class="flow-item-left"><span class="flow-id">ISSUE-TRIAGE</span><span class="flow-name">Issue triage workflow</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <div style="display: grid; grid-template-columns: 1fr 320px; gap: 24px;">
+        <div>
+          <div class="section-header">
+            <h2>User Stories</h2>
+            <p>8 must-have + 5 bookkeeping. Each links bidirectionally to flows.</p>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <div class="card-title" style="color: var(--red);">Must-Have</div>
+            <div class="story-item"><span class="story-id">GC1</span><span class="story-text">As the GC, I want to <em>add subcontractors</em> with their company info so I can manage my trade partners</span></div>
+            <div class="story-item"><span class="story-id">GC2</span><span class="story-text">As the GC, I want to <em>add contacts</em> for each sub so I know who to call</span></div>
+            <div class="story-item"><span class="story-id">GC6</span><span class="story-text">As the GC, I want to <em>break down the project into tasks</em> so I can track progress</span></div>
+            <div class="story-item"><span class="story-id">GC10</span><span class="story-text">As the GC, I want to <em>set task dependencies</em> so the sequence is enforced</span></div>
+            <div class="story-item"><span class="story-id">GC14</span><span class="story-text">As the GC, I want to see <em>today's scheduled work</em> so I know what's happening</span></div>
+          </div>
+
+          <div>
+            <div class="card-title">Bookkeeping</div>
+            <div class="story-item"><span class="story-id">OP1</span><span class="story-text">As Owner/Purchaser, I want to <em>record receipt details</em> so expenses are tracked</span></div>
+            <div class="story-item"><span class="story-id">OP2</span><span class="story-text">As Owner/Purchaser, I want to <em>attach receipt photos</em> for documentation</span></div>
+            <div class="story-item"><span class="story-id">OP3</span><span class="story-text">As Owner, I want to <em>see total project spend</em> vs budget at a glance</span></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card-title">Personas</div>
+          <div style="display:grid;gap:10px;">
+            <div style="padding:10px 14px;border-left:3px solid var(--ink);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">Brandon <span style="color:var(--ink-faint);font-weight:400;">(GC)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">Full access &middot; Assign, Schedule</div>
+            </div>
+            <div style="padding:10px 14px;border-left:3px solid var(--red);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">Tonia <span style="color:var(--ink-faint);font-weight:400;">(Purchaser)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">Order access &middot; Order, Specify</div>
+            </div>
+            <div style="padding:10px 14px;border-left:3px solid var(--ink-faint);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">Dave <span style="color:var(--ink-faint);font-weight:400;">(Owner)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">View, approve &middot; Decide, Track</div>
+            </div>
+            <div style="padding:10px 14px;border-left:3px solid var(--ink-ghost);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">AI Agent <span style="color:var(--ink-faint);font-weight:400;">(Claude)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">Full API &middot; Triage, detect</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 32px;">
+            <div class="card-title">Traceability Chain</div>
+            <div class="trace-chain" style="flex-direction:column;align-items:stretch;gap:0;">
+              <div class="trace-node"><div class="trace-node-label">Persona</div><div class="trace-node-value">userStoryIds[]</div></div>
+              <div style="text-align:center;padding:3px 0;color:var(--ink-ghost);font-size:0.8rem;">&#8597;</div>
+              <div class="trace-node"><div class="trace-node-label">Story</div><div class="trace-node-value">flowIds[]</div></div>
+              <div style="text-align:center;padding:3px 0;color:var(--ink-ghost);font-size:0.8rem;">&#8597;</div>
+              <div class="trace-node"><div class="trace-node-label">Flow</div><div class="trace-node-value">implementsStories[]</div></div>
+              <div style="text-align:center;padding:3px 0;color:var(--ink-ghost);font-size:0.8rem;">&#8597;</div>
+              <div class="trace-node"><div class="trace-node-label">Entity</div><div class="trace-node-value">entityId</div></div>
+            </div>
+            <div style="text-align:center;margin-top:8px;">
+              <span class="annotation ann-bidir">x-bidirectional</span>
+              <span style="font-size:0.68rem;color:var(--ink-ghost);margin-left:6px;">enforced at CI</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== ERD ==================== -->
+  <div id="tab-erd" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>Entity Relationship Diagram</h2>
+        <p>Relationships are schema citizens with semantic meaning &mdash; typed join entities, not just foreign keys.</p>
+      </div>
+
+      <div class="erd-canvas">
+        <div class="erd-section-label">External Entities</div>
+        <div class="erd-row">
+          <div class="erd-entity"><div class="erd-entity-name">Milestone</div><div class="erd-entity-props">id, name, targetDate, status</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Task</div><div class="erd-entity-props">id, name, status, category, priority, estimatedDays, estimatedCost, start, end</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Material</div><div class="erd-entity-props">id, name, quantity, unit, estimatedCost, status</div></div>
+        </div>
+        <div class="erd-row">
+          <div class="erd-entity"><div class="erd-entity-name">Vendor</div><div class="erd-entity-props">id, company, trade, license, phone, email</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Receipt</div><div class="erd-entity-props">id, vendor, amount, date, category, attachments</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Issue</div><div class="erd-entity-props">id, prompt, type, status, priority, resolution</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Contract</div><div class="erd-entity-props">id, vendor, amount, scope</div></div>
+        </div>
+
+        <div class="erd-connectors">
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:8px 0;">
+            <span class="erd-rel-label erd-rel-label-task">dependency</span>
+            <span class="erd-rel-label erd-rel-label-task">decomposition</span>
+            <span class="erd-rel-label erd-rel-label-task">phase</span>
+            <span class="erd-rel-label erd-rel-label-task">punch-item</span>
+            <span class="erd-rel-label erd-rel-label-mat">substitutes</span>
+            <span class="erd-rel-label erd-rel-label-mat">alternative</span>
+            <span class="erd-rel-label erd-rel-label-mat">upgrade</span>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);margin-top:4px;">
+            Dependency subtypes: finish-to-start &middot; finish-to-finish &middot; start-to-start &middot; start-to-finish
+          </div>
+        </div>
+
+        <div class="erd-section-label" style="margin-top:16px;">Mapping Entities (Typed Joins)</div>
+        <div class="erd-row">
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Task Relationship</div><div class="erd-entity-props">sourceId, targetId, type, subtype, lag</div></div>
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Material Relationship</div><div class="erd-entity-props">sourceId, targetId, type, notes</div></div>
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Vendor Reference</div><div class="erd-entity-props">vendorId, contactId</div></div>
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Contact</div><div class="erd-entity-props">name, role, phone, email</div></div>
+        </div>
+
+        <div class="callout" style="margin-top:20px;">
+          <strong>Key Innovation:</strong> Relationships are schema citizens with semantic meaning. The relationship entity IS the join table, but typed &mdash; dependency, decomposition, substitute. Not just foreign keys.
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div>
+          <div class="section-header"><h2>Entity Detail: Task</h2><p>Schema extensions in action.</p></div>
+          <div style="display:grid;gap:0;">
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">id</code>
+              <span style="color:var(--ink-faint);">string</span>
+              <span class="tag tag-red" style="margin-left:auto;">required</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">name</code>
+              <span style="color:var(--ink-faint);">string</span>
+              <span class="tag tag-red" style="margin-left:auto;">required</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">status</code>
+              <span style="color:var(--ink-faint);">enum</span>
+              <span class="annotation ann-hint" style="margin-left:auto;">x-ui-hints: badge</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">assignee</code>
+              <span style="color:var(--ink-faint);">ref</span>
+              <span class="annotation ann-ref" style="margin-left:auto;">x-reference: vendor</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">dependencies</code>
+              <span style="color:var(--ink-faint);">ref[]</span>
+              <span class="annotation ann-bidir" style="margin-left:auto;">x-bidirectional</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">estimatedCost</code>
+              <span style="color:var(--ink-faint);">currency</span>
+              <span class="annotation ann-ctx" style="margin-left:auto;">x-context</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="section-header"><h2 style="font-size:1.3rem;">x-ui-hints</h2><p>Layout specification.</p></div>
+          <pre style="font-size:0.72rem;line-height:1.55;background:var(--code-bg);color:var(--code-fg);padding:20px;">{
+  "sections": [
+    {
+      "title": "Details",
+      "fields": ["name", "category", "priority"]
+    },
+    {
+      "title": "Schedule",
+      "fields": ["start", "end", "estimatedDays"]
+    },
+    {
+      "title": "Assignment",
+      "fields": ["assignee", "dependencies"]
+    }
+  ],
+  "fieldDisplay": {
+    "status": { "widget": "badge" },
+    "category": { "widget": "badge" },
+    "assignee": { "widget": "vendor-picker" }
+  }
+}</pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== AGENTS & PLUGINS ==================== -->
+  <div id="tab-agents" class="tab-panel">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>The Agent Orchestra</h2>
+        <p>AI agents that operate the schema system &mdash; not tools, but team members.</p>
+      </div>
+
+      <div class="card-grid card-grid-3" style="margin-bottom: 40px;">
+        <div class="agent-card">
+          <div class="agent-avatar">R</div>
+          <div>
+            <div class="agent-name">Reid</div>
+            <div class="agent-machine">Hart (Mac Mini M4)</div>
+            <div class="agent-role">Strategic partner, orchestrator, memory keeper. Coordinates all agent work and maintains institutional context.</div>
+          </div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-avatar">W</div>
+          <div>
+            <div class="agent-name">Wren</div>
+            <div class="agent-machine">dave-mac</div>
+            <div class="agent-role">Research and synthesis. Deep dives into documentation, competitive analysis, and technical exploration.</div>
+          </div>
+        </div>
+        <div class="agent-card" style="border-style: dashed;">
+          <div class="agent-avatar" style="border-style: dashed; color: var(--ink-ghost);">T</div>
+          <div>
+            <div class="agent-name" style="color:var(--ink-faint);">Todd <span class="tag">planned</span></div>
+            <div class="agent-machine">tonias-laptop</div>
+            <div class="agent-role">Tonia's partner for hospitality operations, recipes, menu planning, and guest experience.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid var(--ink); padding: 28px; background: #fff; margin-bottom: 40px;">
+        <div class="card-title">Agent Data Flows</div>
+        <div class="trace-chain" style="margin-top:12px;">
+          <div class="trace-node"><div class="trace-node-label">Agents</div><div class="trace-node-value" style="color:var(--ink);">Read & Write</div></div>
+          <div class="trace-arrow">&harr;</div>
+          <div class="trace-node"><div class="trace-node-label">Shared</div><div class="trace-node-value" style="color:var(--ink);">Centralized Learnings</div></div>
+          <div class="trace-arrow">&harr;</div>
+          <div class="trace-node"><div class="trace-node-label">Per-Repo</div><div class="trace-node-value" style="color:var(--ink);">Specific Data</div></div>
+          <div class="trace-arrow">&harr;</div>
+          <div class="trace-node"><div class="trace-node-label">Output</div><div class="trace-node-value" style="color:var(--red);">Compounding Skills</div></div>
+        </div>
+        <div style="text-align:center;margin-top:14px;font-size:0.75rem;color:var(--ink-faint);">Knowledge compounds across sessions and machines.</div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="section-header">
+        <h2>Plugin Ecosystem</h2>
+      </div>
+
+      <div class="card-grid card-grid-3" style="margin-bottom: 40px;">
+        <div class="plugin-card" style="border-left: 3px solid var(--ink);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;">Core</div>
+          <div class="plugin-name">dev-plugins-workflow</div>
+          <div class="plugin-desc">The foundation. Workflow automation, feature lifecycle, commit quality gates, documentation sync.</div>
+        </div>
+        <div class="plugin-card" style="border-left: 3px solid var(--red);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;">Critical 3rd Party</div>
+          <div class="plugin-name">Compound Engineering</div>
+          <div class="plugin-desc">Learnings compounding, multi-agent reviews, pattern recognition, deployment verification.</div>
+        </div>
+        <div class="plugin-card" style="border-left: 3px solid var(--ink-ghost);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;">Critical 3rd Party</div>
+          <div class="plugin-name">frontend-design</div>
+          <div class="plugin-desc">Production-grade UI generation with design tokens.</div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="section-header">
+        <h2>The Compounding Loop</h2>
+        <p>Every feature solved feeds the system that solves the next one.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);margin-bottom:12px;">
+        <div class="loop-step" style="border-right:1px solid var(--rule);">
+          <div class="loop-step-num">1</div>
+          <h4>Build Feature</h4>
+          <p>Schema, implementation, deploy</p>
+        </div>
+        <div class="loop-step" style="border-right:1px solid var(--rule);">
+          <div class="loop-step-num">2</div>
+          <h4>Document Learnings</h4>
+          <p>COMPOUND-LEARNINGS.md on issue close</p>
+        </div>
+        <div class="loop-step" style="border-right:1px solid var(--rule);">
+          <div class="loop-step-num">3</div>
+          <h4>Agents Absorb</h4>
+          <p>Centralized learnings reach all agents</p>
+        </div>
+        <div class="loop-step">
+          <div class="loop-step-num" style="color:var(--red);">4</div>
+          <h4 style="color:var(--red);">Next Feature Faster</h4>
+          <p>Patterns, pitfalls, solutions pre-loaded</p>
+        </div>
+      </div>
+      <div style="text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:0.85rem;color:var(--ink-faint);padding:16px 0;">
+        This is why a 2-person B&B can build production-grade software.
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">Enterprise Software @ WDI</div>
+        <div>White Doe Inn &middot; Manteo, NC &middot; Built with specs, not vibes</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      var panel = document.getElementById('tab-' + tabId);
+      if (panel) panel.classList.add('active');
+      var buttons = document.querySelectorAll('.tab-btn');
+      var tabMap = { 'operators': 0, 'workflow': 1, 'overview': 2, 'schemas': 3, 'flows': 4, 'erd': 5, 'agents': 6 };
+      if (tabMap[tabId] !== undefined && buttons[tabMap[tabId]]) {
+        buttons[tabMap[tabId]].classList.add('active');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleFlowDetail(detailId, trigger) {
+      var detail = document.getElementById(detailId);
+      if (detail) {
+        detail.classList.toggle('open');
+        if (trigger) trigger.classList.toggle('open');
+      }
+    }
+
+    function togglePopover(el, text) {
+      document.querySelectorAll('.popover').forEach(function(p) { p.remove(); });
+      var pop = document.createElement('div');
+      pop.className = 'popover visible';
+      pop.textContent = text;
+      var rect = el.getBoundingClientRect();
+      pop.style.top = (rect.bottom + 8) + 'px';
+      pop.style.left = Math.max(16, rect.left) + 'px';
+      document.body.appendChild(pop);
+      setTimeout(function() {
+        pop.classList.remove('visible');
+        setTimeout(function() { pop.remove(); }, 150);
+      }, 4000);
+      function dismiss(e) {
+        if (!pop.contains(e.target) && e.target !== el) {
+          pop.remove();
+          document.removeEventListener('click', dismiss);
+        }
+      }
+      setTimeout(function() { document.addEventListener('click', dismiss); }, 10);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') document.querySelectorAll('.popover').forEach(function(p) { p.remove(); });
+    });
+
+    function toggleOpsDetail(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('open');
+    }
+
+    // Hash navigation for direct linking (e.g. #operators)
+    function handleHash() {
+      var hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById('tab-' + hash)) showTab(hash);
+    }
+    window.addEventListener('hashchange', handleHash);
+    if (window.location.hash) handleHash();
+
+    function showWfVersion(ver) {
+      document.querySelectorAll('.wf-version').forEach(function(v) { v.classList.remove('active'); });
+      document.querySelectorAll('.wf-version-btn').forEach(function(b) { b.classList.remove('active'); });
+      var panel = document.getElementById('wf-version-' + ver);
+      if (panel) panel.classList.add('active');
+      var buttons = document.querySelectorAll('.wf-version-btn');
+      var verMap = { 'a': 0, 'b': 1, 'c': 2 };
+      if (verMap[ver] !== undefined && buttons[verMap[ver]]) {
+        buttons[verMap[ver]].classList.add('active');
+      }
+    }
+
+    function toggleWfPhase(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
