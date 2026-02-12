@@ -4,660 +4,832 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enterprise Software @ WDI — Schema-Driven Development</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=Libre+Franklin:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-    @import url('https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap');
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg-deep: #050810;
-      --bg-primary: #0a0f1a;
-      --bg-elevated: #111827;
-      --bg-hover: #1a2234;
-      --accent-coral: #ff4d4d;
-      --accent-cyan: #00e5cc;
-      --glow-coral: rgba(255, 77, 77, 0.4);
-      --glow-cyan: rgba(0, 229, 204, 0.4);
-      --text-primary: #f0f4ff;
-      --text-secondary: #8892b0;
-      --text-muted: #5a6480;
-      --border: rgba(136, 146, 176, 0.15);
-      --border-accent: rgba(0, 229, 204, 0.25);
-      --success: #00e5cc;
-      --warning: #fbbf24;
-      --error: #ff4d4d;
-      --info: #60a5fa;
-      --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
+      --paper: #f5f0e8;
+      --paper-warm: #ece5d8;
+      --ink: #1c1917;
+      --ink-light: #44403c;
+      --ink-faint: #78716c;
+      --ink-ghost: #a8a29e;
+      --red: #b42318;
+      --red-light: #fef2f2;
+      --code-bg: #292524;
+      --code-fg: #e7e5e4;
+      --rule: #d6d3d1;
+      --rule-dark: #a8a29e;
     }
 
     body {
-      font-family: 'Satoshi', 'Inter', system-ui, sans-serif;
-      background: var(--bg-deep);
-      color: var(--text-primary);
-      line-height: 1.6;
-      min-height: 100vh;
+      font-family: 'Libre Franklin', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    h1, h2, h3, h4 { font-family: 'Clash Display', 'Inter', sans-serif; }
-    code, pre { font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace; }
-
-    /* Ambient gradient */
-    body::before {
+    /* Subtle grain texture */
+    body::after {
       content: '';
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background:
-        radial-gradient(ellipse 60% 40% at 15% 10%, rgba(255, 77, 77, 0.06), transparent),
-        radial-gradient(ellipse 50% 50% at 85% 90%, rgba(0, 229, 204, 0.05), transparent);
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 0;
+      z-index: 9999;
     }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 700; line-height: 1.2; }
+    h4 { font-family: 'Libre Franklin', sans-serif; font-weight: 600; }
+    code, pre { font-family: 'IBM Plex Mono', monospace; }
+    em { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 400; }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 0 32px; }
 
     /* ===== HEADER ===== */
     .header {
-      border-bottom: 1px solid var(--border);
-      padding: 24px 0;
-      background: rgba(10, 15, 26, 0.8);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      padding: 48px 0 40px;
+      border-bottom: 3px solid var(--ink);
     }
     .header-inner {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
+      align-items: flex-end;
+      gap: 20px;
     }
     .header h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
     }
-    .header h1 span { color: var(--accent-cyan); }
+    .header h1 span {
+      color: var(--red);
+    }
     .header-subtitle {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 2px;
+      font-size: 0.85rem;
+      color: var(--ink-faint);
+      margin-top: 10px;
+      max-width: 400px;
     }
     .header-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      border-radius: 999px;
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 0.7rem;
       font-weight: 600;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border: 1px solid var(--border-accent);
-      color: var(--accent-cyan);
-      background: rgba(0, 229, 204, 0.08);
-    }
-    .header-badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent-cyan);
-      box-shadow: 0 0 8px var(--glow-cyan);
+      color: var(--red);
+      border: 2px solid var(--red);
+      padding: 6px 14px;
+      white-space: nowrap;
     }
 
     /* ===== TABS ===== */
     .tab-bar {
-      display: flex;
-      gap: 2px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-primary);
+      border-bottom: 1px solid var(--rule);
+      padding-top: 2px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
+    .tab-bar .container { display: flex; gap: 0; }
     .tab-btn {
-      padding: 12px 20px;
-      font-size: 0.8rem;
+      padding: 14px 20px 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
       font-weight: 500;
-      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
       background: none;
       border: none;
+      border-bottom: 2px solid transparent;
       cursor: pointer;
       white-space: nowrap;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s ease;
-      font-family: inherit;
+      transition: color 0.15s;
+      margin-bottom: -1px;
     }
-    .tab-btn:hover { color: var(--text-secondary); background: var(--bg-hover); }
+    .tab-btn:hover { color: var(--ink); }
     .tab-btn.active {
-      color: var(--accent-cyan);
-      border-bottom-color: var(--accent-cyan);
-      background: rgba(0, 229, 204, 0.05);
+      color: var(--ink);
+      border-bottom-color: var(--red);
     }
-    .tab-panel { display: none; padding: 40px 0 60px; }
+    .tab-panel { display: none; padding: 48px 0 80px; }
     .tab-panel.active { display: block; }
 
-    /* ===== CARDS ===== */
-    .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .card:hover { border-color: var(--border-accent); }
-    .card-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    .card-grid { display: grid; gap: 16px; }
-    .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-    .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-    .card-grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-
-    /* ===== STATS BAR ===== */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      margin-bottom: 32px;
-    }
-    .stat {
-      background: var(--bg-elevated);
-      padding: 16px 12px;
-      text-align: center;
-    }
-    .stat-value {
-      font-family: 'Clash Display', sans-serif;
-      font-size: 1.75rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 4px;
-    }
-
-    /* ===== MATURITY SPECTRUM ===== */
-    .spectrum {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 3px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      margin-bottom: 40px;
-    }
-    .spectrum-level {
-      padding: 20px 16px;
-      text-align: center;
-      position: relative;
-      transition: transform 0.2s;
-    }
-    .spectrum-level:hover { transform: translateY(-2px); }
-    .spectrum-level .level-num {
-      font-family: 'Clash Display', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      opacity: 0.2;
-      line-height: 1;
-    }
-    .spectrum-level h4 {
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin: 4px 0;
-    }
-    .spectrum-level p {
-      font-size: 0.7rem;
-      opacity: 0.7;
-      line-height: 1.4;
-    }
-    .spectrum-vibe { background: #1a1520; color: #c084fc; }
-    .spectrum-first { background: #151a20; color: var(--info); }
-    .spectrum-anchored {
-      background: linear-gradient(135deg, rgba(0, 229, 204, 0.12), rgba(0, 229, 204, 0.05));
-      color: var(--accent-cyan);
-      border: 2px solid var(--accent-cyan);
-      box-shadow: 0 0 20px var(--glow-cyan), inset 0 0 20px rgba(0, 229, 204, 0.05);
-    }
-    .spectrum-anchored .wdi-marker {
-      display: inline-block;
-      background: var(--accent-cyan);
-      color: var(--bg-deep);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 8px;
-    }
-    .spectrum-source { background: #1a1a15; color: #fbbf24; }
-
     /* ===== SECTION HEADERS ===== */
-    .section-header {
-      margin-bottom: 24px;
-    }
+    .section-header { margin-bottom: 28px; }
     .section-header h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.9rem;
       letter-spacing: -0.02em;
     }
     .section-header p {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      margin-top: 4px;
+      color: var(--ink-light);
+      font-size: 0.9rem;
+      margin-top: 6px;
+      max-width: 600px;
     }
     .section-header .cite {
-      font-size: 0.7rem;
-      color: var(--text-muted);
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 0.75rem;
+      color: var(--ink-ghost);
       font-style: italic;
+      margin-top: 6px;
+    }
+
+    /* ===== SPECTRUM ===== */
+    .spectrum {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-bottom: 56px;
+      border: 1px solid var(--rule);
+    }
+    .spectrum-level {
+      padding: 28px 20px 24px;
+      border-right: 1px solid var(--rule);
+      position: relative;
+    }
+    .spectrum-level:last-child { border-right: none; }
+    .spectrum-level .level-num {
+      font-family: 'Fraunces', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--rule);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .spectrum-level h4 {
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+    .spectrum-level p {
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+      line-height: 1.45;
+    }
+    .spectrum-vibe { background: var(--paper); }
+    .spectrum-first { background: var(--paper); }
+    .spectrum-anchored {
+      background: var(--red-light);
+      border-left: 3px solid var(--red) !important;
+      border-right: 3px solid var(--red) !important;
+    }
+    .spectrum-anchored .level-num { color: var(--red); opacity: 0.25; }
+    .spectrum-anchored h4 { color: var(--red); }
+    .wdi-marker {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--red);
+      padding: 3px 10px;
+      margin-top: 10px;
+    }
+    .spectrum-source { background: var(--paper); }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      display: flex;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      margin-bottom: 48px;
+    }
+    .stat {
+      flex: 1;
+      padding: 18px 12px;
+      text-align: center;
+      border-right: 1px solid var(--rule);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-value {
+      font-family: 'Fraunces', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--ink-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
       margin-top: 4px;
     }
+
+    /* ===== LIFECYCLE ===== */
+    .lifecycle {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin-bottom: 6px;
+      border: 1px solid var(--rule);
+    }
+    .lifecycle-step {
+      text-align: center;
+      padding: 20px 10px;
+      border-right: 1px solid var(--rule);
+      position: relative;
+    }
+    .lifecycle-step:last-child { border-right: none; }
+    .lifecycle-step .step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--rule-dark);
+      line-height: 1;
+    }
+    .lifecycle-step h4 { font-size: 0.8rem; margin: 4px 0 2px; }
+    .lifecycle-step p { font-size: 0.7rem; color: var(--ink-faint); }
+    .lifecycle-step.is-active {
+      background: var(--red-light);
+    }
+    .lifecycle-step.is-active .step-num { color: var(--red); }
+    .lifecycle-feedback {
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--ink-ghost);
+      letter-spacing: 0.05em;
+      padding: 10px;
+      border: 1px dashed var(--rule);
+      border-top: none;
+      margin: 0 15% 48px;
+    }
+
+    /* ===== CARDS & GRIDS ===== */
+    .card {
+      border: 1px solid var(--rule);
+      padding: 24px;
+      background: #fff;
+    }
+    .card-title {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      color: var(--ink-light);
+    }
+    .card-grid { display: grid; gap: 16px; }
+    .card-grid-2 { grid-template-columns: 1fr 1fr; }
+    .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* ===== PRINCIPLES ===== */
+    .principle {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+    }
+    .principle:last-child { border-bottom: none; }
+    .principle-num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--rule-dark);
+      line-height: 1.3;
+    }
+    .principle h4 { font-size: 0.88rem; margin-bottom: 3px; }
+    .principle p { font-size: 0.82rem; color: var(--ink-light); }
 
     /* ===== TAGS ===== */
     .tag {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: var(--radius-sm);
-      font-size: 0.65rem;
-      font-weight: 600;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      padding: 2px 7px;
+      border: 1px solid var(--rule);
+      color: var(--ink-faint);
+      background: var(--paper);
     }
-    .tag-cyan { background: rgba(0, 229, 204, 0.12); color: var(--accent-cyan); border: 1px solid rgba(0, 229, 204, 0.2); }
-    .tag-coral { background: rgba(255, 77, 77, 0.12); color: var(--accent-coral); border: 1px solid rgba(255, 77, 77, 0.2); }
-    .tag-blue { background: rgba(96, 165, 250, 0.12); color: var(--info); border: 1px solid rgba(96, 165, 250, 0.2); }
-    .tag-amber { background: rgba(251, 191, 36, 0.12); color: var(--warning); border: 1px solid rgba(251, 191, 36, 0.2); }
-    .tag-muted { background: rgba(136, 146, 176, 0.1); color: var(--text-secondary); border: 1px solid var(--border); }
+    .tag-red { border-color: var(--red); color: var(--red); background: var(--red-light); }
+    .tag-dark { border-color: var(--ink); color: var(--ink); background: transparent; }
 
     /* ===== SCHEMA LAYERS ===== */
     .layer-block {
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 16px;
-      border: 1px solid;
+      padding: 28px;
+      margin-bottom: 20px;
+      border: 1px solid var(--rule);
+      background: #fff;
     }
     .layer-block h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 16px;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
-    .layer-block h3 .layer-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
+    .layer-block h3 .tag { margin-left: auto; }
+    .layer-indicator {
+      width: 14px;
+      height: 3px;
+      background: var(--red);
       flex-shrink: 0;
     }
-    .meta-layer { background: rgba(96, 165, 250, 0.05); border-color: rgba(96, 165, 250, 0.25); }
-    .meta-layer h3 { color: var(--info); }
-    .meta-layer .layer-dot { background: var(--info); box-shadow: 0 0 8px rgba(96, 165, 250, 0.5); }
+    .layer-block > p { font-size: 0.82rem; color: var(--ink-light); margin-bottom: 18px; }
 
+    .pill-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .schema-pill {
       display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
-      font-size: 0.75rem;
+      align-items: baseline;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      font-size: 0.78rem;
       cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid var(--border);
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      transition: border-color 0.15s;
     }
-    .schema-pill:hover {
-      border-color: var(--border-accent);
-      background: var(--bg-hover);
-    }
-    .schema-pill code { font-size: 0.7rem; color: var(--info); }
-    .schema-pill .pill-desc { color: var(--text-muted); font-size: 0.65rem; }
-    .pill-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .schema-pill:hover { border-color: var(--ink); }
+    .schema-pill code { font-size: 0.72rem; color: var(--red); }
+    .schema-pill .pill-desc { color: var(--ink-ghost); font-size: 0.68rem; }
 
     /* ===== SANDWICH ===== */
-    .sandwich { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(0, 229, 204, 0.2); }
-    .sandwich-layer {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border);
-    }
-    .sandwich-layer:last-child { border-bottom: none; }
+    .sandwich { border: 1px solid var(--ink); }
+    .sandwich-layer { padding: 20px 24px; }
+    .sandwich-layer + .sandwich-layer { border-top: 1px solid var(--rule); }
     .sandwich-label {
-      font-size: 0.65rem;
-      font-weight: 700;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-    .sandwich-external { background: rgba(96, 165, 250, 0.06); }
-    .sandwich-external .sandwich-label { color: var(--info); }
-    .sandwich-internal { background: rgba(0, 229, 204, 0.06); }
-    .sandwich-internal .sandwich-label { color: var(--accent-cyan); }
-    .sandwich-mapping { background: rgba(251, 191, 36, 0.06); }
-    .sandwich-mapping .sandwich-label { color: var(--warning); }
+    .sandwich-external { background: #fff; }
+    .sandwich-external .sandwich-label { color: var(--ink); }
+    .sandwich-internal { background: var(--paper); }
+    .sandwich-internal .sandwich-label { color: var(--ink-light); }
+    .sandwich-mapping { background: var(--paper-warm); }
+    .sandwich-mapping .sandwich-label { color: var(--ink-light); }
     .entity-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .entity-tag {
+      font-family: 'IBM Plex Mono', monospace;
       padding: 4px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 500;
+      border: 1px solid;
     }
-    .entity-tag-ext { background: rgba(96, 165, 250, 0.1); color: var(--info); border: 1px solid rgba(96, 165, 250, 0.15); }
-    .entity-tag-int { background: rgba(0, 229, 204, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 229, 204, 0.15); }
-    .entity-tag-map { background: rgba(251, 191, 36, 0.1); color: var(--warning); border: 1px solid rgba(251, 191, 36, 0.15); }
+    .entity-tag-ext { border-color: var(--ink); color: var(--ink); background: #fff; }
+    .entity-tag-int { border-color: var(--ink-faint); color: var(--ink-light); background: var(--paper); }
+    .entity-tag-map { border-color: var(--red); color: var(--red); background: var(--red-light); }
 
-    /* ===== LIFECYCLE FLOW ===== */
-    .lifecycle {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      margin-bottom: 12px;
-    }
-    .lifecycle-step {
-      text-align: center;
-      padding: 16px 8px;
-      border-radius: var(--radius-md);
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      position: relative;
-    }
-    .lifecycle-step::after {
-      content: '';
-      position: absolute;
-      right: -4px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0; height: 0;
-      border-left: 5px solid var(--text-muted);
-      border-top: 4px solid transparent;
-      border-bottom: 4px solid transparent;
-      z-index: 2;
-    }
-    .lifecycle-step:last-child::after { display: none; }
-    .lifecycle-step .step-icon {
-      font-size: 1.2rem;
-      margin-bottom: 6px;
-    }
-    .lifecycle-step h4 {
-      font-size: 0.75rem;
+    /* ===== SEPARATOR ===== */
+    .sep { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+
+    /* ===== ANNOTATIONS ===== */
+    .annotation {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
       font-weight: 600;
+      padding: 2px 6px;
+      letter-spacing: 0.02em;
     }
-    .lifecycle-step p {
-      font-size: 0.6rem;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .ann-hint { background: var(--paper-warm); color: var(--ink-light); }
+    .ann-ref { background: #e0e7ff; color: #3730a3; }
+    .ann-bidir { background: #fef3c7; color: #92400e; }
+    .ann-ctx { background: var(--red-light); color: var(--red); }
+
+    /* ===== FLOW LIST ===== */
+    .flow-list { display: grid; gap: 0; }
+    .flow-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.1s;
     }
-    .lifecycle-feedback {
-      text-align: center;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      border: 1px dashed var(--border);
-      border-top: none;
-      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-      padding: 8px;
-      margin: 0 10%;
+    .flow-item:last-child { border-bottom: none; }
+    .flow-item:hover { background: var(--paper-warm); }
+    .flow-item-left { display: flex; align-items: center; gap: 14px; }
+    .flow-id {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--red);
+      min-width: 130px;
     }
+    .flow-name { font-size: 0.82rem; color: var(--ink-light); }
+    .flow-detail {
+      display: none;
+      margin-top: 10px;
+      padding: 20px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+    }
+    .flow-detail.open { display: block; }
+    .flow-detail pre {
+      font-size: 0.72rem;
+      line-height: 1.55;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    /* ===== STORIES ===== */
+    .story-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .story-item:last-child { border-bottom: none; }
+    .story-id {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--red);
+      min-width: 36px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .story-text { font-size: 0.82rem; color: var(--ink-light); flex: 1; }
+    .story-text em { color: var(--ink); font-style: normal; font-weight: 600; }
 
     /* ===== AGENTS ===== */
     .agent-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border: 1px solid var(--rule);
       padding: 20px;
+      background: #fff;
       display: flex;
-      align-items: flex-start;
       gap: 16px;
-      transition: border-color 0.2s;
     }
-    .agent-card:hover { border-color: var(--border-accent); }
     .agent-avatar {
-      width: 48px; height: 48px;
-      border-radius: 50%;
+      width: 44px; height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-family: 'Fraunces', serif;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       flex-shrink: 0;
+      border: 2px solid var(--ink);
     }
-    .agent-name { font-weight: 600; font-size: 0.9rem; }
-    .agent-machine { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; }
-    .agent-role { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+    .agent-name { font-weight: 600; font-size: 0.88rem; }
+    .agent-machine {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--ink-ghost);
+    }
+    .agent-role { font-size: 0.8rem; color: var(--ink-light); margin-top: 4px; }
 
     /* ===== ERD ===== */
     .erd-canvas {
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 32px;
+      background: #fff;
+      border: 1px solid var(--ink);
+      padding: 36px;
       position: relative;
-      overflow: hidden;
     }
-    .erd-entity {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      display: inline-block;
-      transition: all 0.2s;
-      cursor: default;
-    }
-    .erd-entity:hover {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 12px var(--glow-cyan);
-      transform: translateY(-2px);
-    }
-    .erd-entity-name {
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-    .erd-entity-props {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      margin-top: 4px;
+    .erd-section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--ink-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-align: center;
+      margin-bottom: 14px;
     }
     .erd-row {
       display: flex;
       justify-content: center;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
+    .erd-entity {
+      border: 1px solid var(--ink);
+      padding: 10px 14px;
+      background: #fff;
+      transition: background 0.15s;
+    }
+    .erd-entity:hover { background: var(--red-light); }
+    .erd-entity-name {
+      font-family: 'Libre Franklin', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .erd-entity-props {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ink-faint);
+      margin-top: 3px;
+    }
+    .erd-entity-map { border-color: var(--red); }
+    .erd-entity-map .erd-entity-name { color: var(--red); }
+
     .erd-connectors {
       text-align: center;
-      padding: 12px 0;
-      font-size: 0.7rem;
-      color: var(--text-muted);
+      padding: 8px 0;
     }
     .erd-rel-label {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: var(--radius-sm);
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 0.6rem;
-      font-weight: 600;
-      margin: 0 4px;
+      font-weight: 500;
+      padding: 2px 8px;
+      margin: 2px;
+      border: 1px solid var(--rule);
     }
+    .erd-rel-label-task { border-color: var(--ink); color: var(--ink); }
+    .erd-rel-label-mat { border-color: var(--red); color: var(--red); }
 
-    /* ===== FLOW DRILL DOWN ===== */
-    .flow-list { display: grid; gap: 8px; }
-    .flow-item {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .flow-item:hover {
-      border-color: var(--border-accent);
-      background: var(--bg-hover);
-    }
-    .flow-item-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .flow-id {
-      font-family: monospace;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent-cyan);
-      min-width: 120px;
-    }
-    .flow-name { font-size: 0.8rem; }
-    .flow-detail {
-      display: none;
-      margin-top: 12px;
-      padding: 16px;
-      background: var(--bg-primary);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-    }
-    .flow-detail.open { display: block; }
-    .flow-detail pre {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      white-space: pre-wrap;
-      overflow-x: auto;
-    }
-
-    /* ===== STORY LIST ===== */
-    .story-item {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .story-item:last-child { border-bottom: none; }
-    .story-id {
-      font-family: monospace;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--accent-coral);
-      min-width: 40px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .story-text { font-size: 0.8rem; color: var(--text-secondary); flex: 1; }
-    .story-text em { color: var(--text-primary); font-style: normal; font-weight: 500; }
-
-    /* ===== PLUGIN ECOSYSTEM ===== */
+    /* ===== PLUGIN ===== */
     .plugin-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
+      border: 1px solid var(--rule);
+      padding: 18px;
+      background: #fff;
     }
-    .plugin-name { font-weight: 600; font-size: 0.85rem; }
-    .plugin-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .plugin-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+    .plugin-desc { font-size: 0.78rem; color: var(--ink-faint); margin-top: 4px; }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      border-left: 3px solid var(--red);
+      padding: 16px 20px;
+      background: var(--red-light);
+      font-size: 0.82rem;
+      color: var(--ink-light);
+    }
+    .callout strong { color: var(--red); }
+
+    /* ===== TRACEABILITY CHAIN ===== */
+    .trace-chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .trace-node {
+      text-align: center;
+      padding: 14px 22px;
+      border: 1px solid var(--ink);
+      background: #fff;
+    }
+    .trace-node-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-ghost);
+      margin-bottom: 4px;
+    }
+    .trace-node-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+    .trace-arrow {
+      font-size: 1rem;
+      color: var(--ink-ghost);
+      padding: 0 6px;
+    }
 
     /* ===== FOOTER ===== */
     .footer {
-      border-top: 1px solid var(--border);
+      border-top: 3px solid var(--ink);
       padding: 24px 0;
-      text-align: center;
-      font-size: 0.7rem;
-      color: var(--text-muted);
+      margin-top: 0;
     }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+
+    /* ===== POPOVER ===== */
+    .popover {
+      display: none;
+      position: fixed;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 12px 16px;
+      max-width: 300px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      z-index: 200;
+      border: 1px solid var(--ink);
+    }
+    .popover.visible { display: block; }
+
+    /* ===== EXPANDABLE ===== */
+    .expandable { cursor: pointer; }
+    .expandable .expand-icon {
+      transition: transform 0.15s;
+      display: inline-block;
+      font-size: 0.7rem;
+      color: var(--ink-ghost);
+    }
+    .expandable.open .expand-icon { transform: rotate(90deg); }
+
+    /* ===== NOT-LAYER CARDS ===== */
+    .not-layer {
+      padding: 20px;
+      border-top: 3px solid var(--ink);
+      background: #fff;
+    }
+    .not-layer h4 { font-size: 0.88rem; margin-bottom: 6px; }
+    .not-layer p { font-size: 0.82rem; color: var(--ink-light); }
+    .not-layer .aside {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ink-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 10px;
+    }
+
+    /* ===== COMPOUND LOOP ===== */
+    .loop-step {
+      text-align: center;
+      padding: 20px;
+    }
+    .loop-step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--rule);
+      line-height: 1;
+    }
+    .loop-step h4 { font-size: 0.85rem; margin: 6px 0 4px; }
+    .loop-step p { font-size: 0.72rem; color: var(--ink-faint); }
+
+    /* ===== OPERATORS ===== */
+    .ops-intro { text-align: center; max-width: 600px; margin: 0 auto 48px; }
+    .ops-question { font-family: 'Fraunces', serif; font-style: italic; color: var(--ink-faint); font-size: 1rem; margin-top: 10px; }
+
+    .ops-agents { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 56px; }
+    .ops-agent {
+      background: #fff;
+      border: 1px solid var(--rule);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .ops-agent:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      transform: translateY(-2px);
+    }
+    .ops-agent-top { display: flex; gap: 16px; padding: 24px 24px 16px; }
+    .ops-avatar {
+      width: 64px; height: 64px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.8rem;
+      color: #fff; border-radius: 10px; flex-shrink: 0;
+    }
+    .ops-agent-info { flex: 1; min-width: 0; }
+    .ops-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; }
+    .ops-home { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--ink-ghost); margin-top: 1px; }
+    .ops-role { font-size: 0.82rem; color: var(--ink-light); margin-top: 6px; line-height: 1.55; }
+    .ops-voice {
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-size: 0.82rem; color: var(--ink-faint);
+      padding: 0 24px 14px;
+    }
+    .ops-tags { padding: 10px 24px; display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--rule); }
+    .ops-detail {
+      padding: 16px 24px 20px; font-size: 0.82rem;
+      color: var(--ink-light); line-height: 1.6;
+      display: none; border-top: 1px solid var(--rule);
+    }
+    .ops-detail.open { display: block; }
+    .ops-agent.is-planned { border-style: dashed; }
+    .ops-agent.is-planned .ops-avatar { opacity: 0.6; }
+    .ops-agent.is-planned .ops-name { color: var(--ink-light); }
+    .ops-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.56rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 2px 8px; display: inline-block;
+      vertical-align: middle; margin-left: 6px;
+    }
+    .ops-badge-active { background: #dcfce7; color: #166534; }
+    .ops-badge-aspirational { background: #fef3c7; color: #92400e; }
+    .ops-badge-emerging { background: #e0e7ff; color: #3730a3; }
+    .ops-badge-planned { background: var(--paper); color: var(--ink-ghost); border: 1px dashed var(--rule); }
+
+    .ops-mem-stack { max-width: 560px; margin: 0 auto; }
+    .ops-mem-item {
+      padding: 14px 20px; border: 1px solid;
+      display: grid; grid-template-columns: 160px 1fr;
+      gap: 12px; align-items: center; margin-bottom: -1px;
+    }
+    .ops-mem-file { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 0.82rem; }
+    .ops-mem-what { font-size: 0.82rem; color: var(--ink-light); }
+    .ops-mem-soul { background: var(--red-light); border-color: var(--red); }
+    .ops-mem-soul .ops-mem-file { color: var(--red); }
+    .ops-mem-core { background: #fff; border-color: var(--ink); }
+    .ops-mem-daily { background: var(--paper); border-color: var(--rule); }
+    .ops-mem-search { background: var(--paper-warm); border-color: var(--ink-faint); border-style: dashed; }
+
+    .ops-flow {
+      display: flex; align-items: stretch;
+      border: 1px solid var(--ink); margin-bottom: 16px; overflow: hidden;
+    }
+    .ops-flow-step {
+      flex: 1; padding: 20px 14px; text-align: center;
+      border-right: 1px solid var(--rule); background: #fff;
+    }
+    .ops-flow-step:last-child { border-right: none; }
+    .ops-flow-step h4 { font-size: 0.82rem; margin-bottom: 3px; }
+    .ops-flow-step p { font-size: 0.7rem; color: var(--ink-faint); }
+    .ops-flow-step.is-key { background: var(--red-light); }
+    .ops-flow-step.is-key h4 { color: var(--red); }
+
+    .ops-machine {
+      padding: 20px; text-align: center;
+      border-right: 1px solid var(--rule); background: #fff;
+    }
+    .ops-machine:last-child { border-right: none; }
+    .ops-machine.is-hub { background: var(--red-light); border-bottom: 3px solid var(--red); }
+    .ops-machine-name { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+    .ops-machine-type {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .ops-machine-role { font-size: 0.78rem; color: var(--ink-light); margin-top: 6px; }
+    .ops-machine-resident { margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600; }
+
+    .ops-channel {
+      display: grid; grid-template-columns: 160px 1fr auto;
+      gap: 16px; align-items: center;
+      padding: 16px 24px; border-bottom: 1px solid var(--rule); background: #fff;
+    }
+    .ops-channel:last-child { border-bottom: none; }
+    .ops-channel-name { font-weight: 600; font-size: 0.88rem; }
+    .ops-channel-desc { font-size: 0.82rem; color: var(--ink-light); }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .spectrum { grid-template-columns: repeat(2, 1fr); }
+      .header h1 { font-size: 1.8rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .spectrum { grid-template-columns: 1fr 1fr; }
       .lifecycle { grid-template-columns: repeat(3, 1fr); }
-      .lifecycle-step::after { display: none; }
-      .stats-bar { grid-template-columns: repeat(3, 1fr); }
+      .stats-bar { flex-wrap: wrap; }
+      .stat { min-width: 33%; }
       .card-grid-2, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr; }
-      .header h1 { font-size: 1.3rem; }
-      .container { padding: 0 16px; }
+      .container { padding: 0 20px; }
+      .trace-chain { flex-direction: column; }
+      .trace-arrow { transform: rotate(90deg); }
+      .ops-agents { grid-template-columns: 1fr; }
+      .ops-mem-item { grid-template-columns: 1fr; }
+      .ops-flow { flex-direction: column; }
+      .ops-channel { grid-template-columns: 1fr; gap: 8px; }
     }
     @media (max-width: 480px) {
       .spectrum { grid-template-columns: 1fr; }
       .lifecycle { grid-template-columns: 1fr; }
-      .tab-btn { padding: 10px 14px; font-size: 0.75rem; }
+      .tab-btn { padding: 10px 14px; }
     }
-
-    /* ===== POPOVER ===== */
-    .popover-trigger { cursor: help; border-bottom: 1px dashed var(--text-muted); }
-    .popover {
-      display: none;
-      position: absolute;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-accent);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      max-width: 300px;
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      z-index: 200;
-    }
-    .popover.visible { display: block; }
-
-    /* ===== TOGGLE DETAIL ===== */
-    .expandable { cursor: pointer; }
-    .expandable .expand-icon { transition: transform 0.2s; display: inline-block; }
-    .expandable.open .expand-icon { transform: rotate(90deg); }
-
-    /* ===== SEPARATOR ===== */
-    .sep {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 32px 0;
-    }
-
-    /* ===== ANNOTATION ===== */
-    .annotation {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.6rem;
-      font-family: monospace;
-      font-weight: 600;
-    }
-    .ann-hint { background: rgba(0, 229, 204, 0.1); color: var(--accent-cyan); }
-    .ann-ref { background: rgba(96, 165, 250, 0.1); color: var(--info); }
-    .ann-bidir { background: rgba(251, 191, 36, 0.1); color: var(--warning); }
-    .ann-ctx { background: rgba(255, 77, 77, 0.1); color: var(--accent-coral); }
   </style>
 </head>
 <body>
 
-  <!-- ============================================================ -->
-  <!-- HEADER                                                       -->
-  <!-- ============================================================ -->
   <header class="header">
     <div class="container">
       <div class="header-inner">
         <div>
           <h1>Enterprise Software <span>@ WDI</span></h1>
-          <div class="header-subtitle">How a 2-person B&B builds production-grade software with spec-driven development</div>
+          <div class="header-subtitle">How a 2-person bed & breakfast builds production-grade software using spec-driven development.</div>
         </div>
         <div class="header-badge">Spec-Anchored</div>
       </div>
     </div>
   </header>
 
-  <!-- ============================================================ -->
-  <!-- TAB BAR                                                      -->
-  <!-- ============================================================ -->
   <nav class="tab-bar">
-    <div class="container" style="display:flex;gap:2px;">
+    <div class="container">
+      <button class="tab-btn" onclick="showTab('operators')">Operators</button>
       <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
       <button class="tab-btn" onclick="showTab('schemas')">Schema Architecture</button>
       <button class="tab-btn" onclick="showTab('flows')">Flows & Stories</button>
@@ -666,16 +838,284 @@
     </div>
   </nav>
 
-  <!-- ============================================================ -->
-  <!-- TAB: OVERVIEW                                                -->
-  <!-- ============================================================ -->
+  <!-- ==================== OPERATORS ==================== -->
+  <div id="tab-operators" class="tab-panel">
+    <div class="container">
+
+      <div class="ops-intro">
+        <div class="section-header">
+          <h2>The Operators</h2>
+          <p>A 2-person B&amp;B doesn't have a development team. So we built one. Four AI agents, four machines, one mesh network. They're not tools &mdash; they're the team.</p>
+        </div>
+        <div class="ops-question">"Who's actually doing the work?"</div>
+      </div>
+
+      <!-- ── AGENT GALLERY ── -->
+      <div class="ops-agents">
+
+        <!-- Reid -->
+        <div class="ops-agent" style="border-left: 4px solid #d97706;" onclick="toggleOpsDetail('detail-reid')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#d97706;">R</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Reid</div>
+              <div class="ops-home">Hart (Mac Mini M4) &middot; Always-on</div>
+              <div class="ops-role">Dave's strategic partner. Thinks through everything before a line of code gets written. Coordinates the entire operation and keeps institutional memory alive across sessions.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"I remember so you don't have to."</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#d97706;color:#d97706;">orchestration</span>
+            <span class="tag" style="border-color:#d97706;color:#d97706;">memory</span>
+            <span class="tag" style="border-color:#d97706;color:#d97706;">scoping</span>
+            <span class="tag" style="border-color:#d97706;color:#d97706;">coordination</span>
+          </div>
+          <div id="detail-reid" class="ops-detail">
+            Reid remembers what happened three Tuesdays ago. That's not a metaphor &mdash; daily logs and semantic search make it literal. When Dave needs context on a decision from last month, Reid has it. When a new session starts, Reid reads yesterday's log and picks up where things left off.
+          </div>
+        </div>
+
+        <!-- Wren -->
+        <div class="ops-agent" style="border-left: 4px solid #0891b2;" onclick="toggleOpsDetail('detail-wren')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#0891b2;">W</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Wren</div>
+              <div class="ops-home">dave-mac</div>
+              <div class="ops-role">Research and synthesis. Goes deep on documentation, competitive analysis, and technical questions Dave doesn't have time to unpack himself.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"Let me look into that."</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">research</span>
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">synthesis</span>
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">analysis</span>
+            <span class="tag" style="border-color:#0891b2;color:#0891b2;">documentation</span>
+          </div>
+          <div id="detail-wren" class="ops-detail">
+            Wren once read 47 pages of QuickBooks API documentation and came back with a 3-paragraph summary. That's the gig. When there's a question that needs more than a quick search &mdash; when it needs someone to sit with the docs, cross-reference sources, and come back with a recommendation &mdash; Wren does the deep dive.
+          </div>
+        </div>
+
+        <!-- Claude -->
+        <div class="ops-agent" style="border-left: 4px solid #7c3aed;" onclick="toggleOpsDetail('detail-claude')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#7c3aed;">C</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Claude</div>
+              <div class="ops-home">Claude Code (no home machine)</div>
+              <div class="ops-role">The heavy lifter. When Reid has scoped the work, Claude builds it. Multi-file implementation, sustained coding sessions, production-grade output.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"Give me the spec. I'll build it."</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">generation</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">implementation</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">multi-file</span>
+            <span class="tag" style="border-color:#7c3aed;color:#7c3aed;">sustained</span>
+          </div>
+          <div id="detail-claude" class="ops-detail">
+            Flat-rate Max subscription means Claude can work all day without anyone checking the meter. That changes what's possible. A 2-person B&amp;B can attempt software projects that would normally require a team of five &mdash; because the generation cost is fixed and the quality is high.
+          </div>
+        </div>
+
+        <!-- Todd -->
+        <div class="ops-agent is-planned" style="border-left: 4px solid #059669;" onclick="toggleOpsDetail('detail-todd')">
+          <div class="ops-agent-top">
+            <div class="ops-avatar" style="background:#059669;">T</div>
+            <div class="ops-agent-info">
+              <div class="ops-name">Todd <span class="ops-badge ops-badge-planned">planned</span></div>
+              <div class="ops-home">tonias-laptop</div>
+              <div class="ops-role">Tonia's future partner. Will handle recipes, menu planning, guest experience, and the hospitality operations that make White Doe special.</div>
+            </div>
+          </div>
+          <div class="ops-voice">"What would make the guest smile?"</div>
+          <div class="ops-tags">
+            <span class="tag" style="border-color:#059669;color:#059669;">recipes</span>
+            <span class="tag" style="border-color:#059669;color:#059669;">menus</span>
+            <span class="tag" style="border-color:#059669;color:#059669;">guest experience</span>
+            <span class="tag" style="border-color:#059669;color:#059669;">hospitality</span>
+          </div>
+          <div id="detail-todd" class="ops-detail">
+            Coming soon. Tonia needs a partner who understands mise en place &mdash; someone who can think about seasonal menus, dietary restrictions, wine pairings, and the thousand small decisions that turn a meal into an experience. Todd will be that partner.
+          </div>
+        </div>
+
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── INFRASTRUCTURE ── -->
+      <div class="section-header">
+        <h2>Where They Live</h2>
+        <p>Four machines, one mesh. Tailscale connects everything &mdash; agents can reach each other and shared resources from anywhere.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--ink);margin-bottom:8px;">
+        <div class="ops-machine is-hub">
+          <div class="ops-machine-name">Hart</div>
+          <div class="ops-machine-type">Mac Mini M4</div>
+          <div class="ops-machine-role">Always-on, primary compute</div>
+          <div class="ops-machine-resident" style="color:#d97706;">Reid</div>
+          <div class="wdi-marker" style="margin-top:8px;">Hub</div>
+        </div>
+        <div class="ops-machine">
+          <div class="ops-machine-name">dave-mac</div>
+          <div class="ops-machine-type">Dev Environment</div>
+          <div class="ops-machine-role">Dave's workstation</div>
+          <div class="ops-machine-resident" style="color:#0891b2;">Wren</div>
+        </div>
+        <div class="ops-machine">
+          <div class="ops-machine-name">dave-pc-ubuntu</div>
+          <div class="ops-machine-type">Linux Server</div>
+          <div class="ops-machine-role">Ollama home, free local inference</div>
+          <div class="ops-machine-resident" style="color:var(--ink-ghost);">&mdash;</div>
+        </div>
+        <div class="ops-machine" style="border-right:none;">
+          <div class="ops-machine-name">tonias-laptop</div>
+          <div class="ops-machine-type">Dev Environment</div>
+          <div class="ops-machine-role">Tonia's workstation</div>
+          <div class="ops-machine-resident" style="color:#059669;">Todd</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--ink-ghost);letter-spacing:0.05em;padding:10px;border:1px dashed var(--rule);border-top:none;margin-bottom:56px;">
+        connected via Tailscale mesh network &middot; agents reach each other and shared resources from anywhere
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── COMMUNICATION ── -->
+      <div class="section-header">
+        <h2>How They Talk</h2>
+        <p>Three channels, one primary. The terminal is where work happens.</p>
+      </div>
+
+      <div style="border:1px solid var(--rule);margin-bottom:56px;">
+        <div class="ops-channel">
+          <div class="ops-channel-name">Terminal</div>
+          <div class="ops-channel-desc">TUI and Webchat. Dave uses it 100%. This is where thinking, scoping, and building happen.</div>
+          <span class="ops-badge ops-badge-active">Primary</span>
+        </div>
+        <div class="ops-channel">
+          <div class="ops-channel-name">Telegram</div>
+          <div class="ops-channel-desc">Built but not adopted. Future potential for mobile and async communication with agents.</div>
+          <span class="ops-badge ops-badge-aspirational">Aspirational</span>
+        </div>
+        <div class="ops-channel">
+          <div class="ops-channel-name">A2A</div>
+          <div class="ops-channel-desc">Agent-to-Agent messaging. Built, not hardened. Cross-session coordination for agent collaboration.</div>
+          <span class="ops-badge ops-badge-emerging">Emerging</span>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── MEMORY ── -->
+      <div class="section-header" style="text-align:center;">
+        <h2>How They Remember</h2>
+        <p style="margin:6px auto 0;max-width:520px;">Agents wake up fresh every session. Files are their continuity. Four layers, from identity to recall.</p>
+      </div>
+
+      <div class="ops-mem-stack" style="margin-bottom:56px;">
+        <div class="ops-mem-item ops-mem-soul">
+          <div class="ops-mem-file">SOUL.md</div>
+          <div class="ops-mem-what">Who the agent <em>is</em>. Personality, values, relationship to their human. Identity, not data.</div>
+        </div>
+        <div class="ops-mem-item ops-mem-core">
+          <div class="ops-mem-file">MEMORY.md</div>
+          <div class="ops-mem-what">Core context, persistent facts, institutional knowledge. The working memory that carries forward.</div>
+        </div>
+        <div class="ops-mem-item ops-mem-daily">
+          <div class="ops-mem-file">memory/YYYY-MM-DD.md</div>
+          <div class="ops-mem-what">What happened today. Daily logs that give temporal context and recency.</div>
+        </div>
+        <div class="ops-mem-item ops-mem-search">
+          <div class="ops-mem-file">Semantic Search</div>
+          <div class="ops-mem-what">Recall across all memory files. Ask a question, get relevant context from any point in history.</div>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── THE HANDOFF ── -->
+      <div class="section-header">
+        <h2>The Handoff</h2>
+        <p>The division of labor that makes everything possible. Reid excels at thinking and scoping. Claude excels at building. Neither is great at the other's job.</p>
+      </div>
+
+      <div class="ops-flow">
+        <div class="ops-flow-step">
+          <h4>Dave has an idea</h4>
+          <p>Need, feature, problem</p>
+        </div>
+        <div class="ops-flow-step is-key">
+          <h4>Reid scopes it</h4>
+          <p>Think, plan, write prompt</p>
+        </div>
+        <div class="ops-flow-step is-key">
+          <h4>Claude builds it</h4>
+          <p>Multi-file, sustained work</p>
+        </div>
+        <div class="ops-flow-step">
+          <h4>Reid reviews</h4>
+          <p>Quality, context, memory</p>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-2" style="margin-bottom:16px;">
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-ghost);margin-bottom:8px;">Method 1</div>
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">tmux Orchestration</h4>
+          <p style="font-size:0.8rem;color:var(--ink-light);line-height:1.55;">Reid controls Claude Code programmatically. Send prompts, monitor progress, extract results. Full automation when the task is well-scoped.</p>
+        </div>
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-ghost);margin-bottom:8px;">Method 2</div>
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Prompt Handoff</h4>
+          <p style="font-size:0.8rem;color:var(--ink-light);line-height:1.55;">Reid writes a detailed prompt, Dave copy/pastes to Claude Code. Simple, effective. Human in the loop when judgment matters.</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-bottom:56px;">
+        <strong>Why this works:</strong> Flat-rate Max subscription means Claude can work all day without cost anxiety. Reid provides the context and judgment. Claude provides the sustained generation. The handoff IS the architecture.
+      </div>
+
+      <hr class="sep">
+
+      <!-- ── HOW THEY LEARN ── -->
+      <div class="section-header">
+        <h2>How They Learn</h2>
+        <p>Every solved problem makes the next one easier. Learnings flow through the system at three scales.</p>
+      </div>
+
+      <div class="card-grid card-grid-3" style="margin-bottom:20px;">
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Research</h4>
+          <p style="font-size:0.78rem;color:var(--ink-light);line-height:1.5;">Web search, documentation deep dives, competitive analysis. Fabric AI processes external content &mdash; YouTube, articles, podcasts &mdash; and extracts wisdom.</p>
+        </div>
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Org-Level Learnings</h4>
+          <p style="font-size:0.78rem;color:var(--ink-light);line-height:1.5;"><code style="font-size:0.72rem;color:var(--red);">whitedoeinn/learnings.git</code> &mdash; shared across ALL repos and agents. Patterns that apply everywhere.</p>
+        </div>
+        <div style="padding:20px;border:1px solid var(--rule);background:#fff;">
+          <h4 style="font-size:0.85rem;margin-bottom:6px;">Repo-Level Learnings</h4>
+          <p style="font-size:0.78rem;color:var(--ink-light);line-height:1.5;"><code style="font-size:0.72rem;color:var(--red);">COMPOUND-LEARNINGS.md</code> &mdash; per project. Specific patterns, pitfalls, and solutions for this codebase.</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:0.88rem;color:var(--ink-faint);padding:20px 0;">
+        They're not tools. They're the team.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== OVERVIEW ==================== -->
   <div id="tab-overview" class="tab-panel active">
     <div class="container">
 
-      <!-- SDD Maturity Spectrum -->
       <div class="section-header">
         <h2>The SDD Maturity Spectrum</h2>
-        <p>From improvisational coding to fully machine-governed specs</p>
+        <p>From improvisational coding to fully machine-governed specs. WDI operates at the recommended sweet spot.</p>
         <div class="cite">Framework: Birgitta Böckeler, martinfowler.com (Oct 2025)</div>
       </div>
 
@@ -703,117 +1143,88 @@
         </div>
       </div>
 
-      <!-- Stats Bar -->
       <div class="stats-bar">
-        <div class="stat">
-          <div class="stat-value" style="color: var(--info)">6</div>
-          <div class="stat-label">Meta-Schemas</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" style="color: var(--accent-cyan)">3</div>
-          <div class="stat-label">Domain Layers</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" style="color: var(--accent-cyan)">13</div>
-          <div class="stat-label">User Stories</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" style="color: var(--accent-cyan)">32</div>
-          <div class="stat-label">Flows</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" style="color: var(--warning)">4</div>
-          <div class="stat-label">Personas</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" style="color: var(--accent-coral)">7</div>
-          <div class="stat-label">Principles</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" style="color: #c084fc">3</div>
-          <div class="stat-label">AI Agents</div>
-        </div>
+        <div class="stat"><div class="stat-value">6</div><div class="stat-label">Meta-Schemas</div></div>
+        <div class="stat"><div class="stat-value">3</div><div class="stat-label">Domain Layers</div></div>
+        <div class="stat"><div class="stat-value">13</div><div class="stat-label">User Stories</div></div>
+        <div class="stat"><div class="stat-value">32</div><div class="stat-label">Flows</div></div>
+        <div class="stat"><div class="stat-value">4</div><div class="stat-label">Personas</div></div>
+        <div class="stat"><div class="stat-value">7</div><div class="stat-label">Principles</div></div>
+        <div class="stat"><div class="stat-value">3</div><div class="stat-label">AI Agents</div></div>
       </div>
 
-      <!-- Development Lifecycle -->
       <div class="section-header">
         <h2>Development Lifecycle</h2>
-        <p>Every change flows through this cycle — specs first, always</p>
       </div>
 
       <div class="lifecycle">
-        <div class="lifecycle-step" style="border-color: rgba(255, 77, 77, 0.3);">
-          <div class="step-icon" style="color: var(--accent-coral);">&#9888;</div>
-          <h4 style="color: var(--accent-coral);">Problem</h4>
+        <div class="lifecycle-step">
+          <div class="step-num">1</div>
+          <h4>Problem</h4>
           <p>Identify need or gap</p>
         </div>
-        <div class="lifecycle-step" style="border-color: rgba(96, 165, 250, 0.3);">
-          <div class="step-icon" style="color: var(--info);">&#9881;</div>
-          <h4 style="color: var(--info);">Schema</h4>
+        <div class="lifecycle-step is-active">
+          <div class="step-num">2</div>
+          <h4>Schema</h4>
           <p>Spec change first</p>
         </div>
-        <div class="lifecycle-step" style="border-color: rgba(0, 229, 204, 0.3);">
-          <div class="step-icon" style="color: var(--accent-cyan);">&#9654;</div>
-          <h4 style="color: var(--accent-cyan);">Implement</h4>
+        <div class="lifecycle-step">
+          <div class="step-num">3</div>
+          <h4>Implement</h4>
           <p>Code from spec</p>
         </div>
-        <div class="lifecycle-step" style="border-color: rgba(251, 191, 36, 0.3);">
-          <div class="step-icon" style="color: var(--warning);">&#10003;</div>
-          <h4 style="color: var(--warning);">Validate</h4>
+        <div class="lifecycle-step">
+          <div class="step-num">4</div>
+          <h4>Validate</h4>
           <p>Automated gates</p>
         </div>
-        <div class="lifecycle-step" style="border-color: rgba(192, 132, 252, 0.3);">
-          <div class="step-icon" style="color: #c084fc;">&#8635;</div>
-          <h4 style="color: #c084fc;">Compound</h4>
+        <div class="lifecycle-step">
+          <div class="step-num">5</div>
+          <h4>Compound</h4>
           <p>Learnings feed back</p>
         </div>
       </div>
-      <div class="lifecycle-feedback">&#8592; feedback loop: learnings compound into better specs &#8594;</div>
+      <div class="lifecycle-feedback">feedback loop: learnings compound into better specs</div>
 
-      <hr class="sep">
-
-      <!-- Constitutional Principles -->
       <div class="section-header">
         <h2>Constitutional Principles</h2>
-        <p>7 rules that govern all schema and implementation decisions</p>
+        <p>Seven rules that govern all schema and implementation decisions.</p>
       </div>
 
-      <div class="card-grid card-grid-2" style="margin-bottom: 24px;">
-        <div class="card" style="border-left: 3px solid var(--accent-cyan);">
-          <div class="card-title" style="color: var(--accent-cyan);">1. Spec-First, Always</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">No code changes without corresponding spec updates. Specs are the source of truth.</div>
+      <div style="border: 1px solid var(--rule); background: #fff; padding: 8px 24px;">
+        <div class="principle">
+          <div class="principle-num">1</div>
+          <div><h4>Spec-First, Always</h4><p>No code changes without corresponding spec updates. Specs are the source of truth.</p></div>
         </div>
-        <div class="card" style="border-left: 3px solid var(--accent-cyan);">
-          <div class="card-title" style="color: var(--accent-cyan);">2. Idempotent from Schema</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">Application is a deterministic function of specs. Undocumented behavior is a bug.</div>
+        <div class="principle">
+          <div class="principle-num">2</div>
+          <div><h4>Idempotent from Schema</h4><p>Application is a deterministic function of specs. Undocumented behavior is a bug.</p></div>
         </div>
-        <div class="card" style="border-left: 3px solid var(--warning);">
-          <div class="card-title" style="color: var(--warning);">3. Bidirectional Traceability</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">story.flowIds &harr; flow.implementsStories. Validated in CI.</div>
+        <div class="principle">
+          <div class="principle-num">3</div>
+          <div><h4>Bidirectional Traceability</h4><p>story.flowIds &harr; flow.implementsStories. Validated in CI.</p></div>
         </div>
-        <div class="card" style="border-left: 3px solid var(--warning);">
-          <div class="card-title" style="color: var(--warning);">4. Config-Driven Behavior</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">Business rules live in JSON, not code. Owners update rules directly.</div>
+        <div class="principle">
+          <div class="principle-num">4</div>
+          <div><h4>Config-Driven Behavior</h4><p>Business rules live in JSON, not code. Owners update rules directly.</p></div>
         </div>
-        <div class="card" style="border-left: 3px solid var(--info);">
-          <div class="card-title" style="color: var(--info);">5. Integration Contract</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">Reference external entities, don't reinvent them. Define mappings on top.</div>
+        <div class="principle">
+          <div class="principle-num">5</div>
+          <div><h4>Integration Contract</h4><p>Reference external entities, don't reinvent them. Define mappings on top.</p></div>
         </div>
-        <div class="card" style="border-left: 3px solid #c084fc;">
-          <div class="card-title" style="color: #c084fc;">6. Compounding</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">Learnings feed back into specs. Every solved problem makes the next easier.</div>
+        <div class="principle">
+          <div class="principle-num">6</div>
+          <div><h4>Compounding</h4><p>Learnings feed back into specs. Every solved problem makes the next easier.</p></div>
         </div>
-        <div class="card" style="border-left: 3px solid var(--accent-coral);">
-          <div class="card-title" style="color: var(--accent-coral);">7. Fail-Closed Security</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">Unmatched items flagged for review, never silently classified. Deny by default.</div>
+        <div class="principle">
+          <div class="principle-num">7</div>
+          <div><h4 style="color: var(--red);">Fail-Closed Security</h4><p>Unmatched items flagged for review, never silently classified. Deny by default.</p></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- TAB: SCHEMA ARCHITECTURE                                     -->
-  <!-- ============================================================ -->
+  <!-- ==================== SCHEMA ARCHITECTURE ==================== -->
   <div id="tab-schemas" class="tab-panel">
     <div class="container">
 
@@ -822,10 +1233,9 @@
         <p>Meta-schemas define structure. Domain schemas define the business. Everything else is governance, instances, or mechanisms.</p>
       </div>
 
-      <!-- Layer 1: Meta-Schemas -->
-      <div class="layer-block meta-layer">
-        <h3><span class="layer-dot"></span> Layer 1: Meta-Schemas <span class="tag tag-blue" style="margin-left:auto;">Define Structure</span></h3>
-        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px;">Schemas that define the <em>shape</em> of all other specs. These are the grammar of the system.</p>
+      <div class="layer-block">
+        <h3><span class="layer-indicator"></span> Layer 1: Meta-Schemas <span class="tag tag-dark">Define Structure</span></h3>
+        <p>Schemas that define the <em>shape</em> of all other specs. These are the grammar of the system.</p>
         <div class="pill-grid">
           <div class="schema-pill" onclick="togglePopover(this, 'Story structure with persona refs, effort levels, acceptance criteria, and bidirectional flow links')">
             <code>user-stories.schema.json</code>
@@ -854,19 +1264,17 @@
         </div>
       </div>
 
-      <!-- Layer 2: Three-Layer Sandwich -->
-      <div style="margin-bottom: 16px;">
-        <h3 style="font-size: 1rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-          <span style="width:8px;height:8px;border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 8px var(--glow-cyan);flex-shrink:0;"></span>
-          Layer 2: Domain Schemas — The Three-Layer Sandwich
-          <span class="tag tag-cyan" style="margin-left:auto;">Business Model</span>
+      <div style="margin-bottom: 8px;">
+        <h3 style="font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+          <span class="layer-indicator"></span>
+          Layer 2: Domain Schemas &mdash; The Three-Layer Sandwich
+          <span class="tag tag-red" style="margin-left:auto;">Business Model</span>
         </h3>
       </div>
 
-      <div class="sandwich">
-        <!-- External -->
+      <div class="sandwich" style="margin-bottom: 20px;">
         <div class="sandwich-layer sandwich-external">
-          <div class="sandwich-label">External — API Entities (surfaces exposed by integrations)</div>
+          <div class="sandwich-label">External &mdash; API Entities</div>
           <div class="entity-tags">
             <span class="entity-tag entity-tag-ext">Task</span>
             <span class="entity-tag entity-tag-ext">Material</span>
@@ -879,16 +1287,14 @@
             <span class="entity-tag entity-tag-ext">Team Member</span>
           </div>
         </div>
-        <!-- Internal -->
         <div class="sandwich-layer sandwich-internal">
-          <div class="sandwich-label">Internal — Computed / Derived Entities</div>
+          <div class="sandwich-label">Internal &mdash; Computed / Derived</div>
           <div class="entity-tags">
             <span class="entity-tag entity-tag-int">Notification</span>
           </div>
         </div>
-        <!-- Mapping -->
         <div class="sandwich-layer sandwich-mapping">
-          <div class="sandwich-label">Mapping — Relationship & Config Entities</div>
+          <div class="sandwich-label">Mapping &mdash; Relationships & Config</div>
           <div class="entity-tags">
             <span class="entity-tag entity-tag-map">Task Relationship</span>
             <span class="entity-tag entity-tag-map">Material Relationship</span>
@@ -900,109 +1306,104 @@
 
       <hr class="sep">
 
-      <!-- NOT Schema Layers -->
       <div class="section-header">
         <h2>Not Schema Layers</h2>
-        <p>These are important but distinct from the schema taxonomy</p>
+        <p>Important, but distinct from the schema taxonomy.</p>
       </div>
 
-      <div class="card-grid card-grid-3">
-        <div class="card" style="border-top: 3px solid #c084fc;">
-          <div class="card-title" style="color: #c084fc;">Governance</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">Constitutional principles are <em>rules that govern</em>, not schemas. They constrain how schemas evolve.</div>
-          <div class="tag tag-muted" style="margin-top:8px;">Rules, not structure</div>
+      <div class="card-grid card-grid-3" style="margin-bottom: 20px;">
+        <div class="not-layer">
+          <h4>Governance</h4>
+          <p>Constitutional principles are <em>rules that govern</em>, not schemas. They constrain how schemas evolve.</p>
+          <div class="aside">Rules, not structure</div>
         </div>
-        <div class="card" style="border-top: 3px solid var(--warning);">
-          <div class="card-title" style="color: var(--warning);">Instances</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">User stories and flows are <em>data conforming to</em> meta-schemas. They're the content, not the container.</div>
-          <div class="tag tag-muted" style="margin-top:8px;">Data, not schemas</div>
+        <div class="not-layer">
+          <h4>Instances</h4>
+          <p>User stories and flows are <em>data conforming to</em> meta-schemas. Content, not container.</p>
+          <div class="aside">Data, not schemas</div>
         </div>
-        <div class="card" style="border-top: 3px solid var(--accent-coral);">
-          <div class="card-title" style="color: var(--accent-coral);">Validation</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary);">Validation is a cross-cutting <em>mechanism</em> — a quality gate. It enforces schema conformance, it isn't a schema.</div>
-          <div class="tag tag-muted" style="margin-top:8px;">Mechanism, not layer</div>
+        <div class="not-layer">
+          <h4>Validation</h4>
+          <p>A cross-cutting <em>mechanism</em> &mdash; a quality gate. It enforces conformance; it isn't a schema.</p>
+          <div class="aside">Mechanism, not layer</div>
         </div>
       </div>
 
       <hr class="sep">
 
-      <!-- Schema Extensions -->
       <div class="section-header">
         <h2>Schema Extensions</h2>
-        <p>Custom x- annotations that make schemas actionable</p>
+        <p>Custom x- annotations that make schemas actionable.</p>
       </div>
 
       <div class="card-grid card-grid-4">
-        <div class="card" style="padding: 16px;">
-          <div style="margin-bottom: 8px;"><span class="annotation ann-hint">x-ui-hints</span></div>
-          <div style="font-size: 0.75rem; color: var(--text-secondary);">Layout sections, field display modes, conditional visibility, widget selection</div>
+        <div style="padding: 16px 0; border-top: 2px solid var(--ink);">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-hint">x-ui-hints</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Layout sections, field display modes, conditional visibility, widget selection</div>
         </div>
-        <div class="card" style="padding: 16px;">
-          <div style="margin-bottom: 8px;"><span class="annotation ann-ref">x-reference</span></div>
-          <div style="font-size: 0.75rem; color: var(--text-secondary);">Cross-schema references — resource, field, displayField for entity lookups</div>
+        <div style="padding: 16px 0; border-top: 2px solid #3730a3;">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-ref">x-reference</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Cross-schema references &mdash; resource, field, displayField for entity lookups</div>
         </div>
-        <div class="card" style="padding: 16px;">
-          <div style="margin-bottom: 8px;"><span class="annotation ann-bidir">x-bidirectional</span></div>
-          <div style="font-size: 0.75rem; color: var(--text-secondary);">Two-way relationship tracking — story &harr; flow links validated in CI</div>
+        <div style="padding: 16px 0; border-top: 2px solid #92400e;">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-bidir">x-bidirectional</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Two-way relationship tracking &mdash; story &harr; flow links validated in CI</div>
         </div>
-        <div class="card" style="padding: 16px;">
-          <div style="margin-bottom: 8px;"><span class="annotation ann-ctx">x-context-rules</span></div>
-          <div style="font-size: 0.75rem; color: var(--text-secondary);">Field availability by context — show/hide fields based on entity state</div>
+        <div style="padding: 16px 0; border-top: 2px solid var(--red);">
+          <div style="margin-bottom: 6px;"><span class="annotation ann-ctx">x-context-rules</span></div>
+          <div style="font-size: 0.78rem; color: var(--ink-light);">Field availability by context &mdash; show/hide fields based on entity state</div>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- TAB: FLOWS & STORIES                                         -->
-  <!-- ============================================================ -->
+  <!-- ==================== FLOWS & STORIES ==================== -->
   <div id="tab-flows" class="tab-panel">
     <div class="container">
 
       <div class="section-header">
-        <h2>Flows: 32 Operations</h2>
-        <p>Every user interaction defined as a spec — CLI, Web, and API surfaces. Click any flow to drill down.</p>
+        <h2>32 Operations</h2>
+        <p>Every user interaction defined as a spec &mdash; CLI, Web, and API surfaces. Click any flow to drill down.</p>
       </div>
 
-      <!-- Flow Type Legend -->
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
-        <span class="tag tag-cyan">list</span>
-        <span class="tag tag-blue">detail</span>
-        <span class="tag tag-muted">create</span>
-        <span class="tag tag-amber">edit</span>
-        <span class="tag tag-coral">delete</span>
-        <span class="tag" style="background:rgba(192,132,252,0.12);color:#c084fc;border:1px solid rgba(192,132,252,0.2);">relationship</span>
-        <span class="tag" style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.2);">workflow</span>
-        <span class="tag" style="background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.2);">dashboard</span>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;">
+        <span class="tag">list</span>
+        <span class="tag">detail</span>
+        <span class="tag">create</span>
+        <span class="tag">edit</span>
+        <span class="tag tag-red">delete</span>
+        <span class="tag">relationship</span>
+        <span class="tag">workflow</span>
+        <span class="tag">dashboard</span>
       </div>
 
-      <!-- Featured Flow: TASK-LIST -->
-      <div class="card" style="margin-bottom: 16px; border-color: rgba(0, 229, 204, 0.3);">
+      <!-- Featured: TASK-LIST -->
+      <div class="card" style="margin-bottom: 16px; border-color: var(--ink);">
         <div class="expandable" onclick="toggleFlowDetail('task-list-detail', this)">
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div style="display:flex;align-items:center;gap:12px;">
+            <div style="display:flex;align-items:center;gap:14px;">
               <span class="flow-id">TASK-LIST</span>
               <span style="font-size:0.85rem;">View all tasks with filters and sorting</span>
-              <span class="tag tag-cyan">list</span>
+              <span class="tag">list</span>
             </div>
-            <span class="expand-icon" style="color:var(--text-muted);">&#9654;</span>
+            <span class="expand-icon">&#9654;</span>
           </div>
         </div>
         <div id="task-list-detail" class="flow-detail">
           <div class="card-grid card-grid-2" style="margin-bottom:16px;">
             <div>
-              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Metadata</div>
-              <div style="font-size:0.8rem;color:var(--text-secondary);display:grid;gap:4px;">
-                <div><strong style="color:var(--text-primary)">Entity:</strong> task</div>
-                <div><strong style="color:var(--text-primary)">Route:</strong> <code>/tasks</code></div>
-                <div><strong style="color:var(--text-primary)">Persona:</strong> gc (read: gc, purchaser, owner)</div>
-                <div><strong style="color:var(--text-primary)">Implements:</strong> <span style="color:var(--accent-coral)">GC14, GC16, GC21, GC22</span></div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">Metadata</div>
+              <div style="font-size:0.82rem;color:var(--ink-light);display:grid;gap:6px;">
+                <div><strong>Entity:</strong> task</div>
+                <div><strong>Route:</strong> <code style="color:var(--red)">/tasks</code></div>
+                <div><strong>Persona:</strong> gc (read: gc, purchaser, owner)</div>
+                <div><strong>Implements:</strong> <span style="color:var(--red)">GC14, GC16, GC21, GC22</span></div>
               </div>
             </div>
             <div>
-              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">uiRequirements</div>
-              <pre style="font-size:0.7rem;color:var(--text-secondary);background:var(--bg-deep);padding:12px;border-radius:var(--radius-md);">{
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">uiRequirements</div>
+              <pre>{
   "columns": [
     { "field": "name", "type": "text" },
     { "field": "status", "type": "badge" },
@@ -1019,69 +1420,49 @@
 }</pre>
             </div>
           </div>
-          <div style="font-size:0.7rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:12px;">
+          <div class="callout">
             <strong>Schema &rarr; UX:</strong> These uiRequirements are the spec that drives the actual list component. The schema IS the design document.
           </div>
         </div>
       </div>
 
-      <!-- More Flows (grouped by type) -->
-      <div class="card" style="margin-bottom: 16px;">
-        <div class="card-title">Task Flows</div>
-        <div class="flow-list">
+      <div class="card" style="margin-bottom: 16px; padding: 0;">
+        <div style="padding: 16px 24px 0;"><div class="card-title">Task Flows</div></div>
+        <div class="flow-list" style="padding: 0 24px;">
           <div class="flow-item expandable" onclick="toggleFlowDetail('task-create-detail', this)">
             <div class="flow-item-left">
               <span class="flow-id">TASK-CREATE</span>
               <span class="flow-name">Create new task</span>
-              <span class="tag tag-muted">create</span>
+              <span class="tag">create</span>
             </div>
-            <span class="expand-icon" style="color:var(--text-muted);">&#9654;</span>
+            <span class="expand-icon">&#9654;</span>
           </div>
-          <div id="task-create-detail" class="flow-detail">
-            <div style="font-size:0.8rem;color:var(--text-secondary);display:grid;gap:4px;">
-              <div><strong style="color:var(--text-primary)">Implements:</strong> <span style="color:var(--accent-coral)">GC6</span> — "Break down the project into tasks"</div>
-              <div><strong style="color:var(--text-primary)">Form fields:</strong> name, category, priority, estimatedDays, estimatedCost, start, end, assignee, notes</div>
-              <div><strong style="color:var(--text-primary)">Field types:</strong> text, dropdown, segmented, number, currency, date, vendor-picker, textarea</div>
-            </div>
-          </div>
-
-          <div class="flow-item">
-            <div class="flow-item-left">
-              <span class="flow-id">TASK-DETAIL</span>
-              <span class="flow-name">View task with dependencies & materials</span>
-              <span class="tag tag-blue">detail</span>
+          <div id="task-create-detail" class="flow-detail" style="margin: 0 0 10px;">
+            <div style="font-size:0.82rem;color:var(--ink-light);display:grid;gap:6px;">
+              <div><strong>Implements:</strong> <span style="color:var(--red)">GC6</span> &mdash; "Break down the project into tasks"</div>
+              <div><strong>Form fields:</strong> name, category, priority, estimatedDays, estimatedCost, start, end, assignee, notes</div>
+              <div><strong>Field types:</strong> text, dropdown, segmented, number, currency, date, vendor-picker, textarea</div>
             </div>
           </div>
-          <div class="flow-item">
-            <div class="flow-item-left">
-              <span class="flow-id">TASK-EDIT</span>
-              <span class="flow-name">Update task details</span>
-              <span class="tag tag-amber">edit</span>
-            </div>
-          </div>
-          <div class="flow-item">
-            <div class="flow-item-left">
-              <span class="flow-id">TASK-DELETE</span>
-              <span class="flow-name">Remove task with dependency check</span>
-              <span class="tag tag-coral">delete</span>
-            </div>
-          </div>
+          <div class="flow-item"><div class="flow-item-left"><span class="flow-id">TASK-DETAIL</span><span class="flow-name">View task with dependencies & materials</span><span class="tag">detail</span></div></div>
+          <div class="flow-item"><div class="flow-item-left"><span class="flow-id">TASK-EDIT</span><span class="flow-name">Update task details</span><span class="tag">edit</span></div></div>
+          <div class="flow-item"><div class="flow-item-left"><span class="flow-id">TASK-DELETE</span><span class="flow-name">Remove task with dependency check</span><span class="tag tag-red">delete</span></div></div>
         </div>
       </div>
 
       <div class="card-grid card-grid-2" style="margin-bottom: 16px;">
-        <div class="card">
-          <div class="card-title">Relationship Flows</div>
-          <div class="flow-list">
+        <div class="card" style="padding: 0;">
+          <div style="padding: 16px 20px 0;"><div class="card-title">Relationship Flows</div></div>
+          <div class="flow-list" style="padding: 0 20px;">
             <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-TASK-DEP</span><span class="flow-name">Task dependencies</span></div></div>
             <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-TASK-MAT</span><span class="flow-name">Task materials</span></div></div>
             <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-VENDOR-CONTACT</span><span class="flow-name">Vendor contacts</span></div></div>
             <div class="flow-item"><div class="flow-item-left"><span class="flow-id">REL-MAT-SUB</span><span class="flow-name">Material substitutes</span></div></div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title">Dashboard & Workflow Flows</div>
-          <div class="flow-list">
+        <div class="card" style="padding: 0;">
+          <div style="padding: 16px 20px 0;"><div class="card-title">Dashboard & Workflow</div></div>
+          <div class="flow-list" style="padding: 0 20px;">
             <div class="flow-item"><div class="flow-item-left"><span class="flow-id">GC-DASHBOARD</span><span class="flow-name">GC overview</span></div></div>
             <div class="flow-item"><div class="flow-item-left"><span class="flow-id">PUNCH-LIST</span><span class="flow-name">Punch list workflow</span></div></div>
             <div class="flow-item"><div class="flow-item-left"><span class="flow-id">ISSUE-TRIAGE</span><span class="flow-name">Issue triage workflow</span></div></div>
@@ -1091,263 +1472,165 @@
 
       <hr class="sep">
 
-      <!-- User Stories -->
-      <div class="section-header">
-        <h2>User Stories: 13 Specs</h2>
-        <p>8 must-have + 5 bookkeeping stories. Each links bidirectionally to flows.</p>
-      </div>
+      <div style="display: grid; grid-template-columns: 1fr 320px; gap: 24px;">
+        <div>
+          <div class="section-header">
+            <h2>User Stories</h2>
+            <p>8 must-have + 5 bookkeeping. Each links bidirectionally to flows.</p>
+          </div>
 
-      <div class="card-grid card-grid-2">
-        <div class="card">
-          <div class="card-title" style="color: var(--accent-coral);">Must-Have Stories</div>
-          <div class="story-item">
-            <span class="story-id">GC1</span>
-            <span class="story-text">As the GC, I want to <em>add subcontractors</em> with their company info so I can manage my trade partners</span>
-            <span class="tag tag-muted">medium</span>
+          <div style="margin-bottom: 20px;">
+            <div class="card-title" style="color: var(--red);">Must-Have</div>
+            <div class="story-item"><span class="story-id">GC1</span><span class="story-text">As the GC, I want to <em>add subcontractors</em> with their company info so I can manage my trade partners</span></div>
+            <div class="story-item"><span class="story-id">GC2</span><span class="story-text">As the GC, I want to <em>add contacts</em> for each sub so I know who to call</span></div>
+            <div class="story-item"><span class="story-id">GC6</span><span class="story-text">As the GC, I want to <em>break down the project into tasks</em> so I can track progress</span></div>
+            <div class="story-item"><span class="story-id">GC10</span><span class="story-text">As the GC, I want to <em>set task dependencies</em> so the sequence is enforced</span></div>
+            <div class="story-item"><span class="story-id">GC14</span><span class="story-text">As the GC, I want to see <em>today's scheduled work</em> so I know what's happening</span></div>
           </div>
-          <div class="story-item">
-            <span class="story-id">GC2</span>
-            <span class="story-text">As the GC, I want to <em>add contacts</em> for each sub so I know who to call</span>
-            <span class="tag tag-muted">small</span>
-          </div>
-          <div class="story-item">
-            <span class="story-id">GC6</span>
-            <span class="story-text">As the GC, I want to <em>break down the project into tasks</em> so I can track progress</span>
-            <span class="tag tag-amber">large</span>
-          </div>
-          <div class="story-item">
-            <span class="story-id">GC10</span>
-            <span class="story-text">As the GC, I want to <em>set task dependencies</em> so the sequence is enforced</span>
-            <span class="tag tag-muted">medium</span>
-          </div>
-          <div class="story-item">
-            <span class="story-id">GC14</span>
-            <span class="story-text">As the GC, I want to see <em>today's scheduled work</em> so I know what's happening</span>
-            <span class="tag tag-muted">medium</span>
+
+          <div>
+            <div class="card-title">Bookkeeping</div>
+            <div class="story-item"><span class="story-id">OP1</span><span class="story-text">As Owner/Purchaser, I want to <em>record receipt details</em> so expenses are tracked</span></div>
+            <div class="story-item"><span class="story-id">OP2</span><span class="story-text">As Owner/Purchaser, I want to <em>attach receipt photos</em> for documentation</span></div>
+            <div class="story-item"><span class="story-id">OP3</span><span class="story-text">As Owner, I want to <em>see total project spend</em> vs budget at a glance</span></div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title" style="color: var(--warning);">Bookkeeping Stories</div>
-          <div class="story-item">
-            <span class="story-id">OP1</span>
-            <span class="story-text">As Owner/Purchaser, I want to <em>record receipt details</em> so expenses are tracked</span>
-            <span class="tag tag-muted">medium</span>
-          </div>
-          <div class="story-item">
-            <span class="story-id">OP2</span>
-            <span class="story-text">As Owner/Purchaser, I want to <em>attach receipt photos</em> for documentation</span>
-            <span class="tag tag-muted">small</span>
-          </div>
-          <div class="story-item">
-            <span class="story-id">OP3</span>
-            <span class="story-text">As Owner, I want to <em>see total project spend</em> vs budget at a glance</span>
-            <span class="tag tag-muted">medium</span>
-          </div>
 
-          <hr class="sep" style="margin: 16px 0;">
-
-          <!-- Personas -->
-          <div class="card-title" style="margin-top: 12px;">Personas</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-              <div style="font-weight:600;color:var(--accent-cyan);">Brandon (GC)</div>
-              <div style="color:var(--text-muted);font-size:0.65rem;">Full access &middot; ASSIGN, SCHEDULE</div>
+        <div>
+          <div class="card-title">Personas</div>
+          <div style="display:grid;gap:10px;">
+            <div style="padding:10px 14px;border-left:3px solid var(--ink);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">Brandon <span style="color:var(--ink-faint);font-weight:400;">(GC)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">Full access &middot; Assign, Schedule</div>
             </div>
-            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-              <div style="font-weight:600;color:var(--warning);">Tonia (Purchaser)</div>
-              <div style="color:var(--text-muted);font-size:0.65rem;">Order access &middot; ORDER, SPECIFY</div>
+            <div style="padding:10px 14px;border-left:3px solid var(--red);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">Tonia <span style="color:var(--ink-faint);font-weight:400;">(Purchaser)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">Order access &middot; Order, Specify</div>
             </div>
-            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-              <div style="font-weight:600;color:var(--info);">Dave (Owner)</div>
-              <div style="color:var(--text-muted);font-size:0.65rem;">View, approve &middot; DECIDE, TRACK</div>
+            <div style="padding:10px 14px;border-left:3px solid var(--ink-faint);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">Dave <span style="color:var(--ink-faint);font-weight:400;">(Owner)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">View, approve &middot; Decide, Track</div>
             </div>
-            <div style="padding:8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-              <div style="font-weight:600;color:#c084fc;">AI Agent (Claude)</div>
-              <div style="color:var(--text-muted);font-size:0.65rem;">Full API &middot; Triage, detect</div>
+            <div style="padding:10px 14px;border-left:3px solid var(--ink-ghost);background:#fff;">
+              <div style="font-weight:600;font-size:0.85rem;">AI Agent <span style="color:var(--ink-faint);font-weight:400;">(Claude)</span></div>
+              <div style="font-size:0.72rem;color:var(--ink-faint);">Full API &middot; Triage, detect</div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <hr class="sep">
-
-      <!-- Bidirectional Traceability Visual -->
-      <div class="section-header">
-        <h2>Bidirectional Traceability</h2>
-        <p>Every link is validated. Break a reference, break the build.</p>
-      </div>
-
-      <div class="card" style="text-align: center; padding: 32px;">
-        <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
-          <div style="text-align:center;">
-            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Persona</div>
-            <div style="background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.2);border-radius:var(--radius-md);padding:12px 20px;color:#c084fc;font-weight:600;font-size:0.85rem;">userStoryIds[]</div>
+          <div style="margin-top: 32px;">
+            <div class="card-title">Traceability Chain</div>
+            <div class="trace-chain" style="flex-direction:column;align-items:stretch;gap:0;">
+              <div class="trace-node"><div class="trace-node-label">Persona</div><div class="trace-node-value">userStoryIds[]</div></div>
+              <div style="text-align:center;padding:3px 0;color:var(--ink-ghost);font-size:0.8rem;">&#8597;</div>
+              <div class="trace-node"><div class="trace-node-label">Story</div><div class="trace-node-value">flowIds[]</div></div>
+              <div style="text-align:center;padding:3px 0;color:var(--ink-ghost);font-size:0.8rem;">&#8597;</div>
+              <div class="trace-node"><div class="trace-node-label">Flow</div><div class="trace-node-value">implementsStories[]</div></div>
+              <div style="text-align:center;padding:3px 0;color:var(--ink-ghost);font-size:0.8rem;">&#8597;</div>
+              <div class="trace-node"><div class="trace-node-label">Entity</div><div class="trace-node-value">entityId</div></div>
+            </div>
+            <div style="text-align:center;margin-top:8px;">
+              <span class="annotation ann-bidir">x-bidirectional</span>
+              <span style="font-size:0.68rem;color:var(--ink-ghost);margin-left:6px;">enforced at CI</span>
+            </div>
           </div>
-          <div style="color:var(--text-muted);font-size:1.2rem;">&#8596;</div>
-          <div style="text-align:center;">
-            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Story</div>
-            <div style="background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.2);border-radius:var(--radius-md);padding:12px 20px;color:var(--accent-coral);font-weight:600;font-size:0.85rem;">flowIds[]</div>
-          </div>
-          <div style="color:var(--text-muted);font-size:1.2rem;">&#8596;</div>
-          <div style="text-align:center;">
-            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Flow</div>
-            <div style="background:rgba(0,229,204,0.1);border:1px solid rgba(0,229,204,0.2);border-radius:var(--radius-md);padding:12px 20px;color:var(--accent-cyan);font-weight:600;font-size:0.85rem;">implementsStories[]</div>
-          </div>
-          <div style="color:var(--text-muted);font-size:1.2rem;">&#8596;</div>
-          <div style="text-align:center;">
-            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Entity</div>
-            <div style="background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);border-radius:var(--radius-md);padding:12px 20px;color:var(--info);font-weight:600;font-size:0.85rem;">entityId</div>
-          </div>
-        </div>
-        <div style="margin-top:16px;font-size:0.7rem;color:var(--text-muted);">
-          <span class="annotation ann-bidir">x-bidirectional</span> enforces these links at CI time
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- TAB: ERD                                                     -->
-  <!-- ============================================================ -->
+  <!-- ==================== ERD ==================== -->
   <div id="tab-erd" class="tab-panel">
     <div class="container">
 
       <div class="section-header">
         <h2>Entity Relationship Diagram</h2>
-        <p>Relationships are schema citizens with semantic meaning — typed join entities, not just foreign keys</p>
+        <p>Relationships are schema citizens with semantic meaning &mdash; typed join entities, not just foreign keys.</p>
       </div>
 
       <div class="erd-canvas">
-
-        <!-- Top Row: Primary Entities -->
-        <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;text-align:center;">External Entities</div>
+        <div class="erd-section-label">External Entities</div>
         <div class="erd-row">
-          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
-            <div class="erd-entity-name" style="color:var(--info);">Milestone</div>
-            <div class="erd-entity-props">id, name, targetDate, status</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
-            <div class="erd-entity-name" style="color:var(--info);">Task</div>
-            <div class="erd-entity-props">id, name, status, category, priority, estimatedDays, estimatedCost, start, end</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
-            <div class="erd-entity-name" style="color:var(--info);">Material</div>
-            <div class="erd-entity-props">id, name, quantity, unit, estimatedCost, status</div>
-          </div>
+          <div class="erd-entity"><div class="erd-entity-name">Milestone</div><div class="erd-entity-props">id, name, targetDate, status</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Task</div><div class="erd-entity-props">id, name, status, category, priority, estimatedDays, estimatedCost, start, end</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Material</div><div class="erd-entity-props">id, name, quantity, unit, estimatedCost, status</div></div>
+        </div>
+        <div class="erd-row">
+          <div class="erd-entity"><div class="erd-entity-name">Vendor</div><div class="erd-entity-props">id, company, trade, license, phone, email</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Receipt</div><div class="erd-entity-props">id, vendor, amount, date, category, attachments</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Issue</div><div class="erd-entity-props">id, prompt, type, status, priority, resolution</div></div>
+          <div class="erd-entity"><div class="erd-entity-name">Contract</div><div class="erd-entity-props">id, vendor, amount, scope</div></div>
         </div>
 
-        <div class="erd-row">
-          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
-            <div class="erd-entity-name" style="color:var(--info);">Vendor</div>
-            <div class="erd-entity-props">id, company, trade, license, phone, email</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
-            <div class="erd-entity-name" style="color:var(--info);">Receipt</div>
-            <div class="erd-entity-props">id, vendor, amount, date, category, attachments</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
-            <div class="erd-entity-name" style="color:var(--info);">Issue</div>
-            <div class="erd-entity-props">id, prompt, type, status, priority, resolution</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(96,165,250,0.3);">
-            <div class="erd-entity-name" style="color:var(--info);">Contract</div>
-            <div class="erd-entity-props">id, vendor, amount, scope</div>
-          </div>
-        </div>
-
-        <!-- Relationship Labels -->
         <div class="erd-connectors">
-          <div style="margin:12px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
-            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">dependency</span>
-            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">decomposition</span>
-            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">phase</span>
-            <span class="erd-rel-label" style="background:rgba(251,191,36,0.12);color:var(--warning);">punch-item</span>
-            <span class="erd-rel-label" style="background:rgba(0,229,204,0.12);color:var(--accent-cyan);">substitutes</span>
-            <span class="erd-rel-label" style="background:rgba(0,229,204,0.12);color:var(--accent-cyan);">alternative</span>
-            <span class="erd-rel-label" style="background:rgba(0,229,204,0.12);color:var(--accent-cyan);">upgrade</span>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:8px 0;">
+            <span class="erd-rel-label erd-rel-label-task">dependency</span>
+            <span class="erd-rel-label erd-rel-label-task">decomposition</span>
+            <span class="erd-rel-label erd-rel-label-task">phase</span>
+            <span class="erd-rel-label erd-rel-label-task">punch-item</span>
+            <span class="erd-rel-label erd-rel-label-mat">substitutes</span>
+            <span class="erd-rel-label erd-rel-label-mat">alternative</span>
+            <span class="erd-rel-label erd-rel-label-mat">upgrade</span>
           </div>
-          <div style="font-size:0.6rem;color:var(--text-muted);margin-top:4px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);margin-top:4px;">
             Dependency subtypes: finish-to-start &middot; finish-to-finish &middot; start-to-start &middot; start-to-finish
           </div>
         </div>
 
-        <!-- Relationship Entities -->
-        <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin:16px 0 12px;text-align:center;">Mapping Entities (Typed Joins)</div>
+        <div class="erd-section-label" style="margin-top:16px;">Mapping Entities (Typed Joins)</div>
         <div class="erd-row">
-          <div class="erd-entity" style="border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.03);">
-            <div class="erd-entity-name" style="color:var(--warning);">Task Relationship</div>
-            <div class="erd-entity-props">sourceId, targetId, type, subtype, lag</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(0,229,204,0.3);background:rgba(0,229,204,0.03);">
-            <div class="erd-entity-name" style="color:var(--accent-cyan);">Material Relationship</div>
-            <div class="erd-entity-props">sourceId, targetId, type, notes</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.03);">
-            <div class="erd-entity-name" style="color:var(--warning);">Vendor Reference</div>
-            <div class="erd-entity-props">vendorId, contactId</div>
-          </div>
-          <div class="erd-entity" style="border-color:rgba(0,229,204,0.3);background:rgba(0,229,204,0.03);">
-            <div class="erd-entity-name" style="color:var(--accent-cyan);">Contact</div>
-            <div class="erd-entity-props">name, role, phone, email</div>
-          </div>
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Task Relationship</div><div class="erd-entity-props">sourceId, targetId, type, subtype, lag</div></div>
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Material Relationship</div><div class="erd-entity-props">sourceId, targetId, type, notes</div></div>
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Vendor Reference</div><div class="erd-entity-props">vendorId, contactId</div></div>
+          <div class="erd-entity erd-entity-map"><div class="erd-entity-name">Contact</div><div class="erd-entity-props">name, role, phone, email</div></div>
         </div>
 
-        <!-- Key Innovation callout -->
-        <div style="margin-top:24px;padding:16px 20px;background:rgba(0,229,204,0.05);border:1px solid rgba(0,229,204,0.15);border-radius:var(--radius-md);text-align:center;">
-          <div style="font-size:0.8rem;font-weight:600;color:var(--accent-cyan);margin-bottom:4px;">Key Innovation</div>
-          <div style="font-size:0.75rem;color:var(--text-secondary);">Relationships are <strong>schema citizens</strong> with semantic meaning. The relationship entity IS the join table, but <strong>typed</strong> — dependency, decomposition, substitute. Not just foreign keys.</div>
+        <div class="callout" style="margin-top:20px;">
+          <strong>Key Innovation:</strong> Relationships are schema citizens with semantic meaning. The relationship entity IS the join table, but typed &mdash; dependency, decomposition, substitute. Not just foreign keys.
         </div>
       </div>
 
       <hr class="sep">
 
-      <!-- Entity Detail: Task (example with x-ui-hints) -->
-      <div class="section-header">
-        <h2>Entity Detail: Task</h2>
-        <p>Showing schema extensions in action</p>
-      </div>
-
-      <div class="card">
-        <div class="card-grid card-grid-2">
-          <div>
-            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Properties</div>
-            <div style="display:grid;gap:4px;">
-              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-                <code style="color:var(--accent-cyan);min-width:120px;">id</code>
-                <span style="color:var(--text-muted);">string</span>
-                <span class="tag tag-coral" style="margin-left:auto;">required</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-                <code style="color:var(--accent-cyan);min-width:120px;">name</code>
-                <span style="color:var(--text-muted);">string</span>
-                <span class="tag tag-coral" style="margin-left:auto;">required</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-                <code style="color:var(--accent-cyan);min-width:120px;">status</code>
-                <span style="color:var(--text-muted);">enum</span>
-                <span class="annotation ann-hint" style="margin-left:auto;">x-ui-hints: badge</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-                <code style="color:var(--accent-cyan);min-width:120px;">assignee</code>
-                <span style="color:var(--text-muted);">ref</span>
-                <span class="annotation ann-ref" style="margin-left:auto;">x-reference: vendor</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-                <code style="color:var(--accent-cyan);min-width:120px;">dependencies</code>
-                <span style="color:var(--text-muted);">ref[]</span>
-                <span class="annotation ann-bidir" style="margin-left:auto;">x-bidirectional</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-primary);border-radius:var(--radius-sm);font-size:0.75rem;">
-                <code style="color:var(--accent-cyan);min-width:120px;">estimatedCost</code>
-                <span style="color:var(--text-muted);">currency</span>
-                <span class="annotation ann-ctx" style="margin-left:auto;">x-context</span>
-              </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div>
+          <div class="section-header"><h2>Entity Detail: Task</h2><p>Schema extensions in action.</p></div>
+          <div style="display:grid;gap:0;">
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">id</code>
+              <span style="color:var(--ink-faint);">string</span>
+              <span class="tag tag-red" style="margin-left:auto;">required</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">name</code>
+              <span style="color:var(--ink-faint);">string</span>
+              <span class="tag tag-red" style="margin-left:auto;">required</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">status</code>
+              <span style="color:var(--ink-faint);">enum</span>
+              <span class="annotation ann-hint" style="margin-left:auto;">x-ui-hints: badge</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">assignee</code>
+              <span style="color:var(--ink-faint);">ref</span>
+              <span class="annotation ann-ref" style="margin-left:auto;">x-reference: vendor</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">dependencies</code>
+              <span style="color:var(--ink-faint);">ref[]</span>
+              <span class="annotation ann-bidir" style="margin-left:auto;">x-bidirectional</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;font-size:0.78rem;">
+              <code style="color:var(--red);min-width:120px;font-weight:600;">estimatedCost</code>
+              <span style="color:var(--ink-faint);">currency</span>
+              <span class="annotation ann-ctx" style="margin-left:auto;">x-context</span>
             </div>
           </div>
-          <div>
-            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">x-ui-hints (Layout)</div>
-            <pre style="font-size:0.7rem;color:var(--text-secondary);background:var(--bg-primary);padding:12px;border-radius:var(--radius-md);line-height:1.5;">{
+        </div>
+        <div>
+          <div class="section-header"><h2 style="font-size:1.3rem;">x-ui-hints</h2><p>Layout specification.</p></div>
+          <pre style="font-size:0.72rem;line-height:1.55;background:var(--code-bg);color:var(--code-fg);padding:20px;">{
   "sections": [
     {
       "title": "Details",
@@ -1368,185 +1651,139 @@
     "assignee": { "widget": "vendor-picker" }
   }
 }</pre>
-          </div>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- TAB: AGENTS & PLUGINS                                        -->
-  <!-- ============================================================ -->
+  <!-- ==================== AGENTS & PLUGINS ==================== -->
   <div id="tab-agents" class="tab-panel">
     <div class="container">
 
-      <!-- Agent Orchestra -->
       <div class="section-header">
         <h2>The Agent Orchestra</h2>
-        <p>AI agents that operate the schema system — not tools, but team members</p>
+        <p>AI agents that operate the schema system &mdash; not tools, but team members.</p>
       </div>
 
-      <div class="card-grid card-grid-3" style="margin-bottom: 32px;">
+      <div class="card-grid card-grid-3" style="margin-bottom: 40px;">
         <div class="agent-card">
-          <div class="agent-avatar" style="background:linear-gradient(135deg, rgba(0,229,204,0.2), rgba(0,229,204,0.05)); color:var(--accent-cyan);">R</div>
+          <div class="agent-avatar">R</div>
           <div>
             <div class="agent-name">Reid</div>
             <div class="agent-machine">Hart (Mac Mini M4)</div>
             <div class="agent-role">Strategic partner, orchestrator, memory keeper. Coordinates all agent work and maintains institutional context.</div>
-            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
-              <span class="tag tag-cyan">orchestrator</span>
-              <span class="tag tag-cyan">memory</span>
-            </div>
           </div>
         </div>
         <div class="agent-card">
-          <div class="agent-avatar" style="background:linear-gradient(135deg, rgba(96,165,250,0.2), rgba(96,165,250,0.05)); color:var(--info);">W</div>
+          <div class="agent-avatar">W</div>
           <div>
             <div class="agent-name">Wren</div>
             <div class="agent-machine">dave-mac</div>
             <div class="agent-role">Research and synthesis. Deep dives into documentation, competitive analysis, and technical exploration.</div>
-            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
-              <span class="tag tag-blue">research</span>
-              <span class="tag tag-blue">synthesis</span>
-            </div>
           </div>
         </div>
-        <div class="agent-card">
-          <div class="agent-avatar" style="background:linear-gradient(135deg, rgba(251,191,36,0.2), rgba(251,191,36,0.05)); color:var(--warning);">T</div>
+        <div class="agent-card" style="border-style: dashed;">
+          <div class="agent-avatar" style="border-style: dashed; color: var(--ink-ghost);">T</div>
           <div>
-            <div class="agent-name">Todd</div>
+            <div class="agent-name" style="color:var(--ink-faint);">Todd <span class="tag">planned</span></div>
             <div class="agent-machine">tonias-laptop</div>
             <div class="agent-role">Tonia's partner for hospitality operations, recipes, menu planning, and guest experience.</div>
-            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
-              <span class="tag tag-amber">planned</span>
-              <span class="tag tag-amber">hospitality</span>
-            </div>
           </div>
         </div>
       </div>
 
-      <!-- Agent Data Flows -->
-      <div class="card" style="margin-bottom: 32px; text-align: center; padding: 32px;">
-        <div class="card-title" style="text-align: left;">Agent Data Flows</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:16px;">
-          <div style="padding:12px 20px;background:rgba(0,229,204,0.08);border:1px solid rgba(0,229,204,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:var(--accent-cyan);font-weight:600;">Agents</div>
-          <div style="color:var(--text-muted);">&#8596;</div>
-          <div style="padding:12px 20px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:var(--info);font-weight:600;">Centralized Learnings</div>
-          <div style="color:var(--text-muted);">&#8596;</div>
-          <div style="padding:12px 20px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:var(--warning);font-weight:600;">Repo-Specific Data</div>
-          <div style="color:var(--text-muted);">&#8596;</div>
-          <div style="padding:12px 20px;background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.2);border-radius:var(--radius-md);font-size:0.8rem;color:#c084fc;font-weight:600;">Compounding Skills</div>
+      <div style="border: 1px solid var(--ink); padding: 28px; background: #fff; margin-bottom: 40px;">
+        <div class="card-title">Agent Data Flows</div>
+        <div class="trace-chain" style="margin-top:12px;">
+          <div class="trace-node"><div class="trace-node-label">Agents</div><div class="trace-node-value" style="color:var(--ink);">Read & Write</div></div>
+          <div class="trace-arrow">&harr;</div>
+          <div class="trace-node"><div class="trace-node-label">Shared</div><div class="trace-node-value" style="color:var(--ink);">Centralized Learnings</div></div>
+          <div class="trace-arrow">&harr;</div>
+          <div class="trace-node"><div class="trace-node-label">Per-Repo</div><div class="trace-node-value" style="color:var(--ink);">Specific Data</div></div>
+          <div class="trace-arrow">&harr;</div>
+          <div class="trace-node"><div class="trace-node-label">Output</div><div class="trace-node-value" style="color:var(--red);">Compounding Skills</div></div>
         </div>
-        <div style="margin-top:12px;font-size:0.7rem;color:var(--text-muted);">Every agent reads from and writes to shared learnings — knowledge compounds across sessions and machines</div>
+        <div style="text-align:center;margin-top:14px;font-size:0.75rem;color:var(--ink-faint);">Knowledge compounds across sessions and machines.</div>
       </div>
 
       <hr class="sep">
 
-      <!-- Plugin Ecosystem -->
       <div class="section-header">
         <h2>Plugin Ecosystem</h2>
-        <p>Extending the development system with composable capabilities</p>
       </div>
 
-      <div class="card-grid card-grid-3">
-        <!-- Core -->
-        <div class="plugin-card" style="border-left: 3px solid var(--accent-cyan);">
-          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Core</div>
-          <div class="plugin-name" style="color:var(--accent-cyan);">dev-plugins-workflow</div>
+      <div class="card-grid card-grid-3" style="margin-bottom: 40px;">
+        <div class="plugin-card" style="border-left: 3px solid var(--ink);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;">Core</div>
+          <div class="plugin-name">dev-plugins-workflow</div>
           <div class="plugin-desc">The foundation. Workflow automation, feature lifecycle, commit quality gates, documentation sync.</div>
-          <div style="margin-top:8px;">
-            <span class="tag tag-cyan">wdi:workflow-feature</span>
-            <span class="tag tag-cyan">wdi:workflow-commit</span>
-          </div>
         </div>
-
-        <!-- 3rd Party -->
-        <div class="plugin-card" style="border-left: 3px solid var(--info);">
-          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Critical 3rd Party</div>
-          <div class="plugin-name" style="color:var(--info);">Compound Engineering</div>
+        <div class="plugin-card" style="border-left: 3px solid var(--red);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;">Critical 3rd Party</div>
+          <div class="plugin-name">Compound Engineering</div>
           <div class="plugin-desc">Learnings compounding, multi-agent reviews, pattern recognition, deployment verification.</div>
-          <div style="margin-top:8px;">
-            <span class="tag tag-blue">compound</span>
-            <span class="tag tag-blue">review</span>
-          </div>
         </div>
-
-        <div class="plugin-card" style="border-left: 3px solid #c084fc;">
-          <div style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Critical 3rd Party</div>
-          <div class="plugin-name" style="color:#c084fc;">frontend-design</div>
-          <div class="plugin-desc">Production-grade UI generation with design tokens, avoiding generic AI aesthetics.</div>
-          <div style="margin-top:8px;">
-            <span class="tag" style="background:rgba(192,132,252,0.12);color:#c084fc;border:1px solid rgba(192,132,252,0.2);">design</span>
-          </div>
+        <div class="plugin-card" style="border-left: 3px solid var(--ink-ghost);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;">Critical 3rd Party</div>
+          <div class="plugin-name">frontend-design</div>
+          <div class="plugin-desc">Production-grade UI generation with design tokens.</div>
         </div>
       </div>
 
       <hr class="sep">
 
-      <!-- How It Compounds -->
       <div class="section-header">
         <h2>The Compounding Loop</h2>
-        <p>Every feature solved feeds the system that solves the next one</p>
+        <p>Every feature solved feeds the system that solves the next one.</p>
       </div>
 
-      <div class="card" style="padding: 32px;">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:16px;text-align:center;">
-          <div>
-            <div style="font-size:2rem;margin-bottom:8px;">&#128736;</div>
-            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Build Feature</div>
-            <div style="font-size:0.7rem;color:var(--text-muted);">Schema &rarr; Implementation &rarr; Deploy</div>
-          </div>
-          <div>
-            <div style="font-size:2rem;margin-bottom:8px;">&#128218;</div>
-            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Document Learnings</div>
-            <div style="font-size:0.7rem;color:var(--text-muted);">COMPOUND-LEARNINGS.md on issue close</div>
-          </div>
-          <div>
-            <div style="font-size:2rem;margin-bottom:8px;">&#129504;</div>
-            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Agents Absorb</div>
-            <div style="font-size:0.7rem;color:var(--text-muted);">Centralized learnings &rarr; all agents</div>
-          </div>
-          <div>
-            <div style="font-size:2rem;margin-bottom:8px;">&#128640;</div>
-            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Next Feature Faster</div>
-            <div style="font-size:0.7rem;color:var(--text-muted);">Patterns, pitfalls, and solutions pre-loaded</div>
-          </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);margin-bottom:12px;">
+        <div class="loop-step" style="border-right:1px solid var(--rule);">
+          <div class="loop-step-num">1</div>
+          <h4>Build Feature</h4>
+          <p>Schema, implementation, deploy</p>
         </div>
-        <div style="text-align:center;margin-top:16px;font-size:0.7rem;color:var(--text-muted);border-top:1px dashed var(--border);padding-top:12px;">
-          &#8592; This is why a 2-person B&B can build production-grade software &#8594;
+        <div class="loop-step" style="border-right:1px solid var(--rule);">
+          <div class="loop-step-num">2</div>
+          <h4>Document Learnings</h4>
+          <p>COMPOUND-LEARNINGS.md on issue close</p>
         </div>
+        <div class="loop-step" style="border-right:1px solid var(--rule);">
+          <div class="loop-step-num">3</div>
+          <h4>Agents Absorb</h4>
+          <p>Centralized learnings reach all agents</p>
+        </div>
+        <div class="loop-step">
+          <div class="loop-step-num" style="color:var(--red);">4</div>
+          <h4 style="color:var(--red);">Next Feature Faster</h4>
+          <p>Patterns, pitfalls, solutions pre-loaded</p>
+        </div>
+      </div>
+      <div style="text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:0.85rem;color:var(--ink-faint);padding:16px 0;">
+        This is why a 2-person B&B can build production-grade software.
       </div>
 
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- FOOTER                                                       -->
-  <!-- ============================================================ -->
   <footer class="footer">
     <div class="container">
-      <div>Enterprise Software @ WDI &middot; Schema-Driven Development &middot; Spec-Anchored</div>
-      <div style="margin-top:4px;">White Doe Inn &middot; Manteo, NC &middot; Built with specs, not vibes</div>
+      <div class="footer-inner">
+        <div class="footer-brand">Enterprise Software @ WDI</div>
+        <div>White Doe Inn &middot; Manteo, NC &middot; Built with specs, not vibes</div>
+      </div>
     </div>
   </footer>
 
-  <!-- ============================================================ -->
-  <!-- JAVASCRIPT                                                   -->
-  <!-- ============================================================ -->
   <script>
     function showTab(tabId) {
-      document.querySelectorAll('.tab-panel').forEach(function(p) {
-        p.classList.remove('active');
-      });
-      document.querySelectorAll('.tab-btn').forEach(function(b) {
-        b.classList.remove('active');
-      });
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
       var panel = document.getElementById('tab-' + tabId);
       if (panel) panel.classList.add('active');
-      // Find and activate the correct tab button
       var buttons = document.querySelectorAll('.tab-btn');
-      var tabMap = { 'overview': 0, 'schemas': 1, 'flows': 2, 'erd': 3, 'agents': 4 };
+      var tabMap = { 'operators': 0, 'overview': 1, 'schemas': 2, 'flows': 3, 'erd': 4, 'agents': 5 };
       if (tabMap[tabId] !== undefined && buttons[tabMap[tabId]]) {
         buttons[tabMap[tabId]].classList.add('active');
       }
@@ -1562,44 +1799,43 @@
     }
 
     function togglePopover(el, text) {
-      // Remove any existing popovers
       document.querySelectorAll('.popover').forEach(function(p) { p.remove(); });
-
       var pop = document.createElement('div');
       pop.className = 'popover visible';
       pop.textContent = text;
-
-      // Position near the element
       var rect = el.getBoundingClientRect();
-      pop.style.position = 'fixed';
       pop.style.top = (rect.bottom + 8) + 'px';
       pop.style.left = Math.max(16, rect.left) + 'px';
       document.body.appendChild(pop);
-
-      // Auto-dismiss
       setTimeout(function() {
         pop.classList.remove('visible');
-        setTimeout(function() { pop.remove(); }, 200);
+        setTimeout(function() { pop.remove(); }, 150);
       }, 4000);
-
-      // Click elsewhere to dismiss
       function dismiss(e) {
         if (!pop.contains(e.target) && e.target !== el) {
           pop.remove();
           document.removeEventListener('click', dismiss);
         }
       }
-      setTimeout(function() {
-        document.addEventListener('click', dismiss);
-      }, 10);
+      setTimeout(function() { document.addEventListener('click', dismiss); }, 10);
     }
 
-    // Keyboard nav
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('.popover').forEach(function(p) { p.remove(); });
-      }
+      if (e.key === 'Escape') document.querySelectorAll('.popover').forEach(function(p) { p.remove(); });
     });
+
+    function toggleOpsDetail(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('open');
+    }
+
+    // Hash navigation for direct linking (e.g. #operators)
+    function handleHash() {
+      var hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById('tab-' + hash)) showTab(hash);
+    }
+    window.addEventListener('hashchange', handleHash);
+    if (window.location.hash) handleHash();
   </script>
 </body>
 </html>
