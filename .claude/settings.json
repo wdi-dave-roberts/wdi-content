@@ -1,6 +1,3 @@
 {
-  "enabledPlugins": {
-    "compound-engineering@every-marketplace": true,
-    "wdi@wdi-marketplace": true
-  }
+  "enabledPlugins": {}
 }
